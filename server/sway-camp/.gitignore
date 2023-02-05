@@ -1,9 +1,11 @@
 HELP.md
-src/main/resources/application.yml
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+#自定义
+src/main/resources/application.yml
 
 ### STS ###
 .apt_generated
@@ -19,6 +21,8 @@ target/
 *.iws
 *.iml
 *.ipr
+*.yml
+*.xml
 
 ### NetBeans ###
 /nbproject/private/
