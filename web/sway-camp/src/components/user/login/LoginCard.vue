@@ -1,0 +1,238 @@
+<template>
+  <div class="login-card">
+    <div class="login-card-mark" />
+    <div class="login-card-container">
+      <div class="login-card-close">
+        <sway-icon name="guanbi" />
+      </div>
+      <div class="login-card-inner">
+        <div class="login-card-inner--left">
+          <img src="@/assets/svg/plane.svg" />
+        </div>
+        <div class="login-card-inner--line"></div>
+        <!-- 登录表单 -->
+        <div class="login-card-inner--right">
+          <!-- 登录选项 -->
+          <div class="login-form__tab">
+            <span
+              class="login-form__tab--password"
+              :style="{ color: loginType === 'pass' ? '#4fa5d9' : '' }"
+              @click="changeLoginType('pass')"
+            >
+              密码登录
+            </span>
+            <span class="login-form__tab--line"> </span>
+            <span
+              class="login-form__tab--email"
+              :style="{ color: loginType === 'email' ? '#4fa5d9' : '' }"
+              @click="changeLoginType('email')"
+            >
+              邮箱登录
+            </span>
+          </div>
+          <!-- 密码登录 -->
+          <div class="login-form">
+            <div class="login-form__password" v-if="loginType === 'pass'">
+              <pass-form />
+            </div>
+            <div class="login-form__email" v-if="loginType === 'email'">
+              <email-form />
+            </div>
+          </div>
+          <!-- 第三方登录 -->
+          <div class="other-login-wrapper">
+            <div class="title">其他方式登录</div>
+            <div class="sns">
+              <span class="btn wechat">
+                <sway-icon name="weixin" :size="28" color="#50b674" />
+                微信登录
+              </span>
+              <span class="btn weibo">
+                <sway-icon name="github-fill" :size="28" />
+                GitHub
+              </span>
+              <span class="btn qq">
+                <sway-icon name="QQ" :size="28" />
+                QQ登录
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="login-card-agreement">
+        <div class="login-card-agreement--content">
+          <p>未注册过的邮箱，将自动帮你注册账号</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+import EmailForm from './components/EmailForm.vue'
+import PassForm from './components/PassForm.vue'
+export default defineComponent({
+  name: 'LoginCard',
+  components: { PassForm, EmailForm },
+  setup() {
+    // 登录方式
+    const loginType = ref('pass')
+    const changeLoginType = (type: string) => {
+      if (type === 'pass' || type === 'email') {
+        loginType.value = type
+      }
+    }
+    return {
+      loginType,
+      changeLoginType
+    }
+  }
+})
+</script>
+
+<style lang="less" scoped>
+.login-card {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: @min-width;
+  height: 100%;
+  min-height: @min-height;
+  z-index: 2000;
+
+  &-mark {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: @mark-1;
+    opacity: 0.2;
+  }
+  &-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+  &-container {
+    position: relative;
+    width: 800px;
+    height: 420px;
+    background-color: @bg-1;
+    border-radius: 16px;
+  }
+  &-inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 50px 40px 30px 40px;
+    &--left {
+      width: 200px;
+      height: 100%;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+    &--line {
+      width: 1px;
+      height: 80%;
+      margin: 0 45px;
+      //   background-color: @gray-bg;
+    }
+    &--right {
+      box-sizing: border-box;
+      padding: 20px 0;
+      flex: 1;
+      height: 100%;
+      .login-form {
+        &__tab {
+          display: flex;
+          justify-content: center;
+          height: 20px;
+          color: @text-2;
+
+          &--password,
+          &--email {
+            font-size: 18px;
+            cursor: pointer;
+          }
+
+          &--line {
+            width: 1px;
+            height: 20px;
+            background-color: @line-2;
+            margin: 0 21px;
+          }
+        }
+        &__password,
+        &__email {
+          width: 100%;
+          margin-top: 20px;
+        }
+      }
+
+      .other-login-wrapper {
+        margin-top: 24px;
+        user-select: none;
+        .title {
+          font-size: 13px;
+          line-height: 16px;
+          text-align: center;
+          color: @text-1;
+          margin-bottom: 12px;
+        }
+        .sns {
+          display: flex;
+          justify-content: center;
+
+          .btn {
+            margin-right: 30px;
+            cursor: pointer;
+          }
+
+          .qq,
+          .wechat,
+          .weibo {
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            i {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+  &-agreement {
+    position: absolute;
+    bottom: 20px;
+    left: 280px;
+    font-size: 13px;
+    color: @text-1;
+    margin-top: 40px;
+    &--content {
+      user-select: none;
+      p {
+        text-align: center;
+        line-height: 19px;
+      }
+    }
+  }
+}
+</style>

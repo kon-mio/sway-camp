@@ -1,0 +1,49 @@
+<template>
+  <div id="app" class="app">
+    <div class="app-aside">
+      <AppAside />
+    </div>
+    <div class="app-main">
+      <AppRouter />
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import AppAside from './layout/app-aside/AppAside.vue'
+import AppRouter from './layout/app-router/AppRouter.vue'
+import '@/assets/font/iconfont.js'
+import '@/assets/font/iconfont.css'
+</script>
+
+<style lang="less">
+@import '@/assets/css/common.less';
+</style>
+
+<style lang="less" scoped>
+.app {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: 100vh;
+  min-height: 600px;
+  overflow: hidden;
+
+  &-aside {
+    width: 200px;
+    min-width: 200px;
+    height: 100%;
+  }
+  &-main {
+    position: relative;
+    width: calc(100vw - 200px);
+    min-width: 1200px;
+    height: 100%;
+    overflow: hidden;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    background-color: @bg-2;
+  }
+}
+</style>
