@@ -1,13 +1,13 @@
 <template>
   <!-- 密码登录 -->
   <div class="form-account">
-    <span class="text">邮箱</span>
+    <span class="text">账号</span>
     <input type="text" placeholder="请输入邮箱账号" />
   </div>
   <!-- 密码 -->
   <div class="form-password">
     <div class="left">
-      <span class="text">密 码</span>
+      <span class="text">密码</span>
       <input placeholder="请输入密码" minlength="6" maxlength="18" type="text" />
     </div>
     <!-- 显示密码 -->
@@ -20,14 +20,25 @@
   <!-- 按钮 -->
   <div class="form-btn">
     <div class="universal-btn register-btn">注册</div>
-    <div class="universal-btn login-btn">登录</div>
+    <div class="universal-btn login-btn" @click="loginSumbit">登录</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs } from 'vue'
+import { useGlobalStore } from '@/store/global.sotre'
 export default defineComponent({
-  name: 'LoginForm'
+  name: 'LoginForm',
+  setup() {
+    const globalStore = useGlobalStore()
+    const loginSumbit = () => {
+      globalStore.openMessageMini('请输入账号密码')
+    }
+
+    return {
+      loginSumbit
+    }
+  }
 })
 </script>
 

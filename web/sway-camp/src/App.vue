@@ -6,14 +6,20 @@
     <div class="app-main">
       <AppRouter />
     </div>
+    <MessageMini v-model="messageMini.isOpen" :content="messageMini.content" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AppAside from './layout/app-aside/AppAside.vue'
-import AppRouter from './layout/app-router/AppRouter.vue'
 import '@/assets/font/iconfont.js'
 import '@/assets/font/iconfont.css'
+import AppAside from './layout/app-aside/AppAside.vue'
+import AppRouter from './layout/app-router/AppRouter.vue'
+import { useGlobalStore } from './store/global.sotre'
+import MessageMini from './components/konmio/message/message-mini.vue'
+import { storeToRefs } from 'pinia'
+// mini消息框
+const { messageMini } = storeToRefs(useGlobalStore())
 </script>
 
 <style lang="less">
