@@ -38,18 +38,5 @@ public class UserController {
         return userService.login(loginBody.getAccount(), loginBody.getPassword(), loginBody.getIsAdmin());
     }
 
-    @Log
-    @LoginCheck(0)
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
-    @Log
-    @PostMapping("/test2")
-    public SwayResult test2(@RequestBody @Validated LoginBody loginBody) {
-        return SwayResult.success();
-    }
-
 }
 
