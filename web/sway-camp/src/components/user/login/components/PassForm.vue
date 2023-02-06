@@ -8,12 +8,24 @@
   <div class="form-password">
     <div class="left">
       <span class="text">密码</span>
-      <input placeholder="请输入密码" minlength="6" maxlength="18" type="text" />
+      <input placeholder="请输入密码" minlength="6" maxlength="18" :type="passInputType" />
     </div>
     <!-- 显示密码 -->
     <div class="eye-btn">
-      <sway-icon name="yanjing1" color="--thememini-color: #00a1d6" />
-      <sway-icon name="yanjing" :size="20" color="--thememini-color: #00a1d6" />
+      <sway-icon
+        v-if="passInputType === 'password'"
+        @click="passInputType = 'text'"
+        :size="18"
+        name="yanjing1"
+        color="#61666d"
+      />
+      <sway-icon
+        v-if="passInputType === 'text'"
+        @click="passInputType = 'password'"
+        :size="20"
+        name="yanjing"
+        color="#61666d"
+      />
     </div>
     <span class="forget"> 忘记密码？ </span>
   </div>
@@ -25,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
 import { useGlobalStore } from '@/store/global.sotre'
 export default defineComponent({
   name: 'LoginForm',
@@ -34,8 +46,10 @@ export default defineComponent({
     const loginSumbit = () => {
       globalStore.openMessageMini('请输入账号密码')
     }
+    const passInputType = ref('password')
 
     return {
+      passInputType,
       loginSumbit
     }
   }
@@ -75,12 +89,23 @@ export default defineComponent({
   position: relative;
   justify-content: space-between;
   border-radius: 0 0 8px 8px;
+  &:hover {
+    .eye-btn {
+      opacity: 1;
+    }
+  }
 
   .eye-btn {
     position: relative;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2px;
     width: 20px;
     height: 20px;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+    cursor: pointer;
   }
   .forget {
     position: relative;

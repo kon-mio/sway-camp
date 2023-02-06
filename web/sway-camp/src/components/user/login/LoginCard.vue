@@ -8,7 +8,7 @@
         </div>
         <div class="login-card-inner">
           <div class="login-card-inner--left">
-            <img src="@/assets/svg/plane.svg" />
+            <img src="@/assets/img/xj_3.jpg" />
           </div>
           <div class="login-card-inner--line"></div>
           <!-- 登录表单 -->
@@ -44,17 +44,17 @@
             <div class="other-login-wrapper">
               <div class="title">其他方式登录</div>
               <div class="sns">
-                <span class="btn wechat">
-                  <sway-icon name="weixin" :size="28" color="#50b674" />
-                  微信登录
+                <span class="btn qq">
+                  <sway-icon name="QQ" :size="28" color="#00aeec" />
+                  QQ登录
                 </span>
                 <span class="btn weibo">
                   <sway-icon name="github-fill" :size="28" />
                   GitHub
                 </span>
-                <span class="btn qq">
-                  <sway-icon name="QQ" :size="28" />
-                  QQ登录
+                <span class="btn wechat">
+                  <sway-icon name="weixin" :size="28" color="#50b674" />
+                  微信登录
                 </span>
               </div>
             </div>
@@ -153,11 +153,13 @@ export default defineComponent({
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    padding: 50px 40px 30px 40px;
+    padding: 50px 40px 30px;
     &--left {
+      position: relative;
       width: 200px;
       height: 100%;
       img {
+        position: absolute;
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -167,7 +169,7 @@ export default defineComponent({
       width: 1px;
       height: 80%;
       margin: 0 45px;
-      //   background-color: @gray-bg;
+      background-color: @line-1;
     }
     &--right {
       box-sizing: border-box;
@@ -236,16 +238,16 @@ export default defineComponent({
   }
   &-agreement {
     position: absolute;
-    bottom: 20px;
+    bottom: 30px;
     left: 280px;
     font-size: 13px;
-    color: @text-1;
+    color: @text-5;
     margin-top: 40px;
     &--content {
       user-select: none;
       p {
         text-align: center;
-        line-height: 19px;
+        line-height: 20px;
       }
     }
   }
