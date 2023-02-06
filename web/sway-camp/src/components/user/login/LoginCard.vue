@@ -1,74 +1,79 @@
 <template>
-  <div class="login-card">
-    <div class="login-card-mark" />
-    <div class="login-card-container">
-      <div class="login-card-close">
-        <sway-icon name="guanbi" />
-      </div>
-      <div class="login-card-inner">
-        <div class="login-card-inner--left">
-          <img src="@/assets/svg/plane.svg" />
+  <Transition name="sign">
+    <div class="login-card" v-if="loginCard">
+      <div class="login-card-mark" @click="controlLoginCard(false, isLogin)" />
+      <div class="login-card-container">
+        <div class="login-card-close" @click="controlLoginCard(false, isLogin)">
+          <sway-icon name="guanbi" />
         </div>
-        <div class="login-card-inner--line"></div>
-        <!-- 登录表单 -->
-        <div class="login-card-inner--right">
-          <!-- 登录选项 -->
-          <div class="login-form__tab">
-            <span
-              class="login-form__tab--password"
-              :style="{ color: loginType === 'pass' ? '#4fa5d9' : '' }"
-              @click="changeLoginType('pass')"
-            >
-              密码登录
-            </span>
-            <span class="login-form__tab--line"> </span>
-            <span
-              class="login-form__tab--email"
-              :style="{ color: loginType === 'email' ? '#4fa5d9' : '' }"
-              @click="changeLoginType('email')"
-            >
-              邮箱登录
-            </span>
+        <div class="login-card-inner">
+          <div class="login-card-inner--left">
+            <img src="@/assets/svg/plane.svg" />
           </div>
-          <!-- 密码登录 -->
-          <div class="login-form">
-            <div class="login-form__password" v-if="loginType === 'pass'">
-              <pass-form />
+          <div class="login-card-inner--line"></div>
+          <!-- 登录表单 -->
+          <div class="login-card-inner--right">
+            <!-- 登录选项 -->
+            <div class="login-form__tab">
+              <span
+                class="login-form__tab--password"
+                :style="{ color: loginType === 'pass' ? '#4fa5d9' : '' }"
+                @click="changeLoginType('pass')"
+              >
+                密码登录
+              </span>
+              <span class="login-form__tab--line"> </span>
+              <span
+                class="login-form__tab--email"
+                :style="{ color: loginType === 'email' ? '#4fa5d9' : '' }"
+                @click="changeLoginType('email')"
+              >
+                邮箱登录
+              </span>
             </div>
-            <div class="login-form__email" v-if="loginType === 'email'">
-              <email-form />
+            <!-- 密码登录 -->
+            <div class="login-form">
+              <div class="login-form__password" v-if="loginType === 'pass'">
+                <pass-form />
+              </div>
+              <div class="login-form__email" v-if="loginType === 'email'">
+                <email-form />
+              </div>
             </div>
-          </div>
-          <!-- 第三方登录 -->
-          <div class="other-login-wrapper">
-            <div class="title">其他方式登录</div>
-            <div class="sns">
-              <span class="btn wechat">
-                <sway-icon name="weixin" :size="28" color="#50b674" />
-                微信登录
-              </span>
-              <span class="btn weibo">
-                <sway-icon name="github-fill" :size="28" />
-                GitHub
-              </span>
-              <span class="btn qq">
-                <sway-icon name="QQ" :size="28" />
-                QQ登录
-              </span>
+            <!-- 第三方登录 -->
+            <div class="other-login-wrapper">
+              <div class="title">其他方式登录</div>
+              <div class="sns">
+                <span class="btn wechat">
+                  <sway-icon name="weixin" :size="28" color="#50b674" />
+                  微信登录
+                </span>
+                <span class="btn weibo">
+                  <sway-icon name="github-fill" :size="28" />
+                  GitHub
+                </span>
+                <span class="btn qq">
+                  <sway-icon name="QQ" :size="28" />
+                  QQ登录
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="login-card-agreement">
-        <div class="login-card-agreement--content">
-          <p>未注册过的邮箱，将自动帮你注册账号</p>
+        <div class="login-card-agreement">
+          <div class="login-card-agreement--content">
+            <p>未注册过的邮箱，将自动帮你注册账号</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script lang="ts">
+import { useGlobalStore } from '@/store/global.sotre'
+import { useUserStore } from '@/store/user.store'
+import { storeToRefs } from 'pinia'
 import { defineComponent, ref } from 'vue'
 import EmailForm from './components/EmailForm.vue'
 import PassForm from './components/PassForm.vue'
@@ -83,9 +88,19 @@ export default defineComponent({
         loginType.value = type
       }
     }
+    // 全局登录状态
+    const { isLogin } = storeToRefs(useUserStore())
+    // 全局登录卡片
+    const globalStore = useGlobalStore()
+    const { loginCard } = storeToRefs(globalStore)
+    const { controlLoginCard } = globalStore
+
     return {
+      isLogin,
       loginType,
-      changeLoginType
+      loginCard,
+      changeLoginType,
+      controlLoginCard
     }
   }
 })
@@ -234,5 +249,14 @@ export default defineComponent({
       }
     }
   }
+}
+.sign-enter-active,
+.sign-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.sign-enter-from,
+.sign-leave-to {
+  opacity: 0;
 }
 </style>

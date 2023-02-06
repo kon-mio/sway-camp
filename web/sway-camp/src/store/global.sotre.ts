@@ -6,7 +6,8 @@ export const useGlobalStore = defineStore('global', {
     messageMini: {
       isOpen: false,
       content: ''
-    }
+    },
+    loginCard: false
   }),
   actions: {
     // 打开mini消息框
@@ -18,6 +19,17 @@ export const useGlobalStore = defineStore('global', {
         this.messageMini.isOpen = false
         this.messageMini.content = ''
       }, 1600)
+    },
+
+    /**
+     * 登录卡片控制
+     * @param loginCardOpen true/false
+     * @param isLogin 登录状态
+     * @returns 
+     */
+    controlLoginCard(loginCardOpen: boolean, isLogin: boolean) {
+      if (isLogin) return
+      this.loginCard = loginCardOpen
     }
   }
 })
