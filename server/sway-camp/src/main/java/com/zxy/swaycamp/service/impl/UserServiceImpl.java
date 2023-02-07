@@ -3,6 +3,8 @@ package com.zxy.swaycamp.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.CacheConstants;
 import com.zxy.swaycamp.common.constant.TimeConst;
+import com.zxy.swaycamp.common.exception.ServiceException;
+import com.zxy.swaycamp.domain.dto.LoginDto;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.model.LoginUser;
 import com.zxy.swaycamp.domain.vo.UserVo;
@@ -31,19 +33,25 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Resource
     private RedisCache redisCache;
 
+    /**
+     * 用户名、邮箱、手机号/密码登录
+     *
+     * @param loginDto  登录参数
+     * @return 用户信息
+     */
     @Override
-    public SwayResult<UserVo> login(String account, String password, Boolean isAdmin) {
+    public UserVo login(LoginDto loginDto) {
         User one = lambdaQuery().and(wrapper -> wrapper
-                        .eq(User::getUsername, account)
+                        .eq(User::getUsername, loginDto.getAccount())
                         .or()
-                        .eq(User::getEmail, account)
+                        .eq(User::getEmail, loginDto.getAccount())
                         .or()
-                        .eq(User::getPhoneNumber, account))
-                .eq(User::getPassword, password)
+                        .eq(User::getPhoneNumber, loginDto.getAccount()))
+                .eq(User::getPassword, loginDto.getPassword())
                 .one();
 
         if (one == null) {
-            return SwayResult.fail("账号/密码错误，请重新输入！");
+            throw new ServiceException("账号密码错误");
         }
 
         // 生成Token
@@ -63,6 +71,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         BeanUtils.copyProperties(one, userVo);
         userVo.setPassword(null);
         userVo.setAccessToken(userToken);
-        return SwayResult.success(userVo);
+        return userVo;
     }
 }
