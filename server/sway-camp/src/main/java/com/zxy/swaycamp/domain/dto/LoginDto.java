@@ -1,4 +1,4 @@
-package com.zxy.swaycamp.domain.request;
+package com.zxy.swaycamp.domain.dto;
 
 import lombok.Data;
 
@@ -11,12 +11,10 @@ import javax.validation.constraints.NotEmpty;
  * @since 2023/1/24
  */
 @Data
-public class LoginBody {
+public class LoginDto {
     @NotEmpty
     private String account;
 
     @NotEmpty
     private String password;
-
-    private Boolean isAdmin;
 }

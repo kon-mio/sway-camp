@@ -1,6 +1,6 @@
 <template>
-  <div class="as-user">
-    <div v-if="!isLogin" class="unlogin">
+  <div class="user">
+    <div class="unlogin" v-if="!isLogin" @click="openLoginCard">
       <span>未登录</span>
     </div>
     <div v-else class="login">
@@ -39,12 +39,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, onMounted, PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { userTabItemType } from '../type'
-// import { openLoginCard } from '@/hooks/useLoginCard.hooks'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user.store'
+import { useGlobalStore } from '@/store/global.sotre'
+import type { userTabItemType } from '../type'
 import LoginCard from '@/components/user/login/LoginCard.vue'
 
 // 用户导航栏方法
@@ -75,10 +75,10 @@ function userTabMoudel() {
   }
   // 退出
   const Exit = () => {
-    // userStore.userExit(true)
-    router.push({
-      name: 'Home'
-    })
+    userStore.exit()
+    // router.push({
+    //   name: 'Home'
+    // })
   }
   // 跳转用户主页
   const userSpace = () => {
@@ -127,19 +127,29 @@ export default defineComponent({
     const { userTabMeth, userSpace } = userTabMoudel()
     const userStore = useUserStore()
     const { isLogin, userInfo } = storeToRefs(userStore)
+    // 全局登录卡片
+    const globalStore = useGlobalStore()
+    const { openLoginCard } = globalStore
+    onMounted(() => {
+      if (isLogin) {
+        if (!userInfo || !userInfo.value?.token) {
+          userStore.exit()
+        }
+      }
+    })
     return {
       isLogin,
       userInfo,
       userTabMeth,
-      userSpace
-      // openLoginCard
+      userSpace,
+      openLoginCard
     }
   }
 })
 </script>
 
 <style lang="less" scoped>
-.as-user {
+.user {
   position: relative;
   display: flex;
   align-items: center;

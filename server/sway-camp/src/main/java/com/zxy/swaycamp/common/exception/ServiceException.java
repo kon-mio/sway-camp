@@ -1,5 +1,6 @@
 package com.zxy.swaycamp.common.exception;
 
+import com.zxy.swaycamp.common.enums.CodeMsg;
 import lombok.Getter;
 
 /**
@@ -27,6 +28,11 @@ public class ServiceException extends RuntimeException {
         super(msg);
         this.code = code;
         this.msg = msg;
+    }
+    public ServiceException(CodeMsg codeMsg) {
+        super(codeMsg.getMsg());
+        this.code = codeMsg.getCode();
+        this.msg = codeMsg.getMsg();
     }
 
     public ServiceException(Integer code, String msg, Throwable cause) {

@@ -1,33 +1,82 @@
 <template>
   <!-- 密码登录 -->
   <div class="form-account">
-    <span class="text">邮箱</span>
-    <input type="text" placeholder="请输入邮箱账号" />
+    <span class="text">账号</span>
+    <input type="text" placeholder="请输入邮箱账号" v-model="account" />
   </div>
   <!-- 密码 -->
   <div class="form-password">
     <div class="left">
-      <span class="text">密 码</span>
-      <input placeholder="请输入密码" minlength="6" maxlength="18" type="text" />
+      <span class="text">密码</span>
+      <input
+        placeholder="请输入密码"
+        minlength="6"
+        maxlength="18"
+        :type="passInputType"
+        v-model="password"
+      />
     </div>
     <!-- 显示密码 -->
     <div class="eye-btn">
-      <sway-icon name="yanjing1" color="--thememini-color: #00a1d6" />
-      <sway-icon name="yanjing" :size="20" color="--thememini-color: #00a1d6" />
+      <sway-icon
+        v-if="passInputType === 'password'"
+        @click="passInputType = 'text'"
+        :size="18"
+        name="yanjing1"
+        color="#61666d"
+      />
+      <sway-icon
+        v-if="passInputType === 'text'"
+        @click="passInputType = 'password'"
+        :size="20"
+        name="yanjing"
+        color="#61666d"
+      />
     </div>
     <span class="forget"> 忘记密码？ </span>
   </div>
   <!-- 按钮 -->
   <div class="form-btn">
     <div class="universal-btn register-btn">注册</div>
-    <div class="universal-btn login-btn">登录</div>
+    <div class="universal-btn login-btn" @click="loginSumbit">登录</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, ref, toRefs } from 'vue'
+import { useGlobalStore } from '@/store/global.sotre'
+import { loginApi } from '@/api/user/api'
+import type { LoginDto } from '@/api/user/type'
+import SwayNotion from '@/utils/notice'
+import { useUserStore } from '@/store/user.store'
 export default defineComponent({
-  name: 'LoginForm'
+  name: 'LoginForm',
+  setup() {
+    const userStore = useUserStore()
+    const globalStore = useGlobalStore()
+    const passInputType = ref('password')
+
+    const LoginForm = reactive<LoginDto>({
+      account: '',
+      password: ''
+    })
+    // 登录
+    const loginSumbit = async () => {
+      // globalStore.openMessageMini('请输入账号密码')
+      const res = await loginApi(LoginForm)
+      if (res.code === 200) {
+        userStore.setUserInfo(res.data)
+        userStore.login()
+        SwayNotion('登录', '登录成功', 'success')
+      }
+    }
+
+    return {
+      ...toRefs(LoginForm),
+      passInputType,
+      loginSumbit
+    }
+  }
 })
 </script>
 
@@ -64,12 +113,23 @@ export default defineComponent({
   position: relative;
   justify-content: space-between;
   border-radius: 0 0 8px 8px;
+  &:hover {
+    .eye-btn {
+      opacity: 1;
+    }
+  }
 
   .eye-btn {
     position: relative;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 2px;
     width: 20px;
     height: 20px;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+    cursor: pointer;
   }
   .forget {
     position: relative;

@@ -4,7 +4,11 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+<<<<<<< HEAD
 #自定义
+=======
+### 自定义
+>>>>>>> dev
 src/main/resources/application.yml
 
 ### STS ###

@@ -1,15 +1,13 @@
 package com.zxy.swaycamp.controller;
 
 import com.zxy.swaycamp.annotation.Log;
-import com.zxy.swaycamp.annotation.LoginCheck;
-import com.zxy.swaycamp.domain.request.LoginBody;
+import com.zxy.swaycamp.common.enums.Action;
+import com.zxy.swaycamp.domain.dto.LoginDto;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -33,23 +31,12 @@ public class UserController {
     /**
      * 用户名、邮箱、手机号/密码登录
      */
+    @Log(title="用户登录",action = Action.SELECT)
     @PostMapping("/login")
-    public SwayResult<UserVo> login(@RequestBody @Validated LoginBody loginBody) {
-        return userService.login(loginBody.getAccount(), loginBody.getPassword(), loginBody.getIsAdmin());
+    public SwayResult<UserVo> login(@RequestBody @Validated LoginDto loginDto) {
+        return SwayResult.success(userService.login(loginDto));
     }
 
-    @Log
-    @LoginCheck(0)
-    @GetMapping("/test")
-    public String test() {
-        return "test";
-    }
-
-    @Log
-    @PostMapping("/test2")
-    public SwayResult test2(@RequestBody @Validated LoginBody loginBody) {
-        return SwayResult.success();
-    }
 
 }
 
