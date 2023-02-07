@@ -30,8 +30,8 @@ public class UserController {
      * 用户名、邮箱、手机号/密码登录
      */
     @PostMapping("/login")
-    public SwayResult<UserVo> login(@RequestBody @Validated LoginDto loginDto) {
-        return SwayResult.success(userService.login(loginDto));
+    public SwayResult<UserVo> login(@RequestBody @Validated LoginDto loginBody) {
+        return userService.login(loginBody.getAccount(), loginBody.getPassword(), loginBody.getIsAdmin());
     }
 
 

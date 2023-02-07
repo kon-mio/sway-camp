@@ -17,4 +17,6 @@ public class LoginDto {
 
     @NotEmpty
     private String password;
+
+    private Boolean isAdmin;
 }
