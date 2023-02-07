@@ -1,9 +1,9 @@
 <template>
   <Transition name="sign">
-    <div class="login-card" v-if="loginCard">
-      <div class="login-card-mark" @click="controlLoginCard(false, isLogin)" />
+    <div class="login-card" v-if="loginCard && !isLogin">
+      <div class="login-card-mark" @click="closeLoginCard" />
       <div class="login-card-container">
-        <div class="login-card-close" @click="controlLoginCard(false, isLogin)">
+        <div class="login-card-close" @click="closeLoginCard">
           <sway-icon name="guanbi" />
         </div>
         <div class="login-card-inner">
@@ -93,14 +93,14 @@ export default defineComponent({
     // 全局登录卡片
     const globalStore = useGlobalStore()
     const { loginCard } = storeToRefs(globalStore)
-    const { controlLoginCard } = globalStore
+    const { closeLoginCard } = globalStore
 
     return {
       isLogin,
       loginType,
       loginCard,
       changeLoginType,
-      controlLoginCard
+      closeLoginCard
     }
   }
 })

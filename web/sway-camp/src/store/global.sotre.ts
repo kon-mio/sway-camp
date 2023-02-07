@@ -20,16 +20,13 @@ export const useGlobalStore = defineStore('global', {
         this.messageMini.content = ''
       }, 1600)
     },
-
-    /**
-     * 登录卡片控制
-     * @param loginCardOpen true/false
-     * @param isLogin 登录状态
-     * @returns 
-     */
-    controlLoginCard(loginCardOpen: boolean, isLogin: boolean) {
-      if (isLogin) return
-      this.loginCard = loginCardOpen
+    // 打开登录卡片
+    openLoginCard() {
+      this.loginCard = true
+    },
+    // 关闭登录卡片
+    closeLoginCard() {
+      this.loginCard = false
     }
   }
 })

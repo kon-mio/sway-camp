@@ -9,11 +9,9 @@ const newError = () => new Error('错误请求')
  * @param LoginForm 登录参数
  * @returns LoginVo
  */
-export async function passwordLoginApi(
-  LoginForm: Type.LoginDto
-): Promise<CommonResult<Type.LoginDto>> {
+export async function loginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
   try {
-    const { data } = await request.post<Type.LoginDto>('user/login', LoginForm)
+    const { data } = await request.post<Type.UserInfo>('/user/login', LoginForm)
     return data
   } catch {
     throw newError()

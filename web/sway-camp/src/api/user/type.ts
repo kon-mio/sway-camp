@@ -3,13 +3,21 @@
 // 登录参数
 export interface LoginDto {
   account?: string
-  email: string
-  pasword: string
+  email?: string
+  password?: string
   code?: string
 }
 
 /**响应/接收参数 */
 
-export interface UserInfo{
-    
+// 用户信息
+export interface UserInfo {
+  id: number
+  username: string
+  phoneNumber?: string
+  email: string
+  gender: string
+  avatar: string
+  introduction: string
+  token: string
 }
