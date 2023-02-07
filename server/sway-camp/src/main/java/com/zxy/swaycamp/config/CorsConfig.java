@@ -31,10 +31,10 @@ public class CorsConfig {
         corsConfiguration.addAllowedMethod("*");
 
         //  是否允许请求带有验证信息
-        corsConfiguration.setAllowCredentials(true);
-        List<String> allowedOriginPatterns = new ArrayList<>();
-        allowedOriginPatterns.add("*");
-        corsConfiguration.setAllowedOriginPatterns(allowedOriginPatterns);
+        //corsConfiguration.setAllowCredentials(true);
+        //List<String> allowedOriginPatterns = new ArrayList<>();
+        //allowedOriginPatterns.add("*");
+        //corsConfiguration.setAllowedOriginPatterns(allowedOriginPatterns);
 
         //  对接口配置跨域设置
         source.registerCorsConfiguration("/**", corsConfiguration);

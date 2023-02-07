@@ -1,8 +1,11 @@
 package com.zxy.swaycamp.service.impl;
 
+import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.CacheConstants;
+import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.constant.TimeConst;
+import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.LoginDto;
 import com.zxy.swaycamp.domain.entity.User;
@@ -51,7 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 .one();
 
         if (one == null) {
-            throw new ServiceException("账号密码错误");
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "账号密码错误");
         }
 
         // 生成Token
@@ -70,7 +73,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(one, userVo);
         userVo.setPassword(null);
-        userVo.setAccessToken(userToken);
+        userVo.setToken(userToken);
+        // 信息脱敏
+        userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
         return userVo;
     }
 }
