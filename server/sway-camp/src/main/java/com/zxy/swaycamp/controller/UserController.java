@@ -1,5 +1,7 @@
 package com.zxy.swaycamp.controller;
 
+import com.zxy.swaycamp.annotation.Log;
+import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.domain.dto.LoginDto;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.service.UserService;
@@ -29,6 +31,7 @@ public class UserController {
     /**
      * 用户名、邮箱、手机号/密码登录
      */
+    @Log(title="用户登录",action = Action.SELECT)
     @PostMapping("/login")
     public SwayResult<UserVo> login(@RequestBody @Validated LoginDto loginDto) {
         return SwayResult.success(userService.login(loginDto));
