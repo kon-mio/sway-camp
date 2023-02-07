@@ -1,6 +1,6 @@
 <template>
-  <div class="as-user">
-    <div v-if="!isLogin" class="unlogin">
+  <div class="user">
+    <div class="unlogin" v-if="!isLogin" @click="controlLoginCard(!isLogin, isLogin)">
       <span>未登录</span>
     </div>
     <div v-else class="login">
@@ -41,10 +41,10 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
 import { useRouter } from 'vue-router'
-import { userTabItemType } from '../type'
-// import { openLoginCard } from '@/hooks/useLoginCard.hooks'
 import { storeToRefs } from 'pinia'
 import { useUserStore } from '@/store/user.store'
+import { useGlobalStore } from '@/store/global.sotre'
+import type { userTabItemType } from '../type'
 import LoginCard from '@/components/user/login/LoginCard.vue'
 
 // 用户导航栏方法
@@ -127,19 +127,22 @@ export default defineComponent({
     const { userTabMeth, userSpace } = userTabMoudel()
     const userStore = useUserStore()
     const { isLogin, userInfo } = storeToRefs(userStore)
+    // 全局登录卡片
+    const globalStore = useGlobalStore()
+    const { controlLoginCard } = globalStore
     return {
       isLogin,
       userInfo,
       userTabMeth,
-      userSpace
-      // openLoginCard
+      userSpace,
+      controlLoginCard
     }
   }
 })
 </script>
 
 <style lang="less" scoped>
-.as-user {
+.user {
   position: relative;
   display: flex;
   align-items: center;

@@ -35,19 +35,19 @@ export default defineComponent({
   padding: 0 20px;
   align-items: center;
   height: 43px;
-  border: 1px solid @line-1;
+  border: 1px solid @line-2;
   input {
     margin-top: 3px;
     width: 170px;
     outline: none;
     border: none;
     font-size: 14px;
-    color: @text-1;
+    color: @text-3;
   }
 
   .text {
     font-size: 14px;
-    color: @text-1;
+    color: @text-3;
   }
 }
 .email-form-mail {
