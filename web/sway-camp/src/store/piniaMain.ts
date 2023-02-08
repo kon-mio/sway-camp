@@ -1,7 +1,7 @@
-import type { PiniaPluginContext } from 'pinia'
-import { toRaw } from 'vue'
+import type { PiniaPluginContext } from "pinia"
+import { toRaw } from "vue"
 
-const __piniaKey = '__PINIAKEY__'
+const __piniaKey = "__PINIAKEY__"
 type OptPinia = {
   key?: string
   paths?: string[]

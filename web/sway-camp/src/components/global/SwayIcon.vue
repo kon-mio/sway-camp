@@ -5,22 +5,22 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent } from "vue"
 export default defineComponent({
-  name: 'SwayIcon',
+  name: "SwayIcon",
   components: {},
   props: {
     name: {
       type: String,
-      default: ''
+      default: ""
     },
     color: {
       type: String,
-      default: ''
+      default: ""
     },
     hcolor: {
       type: String,
-      default: ''
+      default: ""
     },
     size: {
       type: Number,

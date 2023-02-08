@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia'
-import type { UserInfo } from '@/api/user/type'
+import { defineStore } from "pinia"
+import type { UserInfo } from "@/api/user/type"
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
   state: () => ({
     isLogin: false,
     userInfo: {} as UserInfo | null

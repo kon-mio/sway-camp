@@ -18,29 +18,29 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
-import HomeBanner from './components/HomeBanner.vue'
-import HomeCarousel from '@/components/home/banner/HomeCarousel.vue'
-import HomeImgView from '@/components/home/banner/HomeImgView.vue'
-import HomeAnimeShow from '@/components/home/banner/HomeAnimeShow.vue'
-import type { carouselType } from '@/components/home/banner/type'
+import { reactive } from "vue"
+import HomeBanner from "./components/HomeBanner.vue"
+import HomeCarousel from "@/components/home/banner/HomeCarousel.vue"
+import HomeImgView from "@/components/home/banner/HomeImgView.vue"
+import HomeAnimeShow from "@/components/home/banner/HomeAnimeShow.vue"
+import type { carouselType } from "@/components/home/banner/type"
 
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
   {
     id: 0,
-    title: '1',
-    imgUrl: 'http://file.takagi-san.cn/image/kon_all_3.webp'
+    title: "1",
+    imgUrl: "http://file.takagi-san.cn/image/kon_all_3.webp"
   },
   {
     id: 1,
-    title: '1',
-    imgUrl: 'http://file.takagi-san.cn/image/kon_all_18.webp'
+    title: "1",
+    imgUrl: "http://file.takagi-san.cn/image/kon_all_18.webp"
   },
   {
     id: 2,
-    title: '1',
-    imgUrl: 'http://file.takagi-san.cn/image/kon_all_5.webp'
+    title: "1",
+    imgUrl: "http://file.takagi-san.cn/image/kon_all_5.webp"
   }
 ])
 </script>

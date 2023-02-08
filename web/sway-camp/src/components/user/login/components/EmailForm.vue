@@ -19,15 +19,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue"
 export default defineComponent({
-  name: 'EmailForm',
+  name: "EmailForm",
   components: {}
 })
 </script>
 
 <style lang="less" scoped>
-@import '../style/common.less';
+@import "../style/common.less";
 
 .email-form-mail,
 .email-form-code {

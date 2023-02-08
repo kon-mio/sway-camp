@@ -7,8 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted } from 'vue'
-import './style/index.less'
+import { onMounted } from "vue"
+import "./style/index.less"
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +18,7 @@ const props = withDefaults(
   }>(),
   {
     modelValue: false,
-    content: '',
+    content: "",
     displayTime: 3000
   }
 )

@@ -39,13 +39,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from 'vue'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/store/user.store'
-import { useGlobalStore } from '@/store/global.sotre'
-import type { userTabItemType } from '../type'
-import LoginCard from '@/components/user/login/LoginCard.vue'
+import { defineComponent, onMounted, PropType } from "vue"
+import { useRouter } from "vue-router"
+import { storeToRefs } from "pinia"
+import { useUserStore } from "@/store/user.store"
+import { useGlobalStore } from "@/store/global.sotre"
+import type { userTabItemType } from "../type"
+import LoginCard from "@/components/user/login/LoginCard.vue"
 
 // 用户导航栏方法
 function userTabMoudel() {
@@ -54,20 +54,20 @@ function userTabMoudel() {
   const { userInfo } = storeToRefs(userStore)
   const userTabMeth = (methName: string | undefined) => {
     switch (methName) {
-      case 'Exit':
+      case "Exit":
         Exit()
         break
-      case 'userSpace':
+      case "userSpace":
         userSpace()
         break
-      case 'userFav':
+      case "userFav":
         userFav()
         break
-      case 'writeArticle':
+      case "writeArticle":
         writeArticle()
         break
-      case 'parrot':
-        console.log('I own a parrot')
+      case "parrot":
+        console.log("I own a parrot")
         break
       default:
         break
@@ -86,7 +86,7 @@ function userTabMoudel() {
       return
     }
     router.push({
-      name: 'User',
+      name: "User",
       params: {
         // uid: userInfo.value.id
       }
@@ -94,7 +94,7 @@ function userTabMoudel() {
   }
   const userFav = () => {
     router.push({
-      name: 'SpaceFav'
+      name: "SpaceFav"
     })
   }
   // 发表
@@ -103,7 +103,7 @@ function userTabMoudel() {
     //   return
     // }
     router.push({
-      name: 'WriteArticle',
+      name: "WriteArticle",
       params: {
         // userId: userInfo.value.id
       }
@@ -115,7 +115,7 @@ function userTabMoudel() {
   }
 }
 export default defineComponent({
-  name: 'AsideUser',
+  name: "AsideUser",
   components: { LoginCard },
   props: {
     userTabList: {

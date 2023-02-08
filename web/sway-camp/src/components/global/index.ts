@@ -1,5 +1,5 @@
-import { App } from 'vue'
-import SwayIcon from './SwayIcon.vue'
+import { App } from "vue"
+import SwayIcon from "./SwayIcon.vue"
 
 // 全局组件
 const components = [SwayIcon]

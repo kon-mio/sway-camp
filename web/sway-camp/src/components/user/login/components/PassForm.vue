@@ -43,22 +43,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from 'vue'
-import { useGlobalStore } from '@/store/global.sotre'
-import { loginApi } from '@/api/user/api'
-import type { LoginDto } from '@/api/user/type'
-import SwayNotion from '@/utils/notice'
-import { useUserStore } from '@/store/user.store'
+import { defineComponent, reactive, ref, toRefs } from "vue"
+import { useGlobalStore } from "@/store/global.sotre"
+import { loginApi } from "@/api/user/api"
+import type { LoginDto } from "@/api/user/type"
+import SwayNotion from "@/utils/notice"
+import { useUserStore } from "@/store/user.store"
 export default defineComponent({
-  name: 'LoginForm',
+  name: "LoginForm",
   setup() {
     const userStore = useUserStore()
     const globalStore = useGlobalStore()
-    const passInputType = ref('password')
+    const passInputType = ref("password")
 
     const LoginForm = reactive<LoginDto>({
-      account: '',
-      password: ''
+      account: "",
+      password: ""
     })
     // 登录
     const loginSumbit = async () => {
@@ -67,7 +67,7 @@ export default defineComponent({
       if (res.code === 200) {
         userStore.setUserInfo(res.data)
         userStore.login()
-        SwayNotion('登录', '登录成功', 'success')
+        SwayNotion("登录", "登录成功", "success")
       }
     }
 
@@ -81,7 +81,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import '../style/common.less';
+@import "../style/common.less";
 @input-padding:0 20px;
 
 .form-account,

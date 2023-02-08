@@ -11,19 +11,19 @@
 </template>
 
 <script lang="ts" setup>
-import '@/assets/font/iconfont.js'
-import '@/assets/font/iconfont.css'
-import AppAside from './layout/app-aside/AppAside.vue'
-import AppRouter from './layout/app-router/AppRouter.vue'
-import { useGlobalStore } from './store/global.sotre'
-import MessageMini from './components/konmio/message/message-mini.vue'
-import { storeToRefs } from 'pinia'
+import "@/assets/font/iconfont.js"
+import "@/assets/font/iconfont.css"
+import AppAside from "./layout/app-aside/AppAside.vue"
+import AppRouter from "./layout/app-router/AppRouter.vue"
+import { useGlobalStore } from "./store/global.sotre"
+import MessageMini from "./components/konmio/message/message-mini.vue"
+import { storeToRefs } from "pinia"
 // mini消息框
 const { messageMini } = storeToRefs(useGlobalStore())
 </script>
 
 <style lang="less">
-@import '@/assets/css/common.less';
+@import "@/assets/css/common.less";
 </style>
 
 <style lang="less" scoped>

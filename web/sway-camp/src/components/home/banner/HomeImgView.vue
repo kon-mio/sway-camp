@@ -5,20 +5,20 @@
 </template>
 
 <script lang="ts">
-import { computed, CSSProperties, defineComponent } from 'vue'
+import { computed, CSSProperties, defineComponent } from "vue"
 export default defineComponent({
-  name: 'HomeImgView',
+  name: "HomeImgView",
   props: {
     img: {
       type: String,
-      default: 'http://file.takagi-san.cn/image/kon_all_30.webp'
+      default: "http://file.takagi-san.cn/image/kon_all_30.webp"
     }
   },
   setup(props) {
     const imgBgStyle = computed<CSSProperties>(() => {
       return {
-        width: '100%',
-        height: '100%',
+        width: "100%",
+        height: "100%",
         backgroundImage: `url(${props.img})`
       }
     })

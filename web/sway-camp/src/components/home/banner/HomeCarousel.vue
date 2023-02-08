@@ -52,11 +52,11 @@
 </template>
 
 <script lang="ts">
-import { computed, CSSProperties, defineComponent, nextTick, onMounted, PropType, ref } from 'vue'
-import { ElCarousel } from 'element-plus'
-import type { carouselType } from './type'
+import { computed, CSSProperties, defineComponent, nextTick, onMounted, PropType, ref } from "vue"
+import { ElCarousel } from "element-plus"
+import type { carouselType } from "./type"
 export default defineComponent({
-  name: 'HomeCarousel',
+  name: "HomeCarousel",
   props: {
     carouselItems: {
       type: Array as PropType<carouselType[]>,
@@ -85,8 +85,8 @@ export default defineComponent({
     // el增加样式
     const carouselStyle = computed<CSSProperties>(() => {
       return {
-        height: '100%',
-        overflow: 'hidden'
+        height: "100%",
+        overflow: "hidden"
       }
     })
     // border动画时间
@@ -137,7 +137,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import './style/carousel.less';
+@import "./style/carousel.less";
 
 .banner-carousel {
   position: relative;

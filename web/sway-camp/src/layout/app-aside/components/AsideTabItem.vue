@@ -17,10 +17,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-import { asideTabItemType } from '../type'
+import { defineComponent, PropType } from "vue"
+import { asideTabItemType } from "../type"
 export default defineComponent({
-  name: 'AsideTabItem',
+  name: "AsideTabItem",
   props: {
     tabItem: {
       type: Object as PropType<asideTabItemType>,

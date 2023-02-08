@@ -71,20 +71,20 @@
 </template>
 
 <script lang="ts">
-import { useGlobalStore } from '@/store/global.sotre'
-import { useUserStore } from '@/store/user.store'
-import { storeToRefs } from 'pinia'
-import { defineComponent, ref } from 'vue'
-import EmailForm from './components/EmailForm.vue'
-import PassForm from './components/PassForm.vue'
+import { useGlobalStore } from "@/store/global.sotre"
+import { useUserStore } from "@/store/user.store"
+import { storeToRefs } from "pinia"
+import { defineComponent, ref } from "vue"
+import EmailForm from "./components/EmailForm.vue"
+import PassForm from "./components/PassForm.vue"
 export default defineComponent({
-  name: 'LoginCard',
+  name: "LoginCard",
   components: { PassForm, EmailForm },
   setup() {
     // 登录方式
-    const loginType = ref('pass')
+    const loginType = ref("pass")
     const changeLoginType = (type: string) => {
-      if (type === 'pass' || type === 'email') {
+      if (type === "pass" || type === "email") {
         loginType.value = type
       }
     }

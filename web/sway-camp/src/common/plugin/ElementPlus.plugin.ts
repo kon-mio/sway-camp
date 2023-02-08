@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import { App } from "vue"
 import {
   ElNotification,
   ElCarousel,
@@ -17,7 +17,7 @@ import {
   ElOption,
   ElPagination,
   ElPopover
-} from 'element-plus'
+} from "element-plus"
 
 const comps = [
   ElNotification,
