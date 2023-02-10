@@ -1,13 +1,22 @@
 package com.zxy.swaycamp.controller;
 
 import com.zxy.swaycamp.annotation.Log;
+import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.enums.Action;
+import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.domain.dto.LoginDto;
+import com.zxy.swaycamp.domain.dto.RegisterDto;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.service.UserService;
+import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.request.SwayResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -38,5 +47,24 @@ public class UserController {
     }
 
 
+    @PostMapping("/register")
+    public SwayResult<UserVo> register(@RequestBody @Validated RegisterDto registerDto) {
+        return SwayResult.success();
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param account 邮箱/手机号
+     */
+    @PostMapping("/code")
+    public SwayResult<UserVo> getCode(@RequestBody Map<String,String> account) {
+        if( account == null || account.get(CommonConst.LITERAL_ACCOUNT) == null){
+            SwayResult.fail(CodeMsg.PARAMETER_ERROR);
+        }else{
+            userService.getCode(account.get(CommonConst.LITERAL_ACCOUNT));
+        }
+        return SwayResult.success();
+    }
 }
 

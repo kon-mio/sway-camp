@@ -20,4 +20,12 @@ public class CommonConst {
     public static final Boolean STATUS_FALSE = false;
     public static final Integer STATUS_ZERO = 0;
     public static final Integer STATUS_ONE = 1;
+
+
+    /**
+     * 字面常量
+     */
+    public static final String LITERAL_ACCOUNT = "account";
+    public static final String LITERAL_EMAIL = "email";
+
 }

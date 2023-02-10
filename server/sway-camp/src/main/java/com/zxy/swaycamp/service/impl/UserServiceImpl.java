@@ -3,6 +3,7 @@ package com.zxy.swaycamp.service.impl;
 import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.CacheConstants;
+import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.constant.TimeConst;
 import com.zxy.swaycamp.common.enums.CodeMsg;
@@ -13,13 +14,18 @@ import com.zxy.swaycamp.domain.model.LoginUser;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.mapper.UserMapper;
 import com.zxy.swaycamp.service.UserService;
+import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import com.zxy.swaycamp.utils.request.TokenUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,8 +39,11 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    @Autowired
+    private MailUtil mailUtil;
     @Resource
     private RedisCache redisCache;
+
 
     /**
      * 用户名、邮箱、手机号/密码登录
@@ -78,4 +87,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
         return userVo;
     }
+
+    /**
+     * 获取验证码
+     * @param account 邮箱/手机
+     */
+    public void getCode(String account){
+        // 分析邮箱或手机号
+
+        int code = new Random().nextInt(900000) + 100000;
+        // 手机
+
+        // 邮箱
+        List<String> mail = new ArrayList<>();
+        mail.add(account);
+        mailUtil.sendMailMessage(mail,"SwayCamp", String.valueOf(code));
+    }
+
 }

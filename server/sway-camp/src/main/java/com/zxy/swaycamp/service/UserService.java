@@ -23,4 +23,10 @@ public interface UserService extends IService<User> {
      * @return 用户信息
      */
    UserVo login(LoginDto loginDto);
+
+    /**
+     * 获取验证码
+     * @param account 邮箱/手机
+     */
+   void getCode(String account);
 }
