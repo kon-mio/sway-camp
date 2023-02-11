@@ -1,6 +1,8 @@
 package com.zxy.swaycamp.common.constant;
 
 /**
+ * 通用常量
+ *
  * @author XinYuan Zhao
  * @since 2023/1/25
  */

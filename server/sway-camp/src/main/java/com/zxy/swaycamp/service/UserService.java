@@ -8,9 +8,7 @@ import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.utils.request.SwayResult;
 
 /**
- * <p>
  * 用户信息 服务类
- * </p>
  *
  * @author Xinyuan Zhao
  * @since 2023-01-23
@@ -40,6 +38,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 更新用户密码
+     * @param password 新密码
      */
    void updatePassword(String password);
 

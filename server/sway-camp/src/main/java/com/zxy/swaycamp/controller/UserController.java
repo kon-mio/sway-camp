@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * <p>
  *  用户信息表 前端控制器
- * </p>
  *
  * @author Xinyuan Zhao
  * @since 2023-01-23
@@ -38,8 +36,12 @@ public class UserController {
         this.userService = userService;
     }
 
+
     /**
-     * 用户名、邮箱、手机号/密码登录
+     * 密码登录
+     *
+     * @param loginDto 登录信息
+     * @return 用户信息
      */
     @Log(title="用户登录",action = Action.SELECT)
     @PostMapping("/login")

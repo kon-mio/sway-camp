@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * 邮箱工具类
+ *
  * @author XinYuan Zhao
  * @since 2023/2/10
  */

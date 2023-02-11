@@ -1,9 +1,10 @@
 package com.zxy.swaycamp.common.constant;
 
 /**
+ * 时间常量
+ *
  * @author XinYuan Zhao
- * @date 2023/1/27
- * @apiNote
+ * @since 2023/1/27
  */
 public class TimeConst {
 

@@ -33,9 +33,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 /**
- * <p>
  *  用户信息 服务实现类
- * </p>
  *
  * @author Xinyuan Zhao
  * @since 2023-01-23
@@ -181,7 +179,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                     .set(User::getPassword,password)
                     .update();
         }catch (Exception e){
-            throw new ServiceException();
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -191,10 +189,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     public void getCode(String account){
         // 分析邮箱或手机号
-
         int code = new Random().nextInt(900000) + 100000;
-        // 手机
-
         // 邮箱
         List<String> mail = new ArrayList<>();
         mail.add(account);
@@ -209,12 +204,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public String getAccount(){
         String account = RandomUtil.randomNumbers(8);
         User one = lambdaQuery().eq(User::getSwayId,account).one();
-        //数据库查重
-        if(one == null){
-            return account;
-        }
-        else{
-            return getAccount();
-        }
+        return one == null ? account : getAccount();
     }
 }

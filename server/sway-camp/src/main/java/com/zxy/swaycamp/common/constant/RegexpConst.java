@@ -1,6 +1,8 @@
 package com.zxy.swaycamp.common.constant;
 
 /**
+ * 常用正则表达式
+ *
  * @author XinYuan Zhao
  * @since 2023/2/11
  */
