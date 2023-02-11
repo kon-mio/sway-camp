@@ -2,6 +2,7 @@ package com.zxy.swaycamp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zxy.swaycamp.domain.dto.LoginDto;
+import com.zxy.swaycamp.domain.dto.RegisterDto;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.utils.request.SwayResult;
@@ -29,4 +30,12 @@ public interface UserService extends IService<User> {
      * @param account 邮箱/手机
      */
    void getCode(String account);
+
+    /**
+     * 用户注册
+     * @param registerDto 注册参数
+     * @return 用户信息
+     */
+   UserVo register(RegisterDto registerDto);
+
 }

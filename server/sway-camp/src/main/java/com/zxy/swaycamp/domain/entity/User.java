@@ -29,6 +29,13 @@ public class User implements Serializable {
     private Integer id;
 
     /**
+     * 用户SID
+     */
+    @TableField("sway_id")
+    private String swayId;
+
+
+    /**
      * 用户昵称
      */
     @TableField("username")
@@ -115,9 +122,9 @@ public class User implements Serializable {
     /**
      * 是否删除[1：已删除， 0：未删除]
      */
-    @TableField("deleted")
+    @TableField("is_deleted")
     @TableLogic
-    private Boolean deleted;
+    private Boolean isDeleted;
 
 
 }

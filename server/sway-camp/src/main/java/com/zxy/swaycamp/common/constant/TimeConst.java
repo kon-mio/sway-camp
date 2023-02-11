@@ -15,6 +15,13 @@ public class TimeConst {
     public static final Integer TOKEN_EXPIRE = 7;
 
     /**
+     * 验证码过期时间
+     */
+    public static final Integer TOKEN_CODE = 5;
+
+
+
+    /**
      * 时间戳 1s
      */
     public static final long MILLIS_SECOND = 1000;

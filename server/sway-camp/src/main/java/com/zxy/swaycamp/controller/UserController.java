@@ -49,8 +49,10 @@ public class UserController {
 
     @PostMapping("/register")
     public SwayResult<UserVo> register(@RequestBody @Validated RegisterDto registerDto) {
-        return SwayResult.success();
+
+        return SwayResult.success(userService.register(registerDto));
     }
+
 
     /**
      * 获取验证码

@@ -23,6 +23,7 @@ public class CacheConstants {
     /**
      * 邮箱注册/登录验证码
      */
-    public static final String REGISTER_EMAIL_CODE = "sway_register_email_code:";
+    public static final String EMAIL_CODE = "sway_email_code:";
+    public static final String PHONE_CODE = "sway_phone_code:";
 
 }

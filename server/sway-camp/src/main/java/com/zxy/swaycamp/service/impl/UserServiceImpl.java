@@ -1,19 +1,20 @@
 package com.zxy.swaycamp.service.impl;
 
 import cn.hutool.core.util.DesensitizedUtil;
+import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zxy.swaycamp.common.constant.CacheConstants;
-import com.zxy.swaycamp.common.constant.CommonConst;
-import com.zxy.swaycamp.common.constant.HttpStatus;
-import com.zxy.swaycamp.common.constant.TimeConst;
+import com.zxy.swaycamp.common.constant.*;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.LoginDto;
+import com.zxy.swaycamp.domain.dto.RegisterDto;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.model.LoginUser;
 import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.mapper.UserMapper;
 import com.zxy.swaycamp.service.UserService;
+import com.zxy.swaycamp.utils.SecurityUtil;
 import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.SwayResult;
@@ -23,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
-    @Autowired
+
+    @Resource
     private MailUtil mailUtil;
     @Resource
     private RedisCache redisCache;
@@ -59,11 +63,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         .eq(User::getEmail, loginDto.getAccount())
                         .or()
                         .eq(User::getPhoneNumber, loginDto.getAccount()))
-                .eq(User::getPassword, loginDto.getPassword())
                 .one();
-
         if (one == null) {
             throw new ServiceException(HttpStatus.BAD_REQUEST, "账号密码错误");
+        }
+        if (one.getPassword() == null){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "请使用验证码登录后设置密码");
+        }
+        if (!SecurityUtil.matchesPassword(loginDto.getPassword(),one.getPassword())){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "密码错误");
         }
 
         // 生成Token
@@ -81,7 +89,79 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 方案二、存入返回用户信息
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(one, userVo);
-        userVo.setPassword(null);
+        userVo.setToken(userToken);
+        // 信息脱敏
+        userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+        return userVo;
+    }
+
+    /**
+     * 用户注册
+     * @param registerDto 注册参数
+     * @return 用户信息
+     */
+    @Override
+    public UserVo register(RegisterDto registerDto){
+        boolean isEmail = registerDto.getAccount().matches(RegexpConst.REGEXP_EMAIL);
+        boolean isPhone = registerDto.getAccount().matches(RegexpConst.REGEXP_PHONE);
+        if(!isEmail && !isPhone){
+            throw new ServiceException("请使用邮箱/手机号");
+        }
+        // 查找缓存验证码
+        Integer code = isEmail ?
+                redisCache.getCacheObject(CacheConstants.EMAIL_CODE + registerDto.getAccount()) :
+                redisCache.getCacheObject(CacheConstants.PHONE_CODE + registerDto.getAccount());
+        if(code == null){
+            throw new ServiceException("请获取验证码");
+        }
+        if(!code.equals(registerDto.getCode())){
+            throw new ServiceException("验证码错误");
+        }
+
+        // 登录/注册
+        User one = lambdaQuery()
+                .eq(User::getEmail,registerDto.getAccount())
+                .or()
+                .eq(User::getPhoneNumber,registerDto.getAccount())
+                .one();
+        // 返回参数
+        UserVo userVo = new UserVo();
+        // 没注册
+        if(one == null){
+             one = new User();
+             String swayId = getAccount();
+             one.setUsername(swayId);
+             one.setSwayId(swayId);
+             // 设置邮箱或手机号
+             if(isEmail){
+                 one.setEmail(registerDto.getAccount());
+             }else{
+                 one.setPhoneNumber(registerDto.getAccount());
+             }
+             // 性别默认保密
+             one.setGender(0);
+             one.setCreateTime(LocalDateTime.now());
+             one.setUserRole(RoleConst.ROLE_USER);
+             one.setUserStatus(true);
+             one.setIsDeleted(false);
+             try{
+                 save(one);
+             }catch (Exception e){
+                 throw new ServiceException();
+             }
+        }
+
+        // 生成Token
+        String userToken = TokenUtil.createToken(one.getId());
+        LoginUser loginUser = new LoginUser();
+        BeanUtils.copyProperties(one, loginUser);
+        loginUser.setLoginTime(System.currentTimeMillis());
+        loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
+        loginUser.setToken(userToken);
+        redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
+        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_KEY + loginUser.getId(), userToken, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
+
+        BeanUtils.copyProperties(one,userVo);
         userVo.setToken(userToken);
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
@@ -101,7 +181,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 邮箱
         List<String> mail = new ArrayList<>();
         mail.add(account);
+        redisCache.setCacheObject(CacheConstants.EMAIL_CODE+account,code,TimeConst.TOKEN_CODE,TimeUnit.MINUTES);
         mailUtil.sendMailMessage(mail,"SwayCamp", String.valueOf(code));
     }
 
+
+    /**
+     * 创建用户账号
+     * @return 用户账号
+     */
+    public String getAccount(){
+        String account = RandomUtil.randomNumbers(8);
+        User one = lambdaQuery().eq(User::getSwayId,account).one();
+        //数据库查重
+        if(one == null){
+            return account;
+        }
+        else{
+            return getAccount();
+        }
+    }
 }
