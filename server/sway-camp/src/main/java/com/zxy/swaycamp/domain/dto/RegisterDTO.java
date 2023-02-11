@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @since 2023/2/10
  */
 @Data
-public class RegisterDto {
+public class RegisterDTO {
     @NotEmpty
     private String account;
 

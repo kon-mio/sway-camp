@@ -2,32 +2,27 @@ package com.zxy.swaycamp.service.impl;
 
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.*;
-import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
-import com.zxy.swaycamp.domain.dto.LoginDto;
-import com.zxy.swaycamp.domain.dto.RegisterDto;
+import com.zxy.swaycamp.domain.dto.LoginDTO;
+import com.zxy.swaycamp.domain.dto.RegisterDTO;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.model.LoginUser;
-import com.zxy.swaycamp.domain.vo.UserVo;
+import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.mapper.UserMapper;
 import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.SecurityUtil;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
-import com.zxy.swaycamp.utils.request.SwayResult;
 import com.zxy.swaycamp.utils.request.TokenUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -51,17 +46,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户名、邮箱、手机号/密码登录
      *
-     * @param loginDto  登录参数
+     * @param loginDTO  登录参数
      * @return 用户信息
      */
     @Override
-    public UserVo login(LoginDto loginDto) {
+    public UserVO login(LoginDTO loginDTO) {
         User one = lambdaQuery().and(wrapper -> wrapper
-                        .eq(User::getUsername, loginDto.getAccount())
+                        .eq(User::getUsername, loginDTO.getAccount())
                         .or()
-                        .eq(User::getEmail, loginDto.getAccount())
+                        .eq(User::getEmail, loginDTO.getAccount())
                         .or()
-                        .eq(User::getPhoneNumber, loginDto.getAccount()))
+                        .eq(User::getPhoneNumber, loginDTO.getAccount()))
                 .one();
         if (one == null) {
             throw new ServiceException(HttpStatus.BAD_REQUEST, "账号密码错误");
@@ -69,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (one.getPassword() == null){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "请使用验证码登录后设置密码");
         }
-        if (!SecurityUtil.matchesPassword(loginDto.getPassword(),one.getPassword())){
+        if (!SecurityUtil.matchesPassword(loginDTO.getPassword(),one.getPassword())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "密码错误");
         }
 
@@ -86,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_KEY + loginUser.getId(), userToken, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
 
         // 方案二、存入返回用户信息
-        UserVo userVo = new UserVo();
+        UserVO userVo = new UserVO();
         BeanUtils.copyProperties(one, userVo);
         userVo.setToken(userToken);
         // 信息脱敏
@@ -96,35 +91,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户注册
-     * @param registerDto 注册参数
+     * @param registerDTO 注册参数
      * @return 用户信息
      */
     @Override
-    public UserVo register(RegisterDto registerDto){
-        boolean isEmail = registerDto.getAccount().matches(RegexpConst.REGEXP_EMAIL);
-        boolean isPhone = registerDto.getAccount().matches(RegexpConst.REGEXP_PHONE);
+    public UserVO register(RegisterDTO registerDTO){
+        boolean isEmail = registerDTO.getAccount().matches(RegexpConst.REGEXP_EMAIL);
+        boolean isPhone = registerDTO.getAccount().matches(RegexpConst.REGEXP_PHONE);
         if(!isEmail && !isPhone){
             throw new ServiceException("请使用邮箱/手机号");
         }
         // 查找缓存验证码
         Integer code = isEmail ?
-                redisCache.getCacheObject(CacheConstants.EMAIL_CODE + registerDto.getAccount()) :
-                redisCache.getCacheObject(CacheConstants.PHONE_CODE + registerDto.getAccount());
+                redisCache.getCacheObject(CacheConstants.EMAIL_CODE + registerDTO.getAccount()) :
+                redisCache.getCacheObject(CacheConstants.PHONE_CODE + registerDTO.getAccount());
         if(code == null){
             throw new ServiceException("请获取验证码");
         }
-        if(!code.equals(registerDto.getCode())){
+        if(!code.equals(registerDTO.getCode())){
             throw new ServiceException("验证码错误");
         }
 
         // 登录/注册
         User one = lambdaQuery()
-                .eq(User::getEmail,registerDto.getAccount())
+                .eq(User::getEmail,registerDTO.getAccount())
                 .or()
-                .eq(User::getPhoneNumber,registerDto.getAccount())
+                .eq(User::getPhoneNumber,registerDTO.getAccount())
                 .one();
         // 返回参数
-        UserVo userVo = new UserVo();
+        UserVO userVo = new UserVO();
         // 没注册
         if(one == null){
              one = new User();
@@ -133,9 +128,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
              one.setSwayId(swayId);
              // 设置邮箱或手机号
              if(isEmail){
-                 one.setEmail(registerDto.getAccount());
+                 one.setEmail(registerDTO.getAccount());
              }else{
-                 one.setPhoneNumber(registerDto.getAccount());
+                 one.setPhoneNumber(registerDTO.getAccount());
              }
              // 性别默认保密
              one.setGender(0);

@@ -5,18 +5,14 @@ import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.common.enums.CodeMsg;
-import com.zxy.swaycamp.domain.dto.LoginDto;
-import com.zxy.swaycamp.domain.dto.RegisterDto;
-import com.zxy.swaycamp.domain.vo.UserVo;
+import com.zxy.swaycamp.domain.dto.LoginDTO;
+import com.zxy.swaycamp.domain.dto.RegisterDTO;
+import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.service.UserService;
-import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.request.SwayResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,24 +36,24 @@ public class UserController {
     /**
      * 密码登录
      *
-     * @param loginDto 登录信息
+     * @param loginDTO 登录信息
      * @return 用户信息
      */
     @Log(title="用户登录",action = Action.SELECT)
     @PostMapping("/login")
-    public SwayResult<UserVo> login(@RequestBody @Validated LoginDto loginDto) {
-        return SwayResult.success(userService.login(loginDto));
+    public SwayResult<UserVO> login(@RequestBody @Validated LoginDTO loginDTO) {
+        return SwayResult.success(userService.login(loginDTO));
     }
 
     /**
      * 用户注册
      *
-     * @param registerDto 注册参数
+     * @param registerDTO 注册参数
      * @return 用户信息
      */
     @PostMapping("/register")
-    public SwayResult<UserVo> register(@RequestBody @Validated RegisterDto registerDto) {
-        return SwayResult.success(userService.register(registerDto));
+    public SwayResult<UserVO> register(@RequestBody @Validated RegisterDTO registerDTO) {
+        return SwayResult.success(userService.register(registerDTO));
     }
 
     /**
@@ -66,7 +62,7 @@ public class UserController {
      * @param account 邮箱/手机号
      */
     @PostMapping("/code")
-    public SwayResult<UserVo> getCode(@RequestBody Map<String,String> account) {
+    public SwayResult<UserVO> getCode(@RequestBody Map<String,String> account) {
         if( account == null || account.get(CommonConst.LITERAL_ACCOUNT) == null){
             SwayResult.fail(CodeMsg.PARAMETER_ERROR);
         }else{
@@ -82,7 +78,7 @@ public class UserController {
      */
     @LoginCheck
     @PostMapping("/password")
-    public SwayResult<UserVo> updatePassword(@RequestBody Map<String,String> password) {
+    public SwayResult<UserVO> updatePassword(@RequestBody Map<String,String> password) {
         if( password == null || password.get(CommonConst.LITERAL_PASSWORD) == null){
             SwayResult.fail(CodeMsg.PARAMETER_ERROR);
         }else{

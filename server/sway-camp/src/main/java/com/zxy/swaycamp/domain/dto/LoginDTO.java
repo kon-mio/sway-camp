@@ -11,7 +11,7 @@ import javax.validation.constraints.NotEmpty;
  * @since 2023/1/24
  */
 @Data
-public class LoginDto {
+public class LoginDTO {
     @NotEmpty
     private String account;
 
