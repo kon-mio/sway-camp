@@ -46,17 +46,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     /**
      * 用户名、邮箱、手机号/密码登录
      *
-     * @param loginDTO  登录参数
+     * @param loginDto  登录参数
      * @return 用户信息
      */
     @Override
-    public UserVO login(LoginDTO loginDTO) {
+    public UserVO login(LoginDTO loginDto) {
         User one = lambdaQuery().and(wrapper -> wrapper
-                        .eq(User::getUsername, loginDTO.getAccount())
+                        .eq(User::getUsername, loginDto.getAccount())
                         .or()
-                        .eq(User::getEmail, loginDTO.getAccount())
+                        .eq(User::getEmail, loginDto.getAccount())
                         .or()
-                        .eq(User::getPhoneNumber, loginDTO.getAccount()))
+                        .eq(User::getPhoneNumber, loginDto.getAccount()))
                 .one();
         if (one == null) {
             throw new ServiceException(HttpStatus.BAD_REQUEST, "账号密码错误");
@@ -64,7 +64,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (one.getPassword() == null){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "请使用验证码登录后设置密码");
         }
-        if (!SecurityUtil.matchesPassword(loginDTO.getPassword(),one.getPassword())){
+        if (!SecurityUtil.matchesPassword(loginDto.getPassword(),one.getPassword())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "密码错误");
         }
 
@@ -91,32 +91,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     /**
      * 用户注册
-     * @param registerDTO 注册参数
+     * @param registerDto 注册参数
      * @return 用户信息
      */
     @Override
-    public UserVO register(RegisterDTO registerDTO){
-        boolean isEmail = registerDTO.getAccount().matches(RegexpConst.REGEXP_EMAIL);
-        boolean isPhone = registerDTO.getAccount().matches(RegexpConst.REGEXP_PHONE);
+    public UserVO register(RegisterDTO registerDto){
+        boolean isEmail = registerDto.getAccount().matches(RegexpConst.REGEXP_EMAIL);
+        boolean isPhone = registerDto.getAccount().matches(RegexpConst.REGEXP_PHONE);
         if(!isEmail && !isPhone){
             throw new ServiceException("请使用邮箱/手机号");
         }
         // 查找缓存验证码
         Integer code = isEmail ?
-                redisCache.getCacheObject(CacheConstants.EMAIL_CODE + registerDTO.getAccount()) :
-                redisCache.getCacheObject(CacheConstants.PHONE_CODE + registerDTO.getAccount());
+                redisCache.getCacheObject(CacheConstants.EMAIL_CODE + registerDto.getAccount()) :
+                redisCache.getCacheObject(CacheConstants.PHONE_CODE + registerDto.getAccount());
         if(code == null){
             throw new ServiceException("请获取验证码");
         }
-        if(!code.equals(registerDTO.getCode())){
+        if(!code.equals(registerDto.getCode())){
             throw new ServiceException("验证码错误");
         }
 
         // 登录/注册
         User one = lambdaQuery()
-                .eq(User::getEmail,registerDTO.getAccount())
+                .eq(User::getEmail,registerDto.getAccount())
                 .or()
-                .eq(User::getPhoneNumber,registerDTO.getAccount())
+                .eq(User::getPhoneNumber,registerDto.getAccount())
                 .one();
         // 返回参数
         UserVO userVo = new UserVO();
@@ -128,9 +128,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
              one.setSwayId(swayId);
              // 设置邮箱或手机号
              if(isEmail){
-                 one.setEmail(registerDTO.getAccount());
+                 one.setEmail(registerDto.getAccount());
              }else{
-                 one.setPhoneNumber(registerDTO.getAccount());
+                 one.setPhoneNumber(registerDto.getAccount());
              }
              // 性别默认保密
              one.setGender(0);

@@ -36,24 +36,24 @@ public class UserController {
     /**
      * 密码登录
      *
-     * @param loginDTO 登录信息
+     * @param loginDto 登录信息
      * @return 用户信息
      */
     @Log(title="用户登录",action = Action.SELECT)
     @PostMapping("/login")
-    public SwayResult<UserVO> login(@RequestBody @Validated LoginDTO loginDTO) {
-        return SwayResult.success(userService.login(loginDTO));
+    public SwayResult<UserVO> login(@RequestBody @Validated LoginDTO loginDto) {
+        return SwayResult.success(userService.login(loginDto));
     }
 
     /**
      * 用户注册
      *
-     * @param registerDTO 注册参数
+     * @param registerDto 注册参数
      * @return 用户信息
      */
     @PostMapping("/register")
-    public SwayResult<UserVO> register(@RequestBody @Validated RegisterDTO registerDTO) {
-        return SwayResult.success(userService.register(registerDTO));
+    public SwayResult<UserVO> register(@RequestBody @Validated RegisterDTO registerDto) {
+        return SwayResult.success(userService.register(registerDto));
     }
 
     /**

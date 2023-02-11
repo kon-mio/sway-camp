@@ -17,10 +17,10 @@ public interface UserService extends IService<User> {
     /**
      * 用户名、邮箱、手机号/密码登录
      *
-     * @param loginDTO  登录参数
+     * @param loginDto  登录参数
      * @return 用户信息
      */
-   UserVO login(LoginDTO loginDTO);
+   UserVO login(LoginDTO loginDto);
 
     /**
      * 获取验证码
@@ -30,10 +30,10 @@ public interface UserService extends IService<User> {
 
     /**
      * 用户注册
-     * @param registerDTO 注册参数
+     * @param registerDto 注册参数
      * @return 用户信息
      */
-   UserVO register(RegisterDTO registerDTO);
+   UserVO register(RegisterDTO registerDto);
 
     /**
      * 更新用户密码
