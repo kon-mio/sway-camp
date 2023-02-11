@@ -134,7 +134,7 @@ public class LogAspect {
         if (argList.isEmpty()) {
             return "";
         }
-        return argList.size() == 1 ? JSONUtil.toJsonStr(argList.get(0)) : JSONUtil.toJsonStr(argList);
+        return argList.size() == 1 ? JSON.toJSONString(argList.get(0),excludePropertyPreFilter()) : JSON.toJSONString(argList,excludePropertyPreFilter());
     }
 
 }
