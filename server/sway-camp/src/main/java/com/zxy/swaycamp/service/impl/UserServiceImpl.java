@@ -15,6 +15,7 @@ import com.zxy.swaycamp.domain.vo.UserVo;
 import com.zxy.swaycamp.mapper.UserMapper;
 import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.SecurityUtil;
+import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.SwayResult;
@@ -169,6 +170,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     /**
+     * 更新用户密码
+     */
+    @Override
+    public void updatePassword(String password){
+        try{
+            Integer userId = SwayUtil.getLoginUserId();
+            password = SecurityUtil.encodePassword(password);
+            lambdaUpdate().eq(User::getId,userId)
+                    .set(User::getPassword,password)
+                    .update();
+        }catch (Exception e){
+            throw new ServiceException();
+        }
+    }
+
+    /**
      * 获取验证码
      * @param account 邮箱/手机
      */
@@ -184,7 +201,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         redisCache.setCacheObject(CacheConstants.EMAIL_CODE+account,code,TimeConst.TOKEN_CODE,TimeUnit.MINUTES);
         mailUtil.sendMailMessage(mail,"SwayCamp", String.valueOf(code));
     }
-
 
     /**
      * 创建用户账号

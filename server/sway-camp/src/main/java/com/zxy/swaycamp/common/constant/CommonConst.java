@@ -12,6 +12,7 @@ public class CommonConst {
      * Token 请求头
      */
     public static final String TOKEN_HEADER = "Authorization";
+    public static final String TOKEN_PREFIX = "Bearer ";
 
     /**
      * 状态
@@ -27,5 +28,7 @@ public class CommonConst {
      */
     public static final String LITERAL_ACCOUNT = "account";
     public static final String LITERAL_EMAIL = "email";
+    public static final String LITERAL_PASSWORD = "password";
+
 
 }

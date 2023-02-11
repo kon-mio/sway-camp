@@ -63,7 +63,6 @@ public class LogAspect {
      */
     @AfterThrowing(value = "@annotation(controllerLog)", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
-        logger.info("error");
         handleLog(joinPoint, controllerLog, e, null);
     }
 

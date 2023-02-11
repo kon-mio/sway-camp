@@ -38,4 +38,9 @@ public interface UserService extends IService<User> {
      */
    UserVo register(RegisterDto registerDto);
 
+    /**
+     * 更新用户密码
+     */
+   void updatePassword(String password);
+
 }

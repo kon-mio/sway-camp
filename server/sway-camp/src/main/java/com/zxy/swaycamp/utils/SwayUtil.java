@@ -34,7 +34,9 @@ public class SwayUtil {
      * 获取Token
      */
     public static String getToken() {
-        return SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER);
+        return SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER) == null
+                ? null
+                : SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER).replace(CommonConst.TOKEN_PREFIX,"");
     }
 
     /**

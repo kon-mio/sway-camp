@@ -1,6 +1,7 @@
 package com.zxy.swaycamp.controller;
 
 import com.zxy.swaycamp.annotation.Log;
+import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.common.enums.CodeMsg;
@@ -46,13 +47,16 @@ public class UserController {
         return SwayResult.success(userService.login(loginDto));
     }
 
-
+    /**
+     * 用户注册
+     *
+     * @param registerDto 注册参数
+     * @return 用户信息
+     */
     @PostMapping("/register")
     public SwayResult<UserVo> register(@RequestBody @Validated RegisterDto registerDto) {
-
         return SwayResult.success(userService.register(registerDto));
     }
-
 
     /**
      * 获取验证码
@@ -65,6 +69,22 @@ public class UserController {
             SwayResult.fail(CodeMsg.PARAMETER_ERROR);
         }else{
             userService.getCode(account.get(CommonConst.LITERAL_ACCOUNT));
+        }
+        return SwayResult.success();
+    }
+
+    /**
+     * 获取验证码
+     *
+     * @param password 密码
+     */
+    @LoginCheck
+    @PostMapping("/password")
+    public SwayResult<UserVo> updatePassword(@RequestBody Map<String,String> password) {
+        if( password == null || password.get(CommonConst.LITERAL_PASSWORD) == null){
+            SwayResult.fail(CodeMsg.PARAMETER_ERROR);
+        }else{
+            userService.updatePassword(password.get(CommonConst.LITERAL_PASSWORD));
         }
         return SwayResult.success();
     }
