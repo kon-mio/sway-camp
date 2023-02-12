@@ -31,6 +31,8 @@ public class CommonConst {
     public static final String LITERAL_ACCOUNT = "account";
     public static final String LITERAL_EMAIL = "email";
     public static final String LITERAL_PASSWORD = "password";
+    public static final String LITERAL_CODE = "code";
+
 
 
 }

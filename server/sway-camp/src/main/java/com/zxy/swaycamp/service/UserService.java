@@ -38,7 +38,8 @@ public interface UserService extends IService<User> {
     /**
      * 更新用户密码
      * @param password 新密码
+     * @param code 验证码
      */
-   void updatePassword(String password);
+   void updatePassword(String password,Integer code);
 
 }

@@ -4,7 +4,10 @@ import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.*;
+import com.zxy.swaycamp.common.enums.CodeMsg;
+import com.zxy.swaycamp.common.enums.Gender;
 import com.zxy.swaycamp.common.exception.ServiceException;
+import com.zxy.swaycamp.common.mail.MailTemplate;
 import com.zxy.swaycamp.domain.dto.LoginDTO;
 import com.zxy.swaycamp.domain.dto.RegisterDTO;
 import com.zxy.swaycamp.domain.entity.User;
@@ -19,6 +22,7 @@ import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.TokenUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -51,6 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public UserVO login(LoginDTO loginDto) {
+        // 查找用户
         User one = lambdaQuery().and(wrapper -> wrapper
                         .eq(User::getUsername, loginDto.getAccount())
                         .or()
@@ -59,31 +64,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                         .eq(User::getPhoneNumber, loginDto.getAccount()))
                 .one();
         if (one == null) {
-            throw new ServiceException(HttpStatus.BAD_REQUEST, "账号密码错误");
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "账号未注册");
         }
         if (one.getPassword() == null){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "请使用验证码登录后设置密码");
         }
+        //验证棉麻
         if (!SecurityUtil.matchesPassword(loginDto.getPassword(),one.getPassword())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "密码错误");
         }
-
-        // 生成Token
-        String userToken = TokenUtil.createToken(one.getId());
-
-        // 方案一、分别存入用户登录信息和用户Token，Token设置过期时间
+        // 生成token
+        String token = TokenUtil.createToken(one.getId());
+        // 存入用户登录信息和用户token
         LoginUser loginUser = new LoginUser();
         BeanUtils.copyProperties(one, loginUser);
         loginUser.setLoginTime(System.currentTimeMillis());
         loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
-        loginUser.setToken(userToken);
+        loginUser.setToken(token);
         redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
-        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_KEY + loginUser.getId(), userToken, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
-
-        // 方案二、存入返回用户信息
+        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_KEY + loginUser.getId(), token, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
+        // 返回用户信息
         UserVO userVo = new UserVO();
         BeanUtils.copyProperties(one, userVo);
-        userVo.setToken(userToken);
+        userVo.setToken(token);
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
         return userVo;
@@ -96,6 +99,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     @Override
     public UserVO register(RegisterDTO registerDto){
+        if(!StringUtils.hasText(registerDto.getAccount())){
+            throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+        }
         boolean isEmail = registerDto.getAccount().matches(RegexpConst.REGEXP_EMAIL);
         boolean isPhone = registerDto.getAccount().matches(RegexpConst.REGEXP_PHONE);
         if(!isEmail && !isPhone){
@@ -111,6 +117,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(!code.equals(registerDto.getCode())){
             throw new ServiceException("验证码错误");
         }
+        // 删除验证码
+        redisCache.deleteObject(isEmail ?
+                CacheConstants.EMAIL_CODE + registerDto.getAccount() :
+                CacheConstants.PHONE_CODE + registerDto.getAccount());
 
         // 登录/注册
         User one = lambdaQuery()
@@ -133,7 +143,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                  one.setPhoneNumber(registerDto.getAccount());
              }
              // 性别默认保密
-             one.setGender(0);
+             one.setGender(Gender.GENDER_OTHER.getGender());
              one.setCreateTime(LocalDateTime.now());
              one.setUserRole(RoleConst.ROLE_USER);
              one.setUserStatus(true);
@@ -144,7 +154,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                  throw new ServiceException();
              }
         }
-
         // 生成Token
         String userToken = TokenUtil.createToken(one.getId());
         LoginUser loginUser = new LoginUser();
@@ -154,21 +163,42 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         loginUser.setToken(userToken);
         redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
         redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_KEY + loginUser.getId(), userToken, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
-
         BeanUtils.copyProperties(one,userVo);
         userVo.setToken(userToken);
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+        userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
         return userVo;
     }
 
     /**
      * 更新用户密码
+     * @param password 新密码
+     * @param code 验证码
      */
     @Override
-    public void updatePassword(String password){
+    public void updatePassword(String password, Integer code){
         try{
+            // 查找用户
             Integer userId = SwayUtil.getLoginUserId();
+            User one = lambdaQuery().eq(User::getId, userId).one();
+            if(one == null){
+                throw new ServiceException("用户不存在");
+            }
+            // 校验验证码
+            Integer emailCode = redisCache.getCacheObject(CacheConstants.EMAIL_CODE + one.getEmail());
+            Integer phoneCode = redisCache.getCacheObject(CacheConstants.PHONE_CODE + one.getPhoneNumber());
+            if(emailCode == null && phoneCode == null){
+                throw new ServiceException("请获取验证码");
+            }
+            if(!code.equals(emailCode) && !code.equals(phoneCode)){
+                throw new ServiceException("验证码错误");
+            }
+            // 删除验证码
+            redisCache.deleteObject(phoneCode == null ?
+                    CacheConstants.EMAIL_CODE + one.getEmail() :
+                    CacheConstants.PHONE_CODE + one.getPhoneNumber());
+            // 修改密码
             password = SecurityUtil.encodePassword(password);
             lambdaUpdate().eq(User::getId,userId)
                     .set(User::getPassword,password)
@@ -189,7 +219,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         List<String> mail = new ArrayList<>();
         mail.add(account);
         redisCache.setCacheObject(CacheConstants.EMAIL_CODE+account,code,TimeConst.TOKEN_CODE,TimeUnit.MINUTES);
-        mailUtil.sendMailMessage(mail,"SwayCamp", String.valueOf(code));
+        mailUtil.sendMailMessage(mail,"SwayCamp", MailTemplate.emailHtml(String.valueOf(code)));
     }
 
     /**

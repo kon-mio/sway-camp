@@ -72,18 +72,20 @@ public class UserController {
     }
 
     /**
-     * 获取验证码
+     * 修改密码
      *
-     * @param password 密码
+     * @param updatePassword 密码和验证码
      */
     @LoginCheck
     @PostMapping("/password")
-    public SwayResult<UserVO> updatePassword(@RequestBody Map<String,String> password) {
-        if( password == null || password.get(CommonConst.LITERAL_PASSWORD) == null){
-            SwayResult.fail(CodeMsg.PARAMETER_ERROR);
-        }else{
-            userService.updatePassword(password.get(CommonConst.LITERAL_PASSWORD));
+    public SwayResult<UserVO> updatePassword(@RequestBody Map<String,String> updatePassword) {
+        if( updatePassword == null
+                || updatePassword.get(CommonConst.LITERAL_PASSWORD) == null
+                || updatePassword.get(CommonConst.LITERAL_CODE) == null){
+            return SwayResult.fail(CodeMsg.PARAMETER_ERROR);
         }
+        userService.updatePassword(updatePassword.get(CommonConst.LITERAL_PASSWORD),
+                Integer.valueOf(updatePassword.get(CommonConst.LITERAL_CODE)));
         return SwayResult.success();
     }
 }
