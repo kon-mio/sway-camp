@@ -19,17 +19,9 @@
     <!-- 显示密码 -->
     <div class="eye-btn">
       <sway-icon
-        v-if="passInputType === 'password'"
-        @click="passInputType = 'text'"
-        :size="18"
-        name="yanjing1"
-        color="#61666d"
-      />
-      <sway-icon
-        v-if="passInputType === 'text'"
-        @click="passInputType = 'password'"
-        :size="20"
-        name="yanjing"
+        @click="passInputType = passInputType === 'password' ? 'text' : 'password'"
+        :size="passInputType === 'password' ? 18 : 20"
+        :name="passInputType === 'password' ? `yanjing1` : `yanjing`"
         color="#61666d"
       />
     </div>
