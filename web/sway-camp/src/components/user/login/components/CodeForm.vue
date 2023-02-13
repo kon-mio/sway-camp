@@ -44,7 +44,7 @@ import { useGlobalStore } from "@/store/global.sotre"
 import { isEmpty } from "@/utils/data/valid"
 import { useUserStore } from "@/store/user.store"
 import type { LoginDto } from "@/api/user/type"
-import { HttpStatusCode } from "@/common/emun/http_status_code"
+import { HttpStatusCode } from "@/common/emun/HttpStatusCode"
 import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
 
 // 验证码相关
