@@ -44,6 +44,7 @@ import { useUserStore } from "@/store/user.store"
 import { isEmpty } from "@/utils/data/valid"
 import type { LoginType } from "../type"
 import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
+import { HttpStatusCode } from "@/common/emun/http_status_code"
 export default defineComponent({
   name: "LoginForm",
   emits: {
@@ -75,7 +76,7 @@ export default defineComponent({
         return
       }
       const res = await loginApi(loginForm)
-      if (res.code === 200) {
+      if (res.code === HttpStatusCode.Suceess) {
         userStore.setUserInfo(res.data)
         userStore.login()
         SwayNotion("登录", "登录成功", "success")
