@@ -116,7 +116,7 @@ export default defineComponent({
   min-width: @min-width;
   height: 100%;
   min-height: @min-height;
-  z-index: 2000;
+  z-index: 9998;
 
   &-mark {
     position: absolute;

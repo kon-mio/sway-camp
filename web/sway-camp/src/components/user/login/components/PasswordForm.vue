@@ -49,7 +49,7 @@ import { loginApi } from "@/api/user/api"
 import type { LoginDto } from "@/api/user/type"
 import SwayNotion from "@/utils/notice"
 import { useUserStore } from "@/store/user.store"
-import { isEmpty } from "@/utils/data/data"
+import { isEmpty } from "@/utils/data/valid"
 import type { LoginType } from "../type"
 export default defineComponent({
   name: "LoginForm",
@@ -64,17 +64,17 @@ export default defineComponent({
     const globalStore = useGlobalStore()
     const passInputType = ref("password")
 
-    const LoginForm = reactive<LoginDto>({
+    const loginForm = reactive<LoginDto>({
       account: "",
       password: ""
     })
     // 登录
     const loginSumbit = async () => {
-      if (isEmpty(LoginForm.account) || isEmpty(LoginForm.password)) {
+      if (isEmpty(loginForm.account) || isEmpty(loginForm.password)) {
         globalStore.openMessageMini("请输入账号密码")
         return
       }
-      const res = await loginApi(LoginForm)
+      const res = await loginApi(loginForm)
       if (res.code === 200) {
         userStore.setUserInfo(res.data)
         userStore.login()
@@ -89,7 +89,7 @@ export default defineComponent({
     }
 
     return {
-      ...toRefs(LoginForm),
+      ...toRefs(loginForm),
       passInputType,
       loginSumbit,
       register

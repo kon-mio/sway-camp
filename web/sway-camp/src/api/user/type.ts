@@ -2,8 +2,7 @@
 
 // 登录参数
 export interface LoginDto {
-  account?: string
-  email?: string
+  account?: string | number
   password?: string
   code?: string
 }

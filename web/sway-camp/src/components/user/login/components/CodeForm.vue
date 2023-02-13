@@ -2,11 +2,21 @@
   <div class="code-form-mail">
     <div class="code-form-mail__left">
       <span class="text"> 账 号 </span>
-      <input placeholder="请输入手机号、邮箱账号" class="mail-input" type="email" />
+      <input
+        placeholder="请输入手机号、邮箱账号"
+        class="mail-input"
+        type="text"
+        v-model="account"
+      />
     </div>
     <div class="code-form-mail__right">
       <span class="line"></span>
-      <span class="text">获取验证码</span>
+      <span
+        class="text"
+        :class="{ 'code-disable': codeTimer === 0 && !isEmpty(account) ? false : true }"
+        @click="getCode"
+        >{{ codeCountdown }}</span
+      >
     </div>
   </div>
   <div class="code-form-code">
@@ -19,10 +29,77 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue"
+import { computed, defineComponent, reactive, ref, toRefs } from "vue"
+import { getCodeApi } from "@/api/user/api"
+import { useInterval } from "@/hooks/useInterval.hooks"
+import SwayNotion from "@/utils/notice"
+import type { LoginDto } from "@/api/user/type"
+import { useGlobalStore } from "@/store/global.sotre"
+import { isEmpty } from "@/utils/data/valid"
+
 export default defineComponent({
   name: "CodeForm",
-  components: {}
+  components: {},
+  setup(props, ctx) {
+    // 记录获取验证码IP 10分钟最多获取三次
+    const globalStore = useGlobalStore()
+    const { openMessageMini } = globalStore
+
+    const loginForm = reactive<LoginDto>({
+      account: ""
+    })
+    // 获取验证码倒计时
+    const codeTimer = ref(0)
+    // 获取验证码提示
+    const codeCountdown = computed(() => {
+      return codeTimer.value === 0 ? "获取验证码" : `${codeTimer.value}后重新获取`
+    })
+    const { pause, resume } = useInterval(
+      () => {
+        if (codeTimer.value <= 0) {
+          // 停止定时任务
+          pause()
+        } else {
+          // 单次定时任务执行的回调
+          codeTimer.value--
+        }
+      },
+      1000,
+      {
+        // 默认不开启定时任务
+        immediate: false
+      }
+    )
+    // 获取验证码
+    const getCode = async () => {
+      if (codeTimer.value != 0) {
+        openMessageMini(`请${codeTimer.value}s后重新获取`)
+        return
+      }
+      if (isEmpty(loginForm.account)) {
+        openMessageMini("请输入手机号/邮箱账号")
+        return
+      }
+      const res = await getCodeApi(loginForm.account!)
+      if (res.code === 200) {
+        SwayNotion("验证码", "发送成功", "success")
+        // 开启倒计时效果
+        if (codeTimer.value === 0) {
+          codeTimer.value = 60
+          resume()
+        }
+      } else {
+        SwayNotion("验证码", "发送失败", "warning")
+      }
+    }
+    return {
+      ...toRefs(loginForm),
+      codeTimer,
+      codeCountdown,
+      getCode,
+      isEmpty
+    }
+  }
 })
 </script>
 
@@ -85,5 +162,10 @@ export default defineComponent({
   .text {
     margin-right: 22px;
   }
+}
+
+.code-disable {
+  color: @text-6 !important;
+  pointer-events: none;
 }
 </style>

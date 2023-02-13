@@ -6,12 +6,40 @@ const newError = () => new Error("错误请求")
 
 /**
  * 密码登录
- * @param LoginForm 登录参数
- * @returns LoginVo
+ * @param {Type.LoginDto} LoginForm 登录参数
+ * @returns {CommonResult<LoginVo>} 用户信息
  */
 export async function loginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
   try {
     const { data } = await request.post<Type.UserInfo>("/user/login", LoginForm)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 验证码登录
+ * @param {Type.LoginDto} LoginForm 登录参数
+ * @returns {CommonResult<LoginVo>} 用户信息
+ */
+export async function codeLoginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
+  try {
+    const { data } = await request.post<Type.UserInfo>("/user/login/code", LoginForm)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 获取验证码
+ * @param {string | number} account 邮箱/手机号
+ * @returns {CommonResult<null>} null
+ */
+export async function getCodeApi(account: string | number): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>("/user/code", { account: account })
     return data
   } catch {
     throw newError()

@@ -148,6 +148,10 @@ export default defineComponent({
     left: 2%;
     transform: translateX(0);
   }
+  ::v-deep(.el-carousel__item) {
+    // 解决未知遮罩错误
+    z-index: 1;
+  }
 
   img {
     width: 100%;

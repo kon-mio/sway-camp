@@ -11,8 +11,12 @@ export const isEmpty = (value: unknown): boolean => {
   if (typeof value === "string" && value.trim() == "") {
     return true
   }
-  if(typeof value === 'object' && Object.keys(value).length === 0) {
-    return false;
+  if (typeof value === "object" && Object.keys(value).length === 0) {
+    return false
   }
   return false
 }
+//  是否是客户端
+export const isClient = typeof window !== "undefined"
+//  是否是函数
+export const isFunction = <T extends Function>(val: any): val is T => typeof val === "function"
