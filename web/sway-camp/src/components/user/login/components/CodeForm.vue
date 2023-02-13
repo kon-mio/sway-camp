@@ -45,6 +45,7 @@ import { isEmpty } from "@/utils/data/valid"
 import { useUserStore } from "@/store/user.store"
 import type { LoginDto } from "@/api/user/type"
 import { HttpStatusCode } from "@/common/emun/HttpStatusCode"
+import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
 
 // 验证码相关
 export function CodeMoudle() {
@@ -85,7 +86,14 @@ export function CodeMoudle() {
       return
     }
     if (isEmpty(loginForm.account)) {
-      openMessageMini("请输入手机号/邮箱账号")
+      openMessageMini("请输入手机/邮箱账号")
+      return
+    }
+    if (
+      !regexpEmail(loginForm.account!.toString()) &&
+      !regexpPhone(loginForm.account!.toString())
+    ) {
+      openMessageMini("请输入正确的手机/邮箱账号")
       return
     }
     const res = await getCodeApi(loginForm.account!)
@@ -120,6 +128,14 @@ export default defineComponent({
     const loginSubmit = async () => {
       if (isEmpty(loginForm.account) || isEmpty(loginForm.code)) {
         openMessageMini("请输入账号/验证码")
+        return
+      }
+      if (
+        !regexpEmail(loginForm.account!.toString()) &&
+        !regexpPhone(loginForm.account!.toString())
+      ) {
+        openMessageMini("请输入正确的手机/邮箱账号")
+        return
       }
       // 待校验账号格式
       const { code, msg, data } = await codeLoginApi(loginForm)

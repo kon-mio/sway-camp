@@ -43,6 +43,7 @@ import SwayNotion from "@/utils/notice"
 import { useUserStore } from "@/store/user.store"
 import { isEmpty } from "@/utils/data/valid"
 import type { LoginType } from "../type"
+import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
 export default defineComponent({
   name: "LoginForm",
   emits: {
@@ -64,6 +65,13 @@ export default defineComponent({
     const loginSumbit = async () => {
       if (isEmpty(loginForm.account) || isEmpty(loginForm.password)) {
         globalStore.openMessageMini("请输入账号密码")
+        return
+      }
+      if (
+        !regexpEmail(loginForm.account!.toString()) &&
+        !regexpPhone(loginForm.account!.toString())
+      ) {
+        globalStore.openMessageMini("请输入正确的手机/邮箱账号")
         return
       }
       const res = await loginApi(loginForm)
