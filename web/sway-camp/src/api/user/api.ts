@@ -25,7 +25,7 @@ export async function loginApi(LoginForm: Type.LoginDto): Promise<CommonResult<T
  */
 export async function codeLoginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
   try {
-    const { data } = await request.post<Type.UserInfo>("/user/login/code", LoginForm)
+    const { data } = await request.post<Type.UserInfo>("/user/register", LoginForm)
     return data
   } catch {
     throw newError()
