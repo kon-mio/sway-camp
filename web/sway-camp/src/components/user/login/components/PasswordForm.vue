@@ -54,9 +54,9 @@ import type { LoginType } from "../type"
 export default defineComponent({
   name: "LoginForm",
   emits: {
-    regist(type: LoginType) {
+    regist(type: boolean) {
       // 通过返回TRUE
-      return true
+      return typeof type === "boolean"
     }
   },
   setup(props, ctx) {
@@ -85,7 +85,7 @@ export default defineComponent({
     }
     // 切换注册页面
     const register = () => {
-      ctx.emit("regist", "code")
+      ctx.emit("regist", true)
     }
 
     return {

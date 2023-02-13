@@ -17,26 +17,26 @@
             <div class="login-form__tab">
               <span
                 class="login-form__tab--password"
-                :style="{ color: loginType === 'pass' ? '#4fa5d9' : '' }"
-                @click="changeLoginType('pass')"
+                :style="{ color: !codeLogin ? '#4fa5d9' : '' }"
+                @click="changeLoginType(false)"
               >
                 密码登录
               </span>
               <span class="login-form__tab--line"> </span>
               <span
                 class="login-form__tab--email"
-                :style="{ color: loginType === 'code' ? '#4fa5d9' : '' }"
-                @click="changeLoginType('code')"
+                :style="{ color: codeLogin ? '#4fa5d9' : '' }"
+                @click="changeLoginType(true)"
               >
                 邮箱登录
               </span>
             </div>
             <!-- 密码登录 -->
             <div class="login-form">
-              <div class="login-form__password" v-show="loginType === 'pass'">
+              <div class="login-form__password" v-show="!codeLogin">
                 <password-form @regist="changeLoginType" />
               </div>
-              <div class="login-form__email" v-show="loginType === 'code'">
+              <div class="login-form__email" v-show="codeLogin">
                 <code-form />
               </div>
             </div>
@@ -77,15 +77,14 @@ import { storeToRefs } from "pinia"
 import { defineComponent, ref } from "vue"
 import CodeForm from "./components/CodeForm.vue"
 import PasswordForm from "./components/PasswordForm.vue"
-import type { LoginType } from "./type"
 export default defineComponent({
   name: "LoginCard",
   components: { PasswordForm, CodeForm },
   setup() {
     // 登录方式 只能是密码或邮箱
-    const loginType = ref<LoginType>("pass")
-    const changeLoginType = (type: LoginType) => {
-      loginType.value = type
+    const codeLogin = ref<boolean>(false)
+    const changeLoginType = (type: boolean) => {
+      codeLogin.value = type
     }
     // 全局登录状态
     const { isLogin } = storeToRefs(useUserStore())
@@ -95,7 +94,7 @@ export default defineComponent({
     const { closeLoginCard } = globalStore
     return {
       isLogin,
-      loginType,
+      codeLogin,
       loginCard,
       changeLoginType,
       closeLoginCard
