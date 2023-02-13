@@ -1,5 +1,5 @@
 <template>
-  <Transition name="sign">
+  <Transition name="login">
     <div class="login-card" v-if="loginCard && !isLogin">
       <div class="login-card-mark" @click="closeLoginCard" />
       <div class="login-card-container">
@@ -25,19 +25,19 @@
               <span class="login-form__tab--line"> </span>
               <span
                 class="login-form__tab--email"
-                :style="{ color: loginType === 'email' ? '#4fa5d9' : '' }"
-                @click="changeLoginType('email')"
+                :style="{ color: loginType === 'code' ? '#4fa5d9' : '' }"
+                @click="changeLoginType('code')"
               >
                 邮箱登录
               </span>
             </div>
             <!-- 密码登录 -->
             <div class="login-form">
-              <div class="login-form__password" v-if="loginType === 'pass'">
-                <pass-form />
+              <div class="login-form__password" v-show="loginType === 'pass'">
+                <password-form @regist="changeLoginType" />
               </div>
-              <div class="login-form__email" v-if="loginType === 'email'">
-                <email-form />
+              <div class="login-form__email" v-show="loginType === 'code'">
+                <code-form />
               </div>
             </div>
             <!-- 第三方登录 -->
@@ -75,18 +75,17 @@ import { useGlobalStore } from "@/store/global.sotre"
 import { useUserStore } from "@/store/user.store"
 import { storeToRefs } from "pinia"
 import { defineComponent, ref } from "vue"
-import EmailForm from "./components/EmailForm.vue"
-import PassForm from "./components/PassForm.vue"
+import CodeForm from "./components/CodeForm.vue"
+import PasswordForm from "./components/PasswordForm.vue"
+import type { LoginType } from "./type"
 export default defineComponent({
   name: "LoginCard",
-  components: { PassForm, EmailForm },
+  components: { PasswordForm, CodeForm },
   setup() {
-    // 登录方式
-    const loginType = ref("pass")
-    const changeLoginType = (type: string) => {
-      if (type === "pass" || type === "email") {
-        loginType.value = type
-      }
+    // 登录方式 只能是密码或邮箱
+    const loginType = ref<LoginType>("pass")
+    const changeLoginType = (type: LoginType) => {
+      loginType.value = type
     }
     // 全局登录状态
     const { isLogin } = storeToRefs(useUserStore())
@@ -94,7 +93,6 @@ export default defineComponent({
     const globalStore = useGlobalStore()
     const { loginCard } = storeToRefs(globalStore)
     const { closeLoginCard } = globalStore
-
     return {
       isLogin,
       loginType,
@@ -252,13 +250,13 @@ export default defineComponent({
     }
   }
 }
-.sign-enter-active,
-.sign-leave-active {
+.login-enter-active,
+.login-leave-active {
   transition: opacity 0.5s ease;
 }
 
-.sign-enter-from,
-.sign-leave-to {
+.login-enter-from,
+.login-leave-to {
   opacity: 0;
 }
 </style>

@@ -22,7 +22,17 @@
   }
 
   .login-btn {
-    background-color: @text-4;
+    background-color: @bg-5;
     color: @text-0;
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: @bg-4;
+    }
+  }
+}
+
+input {
+  &::placeholder {
+    font-size: 13px;
   }
 }

@@ -6,6 +6,7 @@ import { CommonResult } from "./result.type"
 // 创建公共实例
 const instance = axios.create({
   baseURL: config.server.ip + config.server.commonChart,
+  // baseURL: "",
   timeout: config.server.timeout
 })
 new AxiosInterceptor(instance)

@@ -18,12 +18,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { onMounted, reactive } from "vue"
 import HomeBanner from "./components/HomeBanner.vue"
 import HomeCarousel from "@/components/home/banner/HomeCarousel.vue"
 import HomeImgView from "@/components/home/banner/HomeImgView.vue"
 import HomeAnimeShow from "@/components/home/banner/HomeAnimeShow.vue"
 import type { carouselType } from "@/components/home/banner/type"
+import { chatgptApi } from "@/api/chatgpt/api"
 
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
@@ -43,8 +44,11 @@ const carouselItems = reactive<carouselType[]>([
     imgUrl: "http://file.takagi-san.cn/image/kon_all_5.webp"
   }
 ])
-</script>
 
+// onMounted(() => {
+//   chatgptApi()
+// })
+</script>
 <style lang="less" scoped>
 .sway-home {
   position: relative;

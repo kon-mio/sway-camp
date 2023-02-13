@@ -4,7 +4,7 @@ import type { UserInfo } from "@/api/user/type"
 export const useUserStore = defineStore("user", {
   state: () => ({
     isLogin: false,
-    userInfo: {} as UserInfo | null
+    userInfo: null as UserInfo | null
   }),
   actions: {
     // 编辑用户信息

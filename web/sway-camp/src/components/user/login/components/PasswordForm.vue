@@ -2,7 +2,7 @@
   <!-- 密码登录 -->
   <div class="form-account">
     <span class="text">账号</span>
-    <input type="text" placeholder="请输入邮箱账号" v-model="account" />
+    <input type="text" placeholder="请输入手机号、邮箱账号" v-model="account" />
   </div>
   <!-- 密码 -->
   <div class="form-password">
@@ -33,11 +33,11 @@
         color="#61666d"
       />
     </div>
-    <span class="forget"> 忘记密码？ </span>
+    <span class="forget" @click="register"> 忘记密码 </span>
   </div>
   <!-- 按钮 -->
   <div class="form-btn">
-    <div class="universal-btn register-btn">注册</div>
+    <div class="universal-btn register-btn" @click="register">注册</div>
     <div class="universal-btn login-btn" @click="loginSumbit">登录</div>
   </div>
 </template>
@@ -49,9 +49,17 @@ import { loginApi } from "@/api/user/api"
 import type { LoginDto } from "@/api/user/type"
 import SwayNotion from "@/utils/notice"
 import { useUserStore } from "@/store/user.store"
+import { isEmpty } from "@/utils/data/data"
+import type { LoginType } from "../type"
 export default defineComponent({
   name: "LoginForm",
-  setup() {
+  emits: {
+    regist(type: LoginType) {
+      // 通过返回TRUE
+      return true
+    }
+  },
+  setup(props, ctx) {
     const userStore = useUserStore()
     const globalStore = useGlobalStore()
     const passInputType = ref("password")
@@ -62,19 +70,29 @@ export default defineComponent({
     })
     // 登录
     const loginSumbit = async () => {
-      // globalStore.openMessageMini('请输入账号密码')
+      if (isEmpty(LoginForm.account) || isEmpty(LoginForm.password)) {
+        globalStore.openMessageMini("请输入账号密码")
+        return
+      }
       const res = await loginApi(LoginForm)
       if (res.code === 200) {
         userStore.setUserInfo(res.data)
         userStore.login()
         SwayNotion("登录", "登录成功", "success")
+      } else {
+        SwayNotion("登录", res.msg, "warning")
       }
+    }
+    // 切换注册页面
+    const register = () => {
+      ctx.emit("regist", "code")
     }
 
     return {
       ...toRefs(LoginForm),
       passInputType,
-      loginSumbit
+      loginSumbit,
+      register
     }
   }
 })

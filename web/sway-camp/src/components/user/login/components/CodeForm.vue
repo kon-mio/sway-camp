@@ -1,15 +1,15 @@
 <template>
-  <div class="email-form-mail">
-    <div class="email-form-mail__left">
-      <span class="text"> 邮 箱 </span>
-      <input placeholder="请输入邮箱账号" class="mail-input" type="email" />
+  <div class="code-form-mail">
+    <div class="code-form-mail__left">
+      <span class="text"> 账 号 </span>
+      <input placeholder="请输入手机号、邮箱账号" class="mail-input" type="email" />
     </div>
-    <div class="email-form-mail__right">
+    <div class="code-form-mail__right">
       <span class="line"></span>
       <span class="text">获取验证码</span>
     </div>
   </div>
-  <div class="email-form-code">
+  <div class="code-form-code">
     <span class="text">验证码</span>
     <input placeholder="请输入验证码" type="text" />
   </div>
@@ -21,7 +21,7 @@
 <script lang="ts">
 import { defineComponent } from "vue"
 export default defineComponent({
-  name: "EmailForm",
+  name: "CodeForm",
   components: {}
 })
 </script>
@@ -29,8 +29,8 @@ export default defineComponent({
 <style lang="less" scoped>
 @import "../style/common.less";
 
-.email-form-mail,
-.email-form-code {
+.code-form-mail,
+.code-form-code {
   display: flex;
   padding: 0 20px;
   align-items: center;
@@ -50,7 +50,7 @@ export default defineComponent({
     color: @text-3;
   }
 }
-.email-form-mail {
+.code-form-mail {
   justify-content: space-between;
   border-radius: 8px 8px 0 0;
   height: 43px;
@@ -80,7 +80,7 @@ export default defineComponent({
     }
   }
 }
-.email-form-code {
+.code-form-code {
   border-radius: 0 0 8px 8px;
   .text {
     margin-right: 22px;

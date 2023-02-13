@@ -10,7 +10,7 @@
           class="base-img"
         />
       </div>
-      <div class="login-user__name" @click="userSpace">你好</div>
+      <div class="login-user__name" @click="userSpace">{{ userInfo?.username }}</div>
       <div class="login-user__tab">
         <div
           class="login-user__tab--item"
