@@ -44,7 +44,7 @@ import { useUserStore } from "@/store/user.store"
 import { isEmpty } from "@/utils/data/valid"
 import type { LoginType } from "../type"
 import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
-import { HttpStatusCode } from "@/common/emun/HttpStatusCode"
+import { HttpStatusCode } from "@/common/enum"
 export default defineComponent({
   name: "LoginForm",
   emits: {

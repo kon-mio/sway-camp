@@ -1,4 +1,4 @@
-import piniaPlugin from "./piniaMain"
+import piniaPlugin from "./pinia-main"
 import { createPinia } from "pinia"
 
 const store = createPinia().use(

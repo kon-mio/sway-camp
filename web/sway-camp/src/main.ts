@@ -4,7 +4,7 @@ import router from "./router"
 import store from "./store"
 
 import { complInit } from "@/components/global"
-import { elInit } from "@/common/plugin/ElementPlus.plugin"
+import { elInit } from "@/common/plugin/element-plus.plugin"
 
 const app = createApp(App)
 
