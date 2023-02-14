@@ -2,7 +2,7 @@
   <!-- 密码登录 -->
   <div class="form-account">
     <span class="text">账号</span>
-    <input type="text" placeholder="请输入手机号、邮箱账号" v-model="account" />
+    <input type="text" placeholder="请输入手机号、邮箱账号" v-model="loginForm.account" />
   </div>
   <!-- 密码 -->
   <div class="form-password">
@@ -13,7 +13,7 @@
         minlength="6"
         maxlength="18"
         :type="passInputType"
-        v-model="password"
+        v-model="loginForm.password"
       />
     </div>
     <!-- 显示密码 -->
@@ -34,68 +34,48 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, reactive, ref, toRefs } from "vue"
-import { useGlobalStore } from "@/store/global.sotre"
+<script lang="ts" setup>
+import { reactive, ref } from "vue"
+import { useGlobalStore } from "@/stores/global.sotre"
 import { loginApi } from "@/api/user/api"
-import type { LoginDto } from "@/api/user/type"
+import type { LoginDto, UserInfo } from "@/api/user/type"
 import SwayNotion from "@/utils/notice"
-import { useUserStore } from "@/store/user.store"
 import { isEmpty } from "@/utils/data/valid"
 import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
 import { HttpStatusCode } from "@/common/enum"
-export default defineComponent({
-  name: "LoginForm",
-  emits: {
-    regist(type: boolean) {
-      // 通过返回TRUE
-      return typeof type === "boolean"
-    }
-  },
-  setup(props, ctx) {
-    const userStore = useUserStore()
-    const globalStore = useGlobalStore()
-    const passInputType = ref("password")
 
-    const loginForm = reactive<LoginDto>({
-      account: "",
-      password: ""
-    })
-    // 登录
-    const loginSumbit = async () => {
-      if (isEmpty(loginForm.account) || isEmpty(loginForm.password)) {
-        globalStore.openMessageMini("请输入账号密码")
-        return
-      }
-      if (
-        !regexpEmail(loginForm.account!.toString()) &&
-        !regexpPhone(loginForm.account!.toString())
-      ) {
-        globalStore.openMessageMini("请输入正确的手机/邮箱账号")
-        return
-      }
-      const res = await loginApi(loginForm)
-      if (res.code === HttpStatusCode.Suceess) {
-        userStore.setUserInfo(res.data)
-        userStore.login()
-        SwayNotion("登录", "登录成功", "success")
-      } else {
-        SwayNotion("登录", res.msg, "warning")
-      }
-    }
-    // 切换注册页面
-    const register = () => {
-      ctx.emit("regist", true)
-    }
+const emits = defineEmits<{
+  (e: "regist", type: boolean): void
+  (e: "loginSuccess", userInfo: UserInfo): void
+}>()
+const globalStore = useGlobalStore()
+const passInputType = ref("password")
 
-    return {
-      ...toRefs(loginForm),
-      passInputType,
-      loginSumbit,
-      register
-    }
-  }
+const loginForm = reactive<LoginDto>({
+  account: "",
+  password: ""
 })
+// 登录
+const loginSumbit = async () => {
+  if (isEmpty(loginForm.account) || isEmpty(loginForm.password)) {
+    globalStore.openMessageMini("请输入账号密码")
+    return
+  }
+  if (!regexpEmail(loginForm.account!.toString()) && !regexpPhone(loginForm.account!.toString())) {
+    globalStore.openMessageMini("请输入正确的手机/邮箱账号")
+    return
+  }
+  const res = await loginApi(loginForm)
+  if (res.code === HttpStatusCode.Suceess) {
+    emits("loginSuccess", res.data)
+  } else {
+    SwayNotion("登录", res.msg, "warning")
+  }
+}
+// 切换注册页面
+const register = () => {
+  emits("regist", true)
+}
 </script>
 
 <style lang="less" scoped>

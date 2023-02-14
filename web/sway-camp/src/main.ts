@@ -1,7 +1,7 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
-import store from "./store"
+import store from "./stores"
 
 import { complInit } from "@/components/global"
 import { elInit } from "@/common/plugin/element-plus.plugin"

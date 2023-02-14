@@ -34,10 +34,10 @@
             <!-- 密码登录 -->
             <div class="login-form">
               <div class="login-form__password" v-show="!codeLogin">
-                <password-form @regist="changeLoginType" />
+                <password-form @regist="changeLoginType" @login-success="loginSuccess" />
               </div>
               <div class="login-form__email" v-show="codeLogin">
-                <code-form />
+                <code-form @login-success="loginSuccess" />
               </div>
             </div>
             <!-- 第三方登录 -->
@@ -71,8 +71,10 @@
 </template>
 
 <script lang="ts">
-import { useGlobalStore } from "@/store/global.sotre"
-import { useUserStore } from "@/store/user.store"
+import { UserInfo } from "@/api/user/type"
+import { useGlobalStore } from "@/stores/global.sotre"
+import { useUserStore } from "@/stores/user.store"
+import SwayNotion from "@/utils/notice"
 import { storeToRefs } from "pinia"
 import { defineComponent, ref } from "vue"
 import CodeForm from "./components/CodeForm.vue"
@@ -82,6 +84,7 @@ export default defineComponent({
   components: { PasswordForm, CodeForm },
   setup() {
     // 登录方式 只能是密码或邮箱
+    const userStore = useUserStore()
     const codeLogin = ref<boolean>(false)
     const changeLoginType = (type: boolean) => {
       codeLogin.value = type
@@ -92,12 +95,19 @@ export default defineComponent({
     const globalStore = useGlobalStore()
     const { loginCard } = storeToRefs(globalStore)
     const { closeLoginCard } = globalStore
+    const loginSuccess = (userInfo: UserInfo) => {
+      userStore.setUserInfo(userInfo)
+      userStore.login()
+      closeLoginCard()
+      SwayNotion("登录", "登录成功", "success")
+    }
     return {
       isLogin,
       codeLogin,
       loginCard,
       changeLoginType,
-      closeLoginCard
+      closeLoginCard,
+      loginSuccess
     }
   }
 })

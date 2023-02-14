@@ -42,8 +42,8 @@
 import { defineComponent, onMounted, PropType } from "vue"
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
-import { useUserStore } from "@/store/user.store"
-import { useGlobalStore } from "@/store/global.sotre"
+import { useUserStore } from "@/stores/user.store"
+import { useGlobalStore } from "@/stores/global.sotre"
 import type { userTabItemType } from "../type"
 import LoginCard from "@/components/login-card/LoginCard.vue"
 
