@@ -1,7 +1,7 @@
 const User = () => import("@/views/user/Index.vue")
 
 const commonMeta = {
-  index: -1,
+  index: -1.5,
   rootRouteName: "User"
 }
 

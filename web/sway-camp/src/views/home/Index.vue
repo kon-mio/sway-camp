@@ -18,13 +18,12 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, reactive } from "vue"
-import HomeBanner from "./components/HomeBanner.vue"
-import HomeCarousel from "@/components/home/banner/HomeCarousel.vue"
-import HomeImgView from "@/components/home/banner/HomeImgView.vue"
-import HomeAnimeShow from "@/components/home/banner/HomeAnimeShow.vue"
-import type { carouselType } from "@/components/home/banner/type"
-import { chatgptApi } from "@/api/chatgpt/api"
+import { reactive } from "vue"
+import HomeBanner from "./components/banner/HomeBanner.vue"
+import HomeCarousel from "./components/banner/components/HomeCarousel.vue"
+import HomeImgView from "./components/banner/components/HomeImgView.vue"
+import HomeAnimeShow from "./components/banner/components/HomeAnimeShow.vue"
+import type { carouselType } from "./components/banner/type"
 
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
@@ -45,9 +44,6 @@ const carouselItems = reactive<carouselType[]>([
   }
 ])
 
-// onMounted(() => {
-//   chatgptApi()
-// })
 </script>
 <style lang="less" scoped>
 .sway-home {

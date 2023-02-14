@@ -45,7 +45,7 @@ import { storeToRefs } from "pinia"
 import { useUserStore } from "@/store/user.store"
 import { useGlobalStore } from "@/store/global.sotre"
 import type { userTabItemType } from "../type"
-import LoginCard from "@/components/user/login/LoginCard.vue"
+import LoginCard from "@/components/login-card/LoginCard.vue"
 
 // 用户导航栏方法
 function userTabMoudel() {

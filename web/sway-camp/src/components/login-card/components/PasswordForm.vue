@@ -42,7 +42,6 @@ import type { LoginDto } from "@/api/user/type"
 import SwayNotion from "@/utils/notice"
 import { useUserStore } from "@/store/user.store"
 import { isEmpty } from "@/utils/data/valid"
-import type { LoginType } from "../type"
 import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
 import { HttpStatusCode } from "@/common/enum"
 export default defineComponent({
@@ -100,7 +99,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "../style/common.less";
+@import "../style/index.less";
 @input-padding:0 20px;
 
 .form-account,

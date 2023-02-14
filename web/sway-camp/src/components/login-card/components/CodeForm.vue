@@ -160,7 +160,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "../style/common.less";
+@import "../style/index.less";
 
 .code-form-mail,
 .code-form-code {

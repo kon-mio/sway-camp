@@ -54,7 +54,7 @@
 <script lang="ts">
 import { computed, CSSProperties, defineComponent, nextTick, onMounted, PropType, ref } from "vue"
 import { ElCarousel } from "element-plus"
-import type { carouselType } from "./type"
+import type { carouselType } from "../type"
 export default defineComponent({
   name: "HomeCarousel",
   props: {
@@ -137,8 +137,6 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@import "./style/carousel.less";
-
 .banner-carousel {
   position: relative;
   width: 100%;
@@ -229,6 +227,38 @@ export default defineComponent({
       z-index: 2;
       transition: all 0.4s;
     }
+  }
+}
+
+.carousel-active {
+  animation: carousel-in 0.5s ease-out;
+}
+
+.carousel-leave {
+  animation: carousel-out 0.5s ease-in;
+}
+
+@keyframes carousel-in {
+  0% {
+    opacity: 0;
+    transform: translate3d(300px, 0, 1px) scale(1.5);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes carousel-out {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(-300px, 0, 1px) scale(1.5);
   }
 }
 </style>

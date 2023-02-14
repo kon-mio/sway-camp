@@ -258,4 +258,10 @@ export default defineComponent({
 .login-leave-to {
   opacity: 0;
 }
+
+input {
+  &::placeholder {
+    font-size: 13px;
+  }
+}
 </style>

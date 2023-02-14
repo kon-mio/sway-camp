@@ -27,10 +27,9 @@ import AsideTab from "./components/AsideTab.vue"
 import AsideTabItem from "./components/AsideTabItem.vue"
 import AsideFooter from "./components/AsideFooter.vue"
 import { asideTabItemType, userTabItemType } from "./type"
-import LoginCard from "@/components/user/login/LoginCard.vue"
 export default defineComponent({
   name: "AppAside",
-  components: { AsideHeader, AsideUser, AsideTab, AsideTabItem, AsideFooter, LoginCard },
+  components: { AsideHeader, AsideUser, AsideTab, AsideTabItem, AsideFooter },
   setup() {
     // 路由列表
     const routerList = reactive<asideTabItemType[]>([
