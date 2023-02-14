@@ -81,6 +81,13 @@ const mouseEnterId = ref<number | null>(null)
 const cursorWidth = ref(54)
 const cursorLeft = ref(30)
 const cursorTransTime = ref(0)
+
+const useCursorAnime = () => {
+  cursorTransTime.value = 0.4
+  setTimeout(() => {
+    cursorTransTime.value = 0
+  }, 400)
+}
 // 获取距离左侧总和
 const setLetfCount = (id: number) => {
   let leftInit = 30
@@ -101,19 +108,13 @@ const setCursorWidth = (id: number) => {
 }
 // 鼠标移入
 const mouseEnter = (itemId: number) => {
-  cursorTransTime.value = 0.4
-  setTimeout(() => {
-    cursorTransTime.value = 0
-  }, 400)
+  useCursorAnime()
   mouseEnterId.value = itemId
   setLetfCount(mouseEnterId.value)
   setCursorWidth(mouseEnterId.value)
 }
 const mouseLeave = () => {
-  cursorTransTime.value = 0.4
-  setTimeout(() => {
-    cursorTransTime.value = 0
-  }, 400)
+  useCursorAnime()
   mouseEnterId.value = null
   setLetfCount(activeId.value)
   setCursorWidth(activeId.value)

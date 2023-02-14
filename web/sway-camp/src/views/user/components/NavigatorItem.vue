@@ -10,7 +10,9 @@
     <span class="icon">
       <SwayIcon :name="navItem.icon" :color="navItem.color" :size="navItem.size" />
     </span>
-    <span class="text">{{ navItem.title }}</span>
+    <span class="text" :class="{ active: $route.name === navItem.name || isEnter }">{{
+      navItem.title
+    }}</span>
     <span class="num" v-if="navItem.num">{{ navItem.num }}</span>
   </div>
 </template>
@@ -36,16 +38,18 @@ const emits = defineEmits<{
 }>()
 
 const $router = useRouter()
-
+const isEnter = ref(false)
 // item实例
 const navItemRef = ref<HTMLDivElement | null>(null)
 
 // 鼠标移入
 const mouseEnter = () => {
+  isEnter.value = true
   emits("mouseEnter", props.navItem.id)
 }
 // 鼠标移出
 const mouseLeave = () => {
+  isEnter.value = false
   emits("mouseLeave")
 }
 // 点击回调
@@ -71,6 +75,9 @@ onMounted(() => {
   padding-right: 20px;
   user-select: none;
   cursor: pointer;
+  .active {
+    color: skyblue;
+  }
   .icon {
     display: flex;
     flex-direction: row;
@@ -84,6 +91,7 @@ onMounted(() => {
   .text {
     font-size: 13px;
     vertical-align: middle;
+    transition: all 0.2s;
   }
   .num {
     margin-left: 2px;
