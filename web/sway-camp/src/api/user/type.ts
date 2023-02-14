@@ -13,6 +13,7 @@ export interface LoginDto {
 export interface UserInfo {
   id: number
   username: string
+  sid?: number
   phoneNumber?: string
   email: string
   gender: string

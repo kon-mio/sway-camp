@@ -1,14 +1,13 @@
 <template>
-  <i class="iconfont" :class="IconFont" :style="{ color: color, fontSize: size + 'px' }">
+  <i class="iconfont" :class="iconFont" :style="iconStyle">
     <slot></slot>
   </i>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue"
+import { computed, CSSProperties, defineComponent } from "vue"
 export default defineComponent({
   name: "SwayIcon",
-  components: {},
   props: {
     name: {
       type: String,
@@ -28,9 +27,24 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const IconFont = computed(() => `icon-${props.name}`)
+    const iconFont = computed(() => `icon-${props.name}`)
+
+    const iconStyle = computed<CSSProperties>(() => {
+      const style: CSSProperties =
+        props.size === 14
+          ? {
+              color: props.color
+            }
+          : {
+              color: props.color,
+              fontSize: props.size + "px"
+            }
+
+      return style
+    })
     return {
-      IconFont
+      iconFont,
+      iconStyle
     }
   }
 })

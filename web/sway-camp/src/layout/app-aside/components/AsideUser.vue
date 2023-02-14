@@ -46,6 +46,7 @@ import { useUserStore } from "@/stores/user.store"
 import { useGlobalStore } from "@/stores/global.sotre"
 import type { userTabItemType } from "../type"
 import LoginCard from "@/components/login-card/LoginCard.vue"
+import { isEmpty } from "@/utils/data/valid"
 
 // 用户导航栏方法
 function userTabMoudel() {
@@ -82,13 +83,13 @@ function userTabMoudel() {
   }
   // 跳转用户主页
   const userSpace = () => {
-    if (Object.keys(userInfo).length === 0) {
+    if (isEmpty(userInfo)) {
       return
     }
     router.push({
       name: "User",
       params: {
-        // uid: userInfo.value.id
+        id: userInfo.value!.id
       }
     })
   }
