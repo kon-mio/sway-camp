@@ -86,7 +86,7 @@ const getCrusorStyle = (acIndex: number, isWidth: boolean = false) => {
     let width = props.navList.find((item, index) => {
       return index === acIndex
     })?.width!
-    return width
+    return width + 4
   } else {
     let count = 0
     props.navList.forEach((item, index) => {
