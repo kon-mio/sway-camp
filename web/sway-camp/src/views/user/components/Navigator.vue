@@ -14,14 +14,7 @@
           @mouse-leave="mouseLeave"
         />
       </div>
-      <div
-        class="cursor"
-        :style="{
-          width: compWidth + 'px',
-          left: compLeft + 'px',
-          transition: `all ${cursorTransTime}s ease`
-        }"
-      ></div>
+      <div class="cursor" :style="cursorStyle"></div>
     </div>
   </div>
 </template>
@@ -29,7 +22,7 @@
 <script lang="ts" setup>
 // 注意：因为每次切换子路由时每次都会初始化'提示线'的数据，
 //      导致切换路由时每次'提示线'都会从头开始，故使用定时器只在需要时提供线条动画
-import { ref, computed, onBeforeMount } from "vue"
+import { ref, computed, onBeforeMount, CSSProperties } from "vue"
 import { useRoute } from "vue-router"
 import NavigatorItem from "./NavigatorItem.vue"
 import type { NavigatorItemType } from "../types/user-nav"
@@ -53,15 +46,18 @@ const mouseEnterId = ref<number | null>(null)
 // 提示线动画
 const cursorTransTime = ref(0)
 
-const compLeft = computed(() => {
-  return mouseEnterId.value != null
-    ? getCrusorStyle(mouseEnterId.value!)
-    : getCrusorStyle(activeIndex.value!)
-})
-const compWidth = computed(() => {
-  return mouseEnterId.value != null
-    ? getCrusorStyle(mouseEnterId.value!, true)
-    : getCrusorStyle(activeIndex.value!, true)
+const cursorStyle = computed<CSSProperties>(() => {
+  return {
+    left:
+      mouseEnterId.value != null
+        ? getCursorStyle(mouseEnterId.value!) + "px"
+        : getCursorStyle(activeIndex.value) + "px",
+    width:
+      mouseEnterId.value != null
+        ? getCursorStyle(mouseEnterId.value!, true) + "px"
+        : getCursorStyle(activeIndex.value, true) + "px",
+    transition: `all ${cursorTransTime.value}s ease`
+  }
 })
 // 根据路由获取当前页面对应ID
 const getCurrentIndex = () => {
@@ -73,9 +69,8 @@ const getCurrentIndex = () => {
   })
   return currentIndex
 }
-
 // 获取'提示线'宽高
-const getCrusorStyle = (acIndex: number, isWidth: boolean = false) => {
+const getCursorStyle = (acIndex: number, isWidth: boolean = false) => {
   if (props.navList.length === 0) {
     return null
   }
