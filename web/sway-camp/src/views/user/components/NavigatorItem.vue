@@ -9,9 +9,7 @@
     <span class="icon">
       <SwayIcon :name="navItem.icon" :color="navItem.color" :size="navItem.size" />
     </span>
-    <span class="text" :class="{ active: $route.name === navItem.name || isEnter }">{{
-      navItem.title
-    }}</span>
+    <span class="text" :class="{ 'item-active': active }">{{ navItem.title }}</span>
     <span class="num" v-if="navItem.num">{{ navItem.num }}</span>
   </div>
 </template>
@@ -24,8 +22,10 @@ import type { NavigatorItemType } from "../types/user-nav"
 const props = withDefaults(
   defineProps<{
     navItem: NavigatorItemType
+    itemIndex: number
+    active?: boolean
   }>(),
-  {}
+  { active: false }
 )
 const emits = defineEmits<{
   (e: "getWidth", itemId: number, width: number): void
@@ -41,7 +41,7 @@ const navItemRef = ref<HTMLDivElement | null>(null)
 // 鼠标移入
 const mouseEnter = () => {
   isEnter.value = true
-  emits("mouseEnter", props.navItem.id)
+  emits("mouseEnter", props.itemIndex)
 }
 // 鼠标移出
 const mouseLeave = () => {
@@ -50,13 +50,13 @@ const mouseLeave = () => {
 }
 // 点击回调
 const click = () => {
-  emits("click", props.navItem.id)
+  emits("click", props.itemIndex)
 }
 
 onMounted(() => {
   // 宽度需要减去padding
   if (!isEmpty(navItemRef)) {
-    emits("getWidth", props.navItem.id, navItemRef.value!.offsetWidth - 20)
+    emits("getWidth", props.itemIndex, navItemRef.value!.offsetWidth - 20)
   }
 })
 </script>
@@ -70,7 +70,7 @@ onMounted(() => {
   padding-right: 20px;
   user-select: none;
   cursor: pointer;
-  .active {
+  .item-active {
     color: skyblue;
   }
   .icon {
