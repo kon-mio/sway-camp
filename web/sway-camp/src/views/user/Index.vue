@@ -15,19 +15,17 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { reactive } from "vue"
+import { useRouter } from "vue-router"
 import AppRouter from "@/layout/app-router/AppRouter.vue"
 import Navigator from "./components/Navigator.vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
 import type { NavigatorItemType } from "./types/user-nav"
 
-const $route = useRoute()
 const $router = useRouter()
 const { userInfo } = storeToRefs(useUserStore())
 // 导航列表
-const activeIndex = ref(0)
 const navList = reactive<NavigatorItemType[]>([
   { id: 1, title: "主页", name: "User", icon: "shouye", color: "skyblue", size: 24 },
   { id: 2, title: "文章", name: "UserArticle", icon: "icon2", color: "#00c091", size: 17, num: 10 },
@@ -55,13 +53,6 @@ const chooseItem = (acIndex: number) => {
   })
   $router.push({ name: activeItem!.name, params: { id: userInfo.value?.id } })
 }
-onMounted(() => {
-  navList.forEach((item, index) => {
-    if (item.name === $route.name) {
-      activeIndex.value = index
-    }
-  })
-})
 </script>
 
 <style lang="less" scoped>
