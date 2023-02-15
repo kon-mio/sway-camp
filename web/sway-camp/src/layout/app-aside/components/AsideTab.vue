@@ -50,7 +50,7 @@ export default defineComponent({
     .line {
       width: 5px;
       height: 40px;
-      background-color: @line-1;
+      background-color: @line-gray-3;
       border-radius: 6px;
     }
   }

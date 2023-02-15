@@ -131,7 +131,7 @@ export default defineComponent({
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: @mark-1;
+    background-color: @mark-black-1;
     opacity: 0.2;
   }
   &-close {
@@ -149,7 +149,7 @@ export default defineComponent({
     position: relative;
     width: 800px;
     height: 420px;
-    background-color: @bg-1;
+    background-color: @bg-white-0;
     border-radius: 16px;
   }
   &-inner {
@@ -176,7 +176,7 @@ export default defineComponent({
       width: 1px;
       height: 80%;
       margin: 0 45px;
-      background-color: @line-1;
+      background-color: @line-gray-3;
     }
     &--right {
       box-sizing: border-box;
@@ -188,7 +188,7 @@ export default defineComponent({
           display: flex;
           justify-content: center;
           height: 20px;
-          color: @text-2;
+          color: @text-gray-7;
 
           &--password,
           &--email {
@@ -199,7 +199,7 @@ export default defineComponent({
           &--line {
             width: 1px;
             height: 20px;
-            background-color: @line-2;
+            background-color: @line-gray-2;
             margin: 0 21px;
           }
         }
@@ -217,7 +217,7 @@ export default defineComponent({
           font-size: 13px;
           line-height: 16px;
           text-align: center;
-          color: @text-1;
+          color: @text-black-0;
           margin-bottom: 12px;
         }
         .sns {
@@ -248,7 +248,7 @@ export default defineComponent({
     bottom: 30px;
     left: 280px;
     font-size: 13px;
-    color: @text-5;
+    color: @text-gray-4;
     margin-top: 40px;
     &--content {
       user-select: none;

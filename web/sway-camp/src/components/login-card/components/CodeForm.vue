@@ -136,19 +136,19 @@ const getCode = async () => {
   padding: 0 20px;
   align-items: center;
   height: 43px;
-  border: 1px solid @line-2;
+  border: 1px solid @line-gray-2;
   input {
     margin-top: 3px;
     width: 170px;
     outline: none;
     border: none;
     font-size: 14px;
-    color: @text-3;
+    color: @text-gray-8;
   }
 
   .text {
     font-size: 14px;
-    color: @text-3;
+    color: @text-gray-8;
   }
 }
 .code-form-mail {
@@ -171,12 +171,12 @@ const getCode = async () => {
       display: inline-block;
       width: 1px;
       height: 26px;
-      background: @line-1;
+      background: @line-gray-3;
       margin-right: 24px;
     }
     .text {
       user-select: none;
-      color: @text-4;
+      color: @text-blue-5;
       cursor: pointer;
     }
   }
@@ -189,7 +189,7 @@ const getCode = async () => {
 }
 
 .code-disable {
-  color: @text-6 !important;
+  color: @text-gray-3 !important;
   pointer-events: none;
 }
 </style>

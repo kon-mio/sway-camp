@@ -1,5 +1,4 @@
 <template>
-  <!-- @click="$router.push({ name: navItem.name, params: { id: userId } })" -->
   <div
     class="nav-item"
     ref="navItemRef"
@@ -21,12 +20,10 @@
 import { ref, onMounted } from "vue"
 import { isEmpty } from "@/utils/data/valid"
 import type { NavigatorItemType } from "../types/user-nav"
-import { useRouter } from "vue-router"
 
 const props = withDefaults(
   defineProps<{
     navItem: NavigatorItemType
-    userId: number
   }>(),
   {}
 )
@@ -37,7 +34,6 @@ const emits = defineEmits<{
   (e: "click", itemId: number): void
 }>()
 
-const $router = useRouter()
 const isEnter = ref(false)
 // item实例
 const navItemRef = ref<HTMLDivElement | null>(null)
@@ -54,7 +50,6 @@ const mouseLeave = () => {
 }
 // 点击回调
 const click = () => {
-  $router.push({ name: props.navItem.name, params: { id: props.userId } })
   emits("click", props.navItem.id)
 }
 

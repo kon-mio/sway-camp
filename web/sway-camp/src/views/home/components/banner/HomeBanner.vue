@@ -22,8 +22,8 @@ export default defineComponent({
 <style lang="less" scoped>
 .border-class {
   box-sizing: border-box;
-  border: 3px @line-0 solid;
-  box-shadow: 0 1px 3px @shadow-1;
+  border: 3px @line-white-0 solid;
+  box-shadow: 0 1px 3px @shadow-gray-3;
   border-radius: 12px;
   overflow: hidden;
 }

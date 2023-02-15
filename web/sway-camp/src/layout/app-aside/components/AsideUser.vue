@@ -164,7 +164,7 @@ export default defineComponent({
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background-color: @bg-2;
+    background-color: @bg-gray-1;
     overflow: hidden;
     cursor: pointer;
     span {

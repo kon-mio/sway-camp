@@ -49,7 +49,7 @@ const { messageMini } = storeToRefs(useGlobalStore())
     overflow: hidden;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
-    background-color: @bg-2;
+    background-color: @bg-gray-1;
   }
 }
 </style>

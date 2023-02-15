@@ -19,15 +19,15 @@
             @mouse-leave="mouseLeave"
           />
         </div>
+        <div
+          class="cursor"
+          :style="{
+            width: compWidth + 'px',
+            left: compLeft + 'px',
+            transition: `all ${cursorTransTime}s ease`
+          }"
+        ></div>
       </div>
-      <div
-        class="cursor"
-        :style="{
-          width: cursorWidth + 'px',
-          left: cursorLeft + 'px',
-          transition: `all ${cursorTransTime}s ease`
-        }"
-      ></div>
     </div>
     <div class="content">
       <app-router />
@@ -36,19 +36,21 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, watch, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { reactive, ref, watch, onMounted, computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import AppRouter from "@/layout/app-router/AppRouter.vue"
 import NavigatorItem from "./components/NavigatorItem.vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
 import type { NavigatorItemType } from "./types/user-nav"
+import { isEmpty } from "@/utils/data/valid"
 
 // 注意：因为每次切换子路由时每次都会初始化'提示线'的数据，
-//      导致切换路由时每次'提示线'都会从头开始，故使用定时器只在需要时事提供线条动画
+//      导致切换路由时每次'提示线'都会从头开始，故使用定时器只在需要时提供线条动画
 //      暂未知原因 ！！！
 
 const $route = useRoute()
+const $router = useRouter()
 const { userInfo } = storeToRefs(useUserStore())
 // 导航列表
 const navList = reactive<NavigatorItemType[]>([
@@ -78,46 +80,59 @@ const activeId = ref(1)
 const mouseEnterId = ref<number | null>(null)
 
 // 提示线
-const cursorWidth = ref(54)
-const cursorLeft = ref(30)
+const cursorWidth = ref(4)
 const cursorTransTime = ref(0)
 
-const useCursorAnime = () => {
-  cursorTransTime.value = 0.4
+// 获取距离左侧总和
+const compLeft = computed(() => {
+  let count = 0
+  if (mouseEnterId.value != null) {
+    navList.forEach((item) => {
+      if (item.id < mouseEnterId.value!) {
+        count += item.width! + 20
+      }
+    })
+  } else {
+    navList.forEach((item) => {
+      if (item.id < activeId.value) {
+        count += item.width! + 20
+      }
+    })
+  }
+  return count
+})
+const compWidth = computed(() => {
+  let width = 0
+  if (mouseEnterId.value != null) {
+    navList.forEach((item) => {
+      if (item.id == mouseEnterId.value) {
+        width = item.width!
+      }
+    })
+  } else {
+    navList.forEach((item) => {
+      if (item.id == activeId.value) {
+        width = item.width!
+      }
+    })
+  }
+  return width
+})
+// 使用动画
+const useCursorAnime = (time: number) => {
+  cursorTransTime.value = time
   setTimeout(() => {
     cursorTransTime.value = 0
-  }, 400)
-}
-// 获取距离左侧总和
-const setLetfCount = (id: number) => {
-  let leftInit = 30
-  navList.forEach((item, index) => {
-    if (item.id < id) {
-      leftInit += item.width! + 20
-    }
-  })
-  cursorLeft.value = leftInit
-}
-// 设置提示线宽度
-const setCursorWidth = (id: number) => {
-  navList.forEach((item) => {
-    if (item.id == id) {
-      cursorWidth.value = item.width!
-    }
-  })
+  }, time * 100)
 }
 // 鼠标移入
 const mouseEnter = (itemId: number) => {
-  useCursorAnime()
+  useCursorAnime(0.25)
   mouseEnterId.value = itemId
-  setLetfCount(mouseEnterId.value)
-  setCursorWidth(mouseEnterId.value)
 }
 const mouseLeave = () => {
-  useCursorAnime()
+  useCursorAnime(0.25)
   mouseEnterId.value = null
-  setLetfCount(activeId.value)
-  setCursorWidth(activeId.value)
 }
 // 获取每个导航宽度
 const getWidth = (id: number, width: number) => {
@@ -129,22 +144,15 @@ const getWidth = (id: number, width: number) => {
   })
 }
 
-// watch(
-//   () => $route.name,
-//   (newValue) => {
-//     let activeItem = navList.find((item) => {
-//       return item.name === newValue
-//     })
-//     activeId.value = activeItem?.id!
-//   }
-// )
 const chooseItem = (id: number) => {
   let activeItem = navList.find((item) => {
     return item.id === id
   })
+  if (isEmpty(activeItem)) {
+    return
+  }
+  $router.push({ name: activeItem!.name, params: { id: userInfo.value?.id } })
   activeId.value = activeItem?.id!
-  setLetfCount(activeId.value)
-  setCursorWidth(activeId.value)
 }
 
 const navigatorInit = () => {
@@ -153,9 +161,6 @@ const navigatorInit = () => {
     return item.name === $route.name
   })
   activeId.value = activeItem?.id!
-  // 初始化提示线偏移、宽度
-  setLetfCount(activeId.value)
-  setCursorWidth(activeId.value)
 }
 
 onMounted(() => navigatorInit())
@@ -188,7 +193,8 @@ onMounted(() => navigatorInit())
     padding: 0 30px;
     background-color: white;
     .wapper {
-      margin: 0 auto;
+      position: relative;
+      margin-left: 50px;
       .nav-tab {
         display: flex;
         flex-direction: row;
@@ -201,7 +207,7 @@ onMounted(() => navigatorInit())
       width: 0;
       height: 4px;
       border-radius: 4px;
-      background: #00a1d6;
+      background: @line-blue-4;
     }
   }
 }

@@ -87,7 +87,7 @@ export default defineComponent({
     .point {
       width: 5px;
       height: 5px;
-      background-color: @text-1;
+      background-color: @text-black-0;
       border-radius: 50%;
     }
   }

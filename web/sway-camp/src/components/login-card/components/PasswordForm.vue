@@ -88,19 +88,19 @@ const register = () => {
   align-items: center;
   padding: @input-padding;
   height: 43px;
-  border: 1px solid @line-2;
+  border: 1px solid @line-gray-2;
   input {
     width: 230px;
     outline: none;
     border: none;
     font-size: 14px;
     margin-top: 2px;
-    color: @text-3;
+    color: @text-gray-8;
   }
   .text {
     margin-right: 20px;
     font-size: 14px;
-    color: @text-3;
+    color: @text-gray-8;
   }
 }
 .form-account {
@@ -132,7 +132,7 @@ const register = () => {
   .forget {
     position: relative;
     font-size: 13px;
-    color: @text-4;
+    color: @text-blue-5;
     cursor: pointer;
   }
 }
