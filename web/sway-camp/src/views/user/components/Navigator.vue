@@ -142,7 +142,6 @@ onBeforeMount(() => {
       display: flex;
       flex-direction: row;
       background-color: rgba(255, 255, 255, 0);
-      z-index: 10;
     }
     .cursor {
       position: absolute;

@@ -4,6 +4,7 @@
       ref="elCarousel"
       :autoplay="autoPlay"
       :pause-on-hover="true"
+      indicator-position="none"
       @change="carouselChange"
       @mouseleave="navLeave"
       @mouseenter="navEnter(null)"
@@ -47,6 +48,18 @@
           </div>
         </div>
       </div>
+    </div>
+    <!-- 底部控制、信息栏 -->
+    <div class="carousel-indicator">
+      <ul>
+        <li
+          v-for="index in list.length"
+          :key="index"
+          :class="{ 'li-active': currentIndex === index - 1 }"
+          @mouseenter="navEnter(index - 1)"
+          @mouseleave="navLeave"
+        ></li>
+      </ul>
     </div>
   </div>
 </template>
@@ -142,10 +155,10 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 
-  ::v-deep(.el-carousel__indicators--horizontal) {
-    left: 2%;
-    transform: translateX(0);
-  }
+  // ::v-deep(.el-carousel__indicators--horizontal) {
+  //   left: 2%;
+  //   transform: translateX(0);
+  // }
   ::v-deep(.el-carousel__item) {
     // 解决未知遮罩错误
     z-index: 1;
@@ -211,8 +224,7 @@ export default defineComponent({
       width: 0px;
       height: 100%;
       &.is-progressing {
-        // background: hsla(0, 0%, 100%, 0.9);
-        background-color: skyblue;
+        background: hsla(0, 0%, 100%, 0.9);
         width: 100%;
       }
     }
@@ -228,6 +240,34 @@ export default defineComponent({
       background: linear-gradient(180deg, hsla(0, 0%, 100%, 0.4), hsla(0, 0%, 100%, 1) 50%);
       transition: all 0.4s;
     }
+  }
+}
+.carousel-indicator {
+  position: absolute;
+  left: 20px;
+  bottom: 10px;
+  flex-grow: 1;
+  z-index: 2;
+  transition: filter 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  ul,
+  li {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  li {
+    display: inline-block;
+    height: 4px;
+    width: 20px;
+    margin: 0 3px;
+    border-radius: 2px;
+    background-color: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: width 0.5s;
+  }
+  .li-active {
+    width: 36px;
+    background-color: #f0f0f0;
   }
 }
 
