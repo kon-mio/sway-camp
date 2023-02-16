@@ -55,7 +55,7 @@ const click = () => {
 onMounted(() => {
   // 宽度需要减去padding
   if (navItemRef.value != null) {
-    emits("getWidth", props.itemIndex, navItemRef.value.offsetWidth - 20)
+    emits("getWidth", props.itemIndex, navItemRef.value.offsetWidth - 30)
   }
 })
 </script>
@@ -66,7 +66,7 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
   line-height: 66px;
-  padding-right: 20px;
+  padding-right: 30px;
   user-select: none;
   cursor: pointer;
   z-index: 2;
@@ -84,7 +84,7 @@ onMounted(() => {
     vertical-align: middle;
   }
   .text {
-    font-size: 13px;
+    font-size: 14px;
     vertical-align: middle;
     transition: all 0.2s;
   }

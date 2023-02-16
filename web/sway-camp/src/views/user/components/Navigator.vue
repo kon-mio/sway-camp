@@ -85,7 +85,7 @@ const getCursorStyle = (acIndex: number, isWidth: boolean = false) => {
     let count = 0
     props.navList.forEach((item, index) => {
       if (index < acIndex) {
-        count += item.width! + 20
+        count += item.width! + 30
       }
     })
     return count
