@@ -22,7 +22,7 @@ export default defineComponent({
       transform: `translateY(${visible.value ? "0px" : "-86vh"})`
     }))
     const hasTarget = computed(() => props.target !== "")
-
+    
     const scroller = (e: Event) => {
       throttle(() => {
         const scTop = (e.target as HTMLElement).scrollTop
