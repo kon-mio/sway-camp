@@ -1,4 +1,4 @@
-import { App } from "vue"
+import { Plugin } from "vue"
 import SwayIcon from "./SwayIcon.vue"
 
 // 全局组件
@@ -9,8 +9,10 @@ const components = [SwayIcon]
  * @param app 根vue
  * @returns
  */
-export const complInit = (app: App<Element>) => {
-  components.forEach((comp) => {
-    app.component(comp.name, comp)
-  })
+export const complInit: Plugin = {
+  install(app) {
+    components.forEach((comp) => {
+      app.component(comp.name, comp)
+    })
+  }
 }

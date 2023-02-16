@@ -237,7 +237,7 @@ const chooseItem = (acIndex: number) => {
   width: auto;
   height: fit-content;
   box-sizing: border-box;
-  padding: 40px 50px 20px;
+  padding: 40px 60px 20px;
   min-height: calc(80vh - 166px);
   background-color: white;
   z-index: 1;
@@ -246,17 +246,8 @@ const chooseItem = (acIndex: number) => {
 .fade-enter-active {
   transition: all 0.5s ease;
 }
-
-.fade-leave-active {
-  transition: all 0s ease;
-}
-
 .fade-enter-from {
   opacity: 0;
   transform: translateY(50px);
-}
-
-.fade-leave-to {
-  opacity: 0;
 }
 </style>
