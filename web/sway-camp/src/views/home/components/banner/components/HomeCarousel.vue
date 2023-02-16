@@ -164,6 +164,7 @@ export default defineComponent({
   bottom: 12px;
   display: flex;
   flex-direction: row;
+  z-index: 10;
 
   &-item {
     position: relative;
@@ -210,7 +211,8 @@ export default defineComponent({
       width: 0px;
       height: 100%;
       &.is-progressing {
-        background: hsla(0, 0%, 100%, 0.9);
+        // background: hsla(0, 0%, 100%, 0.9);
+        background-color: skyblue;
         width: 100%;
       }
     }
@@ -224,7 +226,6 @@ export default defineComponent({
       padding: 3px;
       border-radius: 8px;
       background: linear-gradient(180deg, hsla(0, 0%, 100%, 0.4), hsla(0, 0%, 100%, 1) 50%);
-      z-index: 2;
       transition: all 0.4s;
     }
   }
