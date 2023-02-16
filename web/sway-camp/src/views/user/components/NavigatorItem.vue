@@ -16,7 +16,6 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from "vue"
-import { isEmpty } from "@/utils/data/valid"
 import type { NavigatorItemType } from "../types/user-nav"
 
 const props = withDefaults(
@@ -55,8 +54,8 @@ const click = () => {
 
 onMounted(() => {
   // 宽度需要减去padding
-  if (!isEmpty(navItemRef)) {
-    emits("getWidth", props.itemIndex, navItemRef.value!.offsetWidth - 20)
+  if (navItemRef.value != null) {
+    emits("getWidth", props.itemIndex, navItemRef.value.offsetWidth - 20)
   }
 })
 </script>
@@ -70,6 +69,7 @@ onMounted(() => {
   padding-right: 20px;
   user-select: none;
   cursor: pointer;
+  z-index: 2;
   .item-active {
     color: skyblue;
   }

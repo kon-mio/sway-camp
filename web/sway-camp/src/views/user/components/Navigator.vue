@@ -26,7 +26,6 @@ import { ref, computed, onBeforeMount, CSSProperties } from "vue"
 import { useRoute } from "vue-router"
 import NavigatorItem from "./NavigatorItem.vue"
 import type { NavigatorItemType } from "../types/user-nav"
-import { isEmpty } from "@/utils/data/valid"
 
 const props = withDefaults(
   defineProps<{
@@ -142,16 +141,19 @@ onBeforeMount(() => {
     .nav-tab {
       display: flex;
       flex-direction: row;
+      background-color: rgba(255, 255, 255, 0);
+      z-index: 10;
     }
-  }
-  .cursor {
-    position: absolute;
-    left: 0;
-    bottom: 0px;
-    width: 0;
-    height: 4px;
-    border-radius: 4px;
-    background: skyblue;
+    .cursor {
+      position: absolute;
+      left: 0;
+      bottom: 0px;
+      width: 0;
+      height: 4px;
+      border-radius: 4px;
+      z-index: 1;
+      background: skyblue;
+    }
   }
 }
 </style>
