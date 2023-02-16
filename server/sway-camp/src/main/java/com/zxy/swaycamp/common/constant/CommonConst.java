@@ -15,6 +15,7 @@ public class CommonConst {
      */
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
+    public static final Integer TOKEN_SALT_LENGTH = 12;
 
     /**
      * 状态

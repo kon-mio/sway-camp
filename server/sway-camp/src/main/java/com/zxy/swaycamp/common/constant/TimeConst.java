@@ -13,7 +13,8 @@ public class TimeConst {
     /**
      * Token过期时间：7天
      */
-    public static final Integer TOKEN_EXPIRE = 7;
+    public static final Integer TOKEN_EXPIRE_REFRESH = 30;
+    public static final Integer TOKEN_EXPIRE_ACCESS = 7;
 
     /**
      * 验证码过期时间

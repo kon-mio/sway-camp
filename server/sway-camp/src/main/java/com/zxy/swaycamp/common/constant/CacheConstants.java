@@ -13,7 +13,8 @@ public class CacheConstants {
     /**
      * 登录用户token redis key
      */
-    public static final String LOGIN_TOKEN_KEY = "sway_token:";
+    public static final String LOGIN_TOKEN_ACCESS_KEY = "sway_token_access:";
+    public static final String LOGIN_TOKEN_REFRESH_KEY = "sway_token_refresh:";
 
     /**
      * 登录用户token redis key

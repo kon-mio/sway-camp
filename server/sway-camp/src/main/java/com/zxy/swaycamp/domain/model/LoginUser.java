@@ -25,6 +25,7 @@ public class LoginUser implements Serializable {
      */
     private Integer userRole;
 
+
     /**
      * 登录时间
      */

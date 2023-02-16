@@ -57,6 +57,16 @@ public class UserController {
     }
 
     /**
+     * 根据token获取用户信息
+     * @return 用户信息
+     */
+    @LoginCheck
+    @GetMapping("/info")
+    public SwayResult<UserVO> getUserInfo(){
+        return SwayResult.success(userService.getUserInfo());
+    }
+
+    /**
      * 获取验证码
      *
      * @param account 邮箱/手机号
@@ -70,6 +80,8 @@ public class UserController {
         }
         return SwayResult.success();
     }
+
+
 
     /**
      * 修改密码

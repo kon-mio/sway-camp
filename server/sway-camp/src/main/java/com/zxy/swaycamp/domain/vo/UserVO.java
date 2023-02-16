@@ -18,6 +18,7 @@ public class UserVO {
     private Integer gender;
     private String avatar;
     private String introduction;
-    private String token;
+    private String accessToken;
+    private String refreshToken;
 
 }

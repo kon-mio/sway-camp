@@ -42,7 +42,7 @@ public class SwayUtil {
     /**
      * 获取token中的UserId
      */
-    public static Integer getLoginUserId() {
-        return SwayUtil.getToken() == null ? null : TokenUtil.getClaims(SwayUtil.getToken());
+    public static Integer getCurrentUserId() {
+        return SwayUtil.getToken() == null ? null : TokenUtil.getUserId(SwayUtil.getToken());
     }
 }

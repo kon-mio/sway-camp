@@ -23,17 +23,17 @@ public interface UserService extends IService<User> {
    UserVO login(LoginDTO loginDto);
 
     /**
-     * 获取验证码
-     * @param account 邮箱/手机
-     */
-   void getCode(String account);
-
-    /**
      * 用户注册
      * @param registerDto 注册参数
      * @return 用户信息
      */
    UserVO register(RegisterDTO registerDto);
+
+   /**
+     * 根据token获取用户信息
+     * @return 用户信息
+     */
+   UserVO getUserInfo();
 
     /**
      * 更新用户密码
@@ -41,5 +41,11 @@ public interface UserService extends IService<User> {
      * @param code 验证码
      */
    void updatePassword(String password,Integer code);
+
+    /**
+     * 获取验证码
+     * @param account 邮箱/手机
+     */
+    void getCode(String account);
 
 }

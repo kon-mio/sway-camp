@@ -72,7 +72,7 @@ public class LogAspect {
             SystemLog systemLog = new SystemLog();
             systemLog.setStatus(CommonConst.STATUS_TRUE);
             // 获取当前的用户ID
-            Integer userId = SwayUtil.getLoginUserId();
+            Integer userId = SwayUtil.getCurrentUserId();
             if (userId != null) {
                 systemLog.setRequestUser(userId);
             }
@@ -105,7 +105,6 @@ public class LogAspect {
             logger.error("异常信息:{}", exp.getMessage());
         }
     }
-
 
     /**
      * 忽略敏感属性
