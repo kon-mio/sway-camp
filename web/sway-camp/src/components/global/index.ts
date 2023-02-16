@@ -1,8 +1,9 @@
 import { Plugin } from "vue"
 import SwayIcon from "./SwayIcon.vue"
+import BreakTop from "./BreakTop.vue"
 
 // 全局组件
-const components = [SwayIcon]
+const components = [SwayIcon, BreakTop]
 
 /**
  * 注册全局组件

@@ -173,6 +173,16 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
+"@konmio/icons@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@konmio/icons/-/icons-0.0.2.tgz#66468aa8a6512a66d1dc31bcc418f05cdf747c0a"
+  integrity sha512-px22ahL4CpGPLY3o3n/UFDnLf5W1wPWT1Kh1w+qCov9KATTuA8697aPe8JGCjCXvTeu8Jxbpb8skWiox5WIO4A==
+
+"@konmio/utils@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@konmio/utils/-/utils-1.0.2.tgz#1d16d50b26c2c35ee10ea76e9bacc69f297e1433"
+  integrity sha512-ucopDS5nFh7a8dnqFa057PRlojvB796OEloxF7EwiW9Ri+TkIGE9VwfsXH8YJFkYgxmNMouaWtW4icZGsinVEQ==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -1225,6 +1235,14 @@ json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==
+
+konmio@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/konmio/-/konmio-1.0.2.tgz#0cbd7c14d2bb2319121d39ae932baa445a3dda91"
+  integrity sha512-barKII6OgauGDJWyNjJdhA+iO/foomvJ0gpox557lwX6KPNh3u4DfsnvbikwSzaaOi3nxsAcbuknGKxWUj4jbg==
+  dependencies:
+    "@konmio/icons" "0.0.2"
+    "@konmio/utils" "^1.0.2"
 
 less@^4.1.3:
   version "4.1.3"
