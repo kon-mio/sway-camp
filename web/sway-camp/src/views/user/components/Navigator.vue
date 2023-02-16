@@ -134,14 +134,12 @@ onBeforeMount(() => {
   height: 66px;
   box-sizing: border-box;
   padding: 0 30px;
-  background-color: white;
   .wapper {
     position: relative;
-    margin-left: 50px;
+    margin-left: 20px;
     .nav-tab {
       display: flex;
       flex-direction: row;
-      background-color: rgba(255, 255, 255, 0);
     }
     .cursor {
       position: absolute;

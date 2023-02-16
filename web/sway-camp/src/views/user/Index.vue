@@ -5,6 +5,32 @@
         <img src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg" />
       </div>
     </div>
+    <div class="base-info">
+      <!-- 用户资料 -->
+      <div class="wapper">
+        <div class="avatar">
+          <img
+            src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg"
+            class="base-img"
+          />
+          <p>更换头像</p>
+        </div>
+        <div class="info">
+          <div class="name">
+            <div style="position: relative">
+              <b>你好</b>
+              <sway-icon name="icon" :size="10" style="position: relative; top: -6px; left: 2px" />
+            </div>
+          </div>
+          <div class="item">
+            <b>Sid:123</b>
+          </div>
+          <div class="btn">
+            <span>预设按钮</span>
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="user-navigator">
       <navigator :nav-list="navList" @click="chooseItem" />
     </div>
@@ -60,17 +86,134 @@ const chooseItem = (acIndex: number) => {
   position: relative;
   width: 100%;
   height: 100%;
+  user-select: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+
   .header {
+    position: sticky;
+    top: 0;
     width: 100%;
-    height: 200px;
-    background-color: aquamarine;
+    height: 20vh;
+    overflow: hidden;
+    filter: blur(4px);
+    z-index: 1;
     &-bg {
-      width: 100%;
-      height: 100%;
+      width: inherit;
+      height: inherit;
       img {
-        width: 100%;
-        height: 100%;
+        width: inherit;
+        height: inherit;
         object-fit: cover;
+      }
+    }
+  }
+  .base-info {
+    position: relative;
+    top: 0px;
+    width: 100%;
+    z-index: 2;
+    background: white;
+
+    .wapper {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      width: 100%;
+      padding: 0 30px;
+      box-sizing: border-box;
+
+      .avatar {
+        position: relative;
+        top: -40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100px;
+        height: 100px;
+        box-sizing: border-box;
+        border: 2px solid white;
+        border-radius: 50%;
+        overflow: hidden;
+        transition: all 0.35s;
+        cursor: pointer;
+
+        &::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100px;
+          height: 100px;
+          background: rgba(0, 0, 0, 0.4);
+          transition: all 0.3s ease;
+          opacity: 0;
+          z-index: 2;
+        }
+
+        &:hover {
+          transform: scale(1.1);
+
+          &::before {
+            opacity: 1;
+          }
+
+          p {
+            opacity: 1;
+          }
+        }
+
+        img {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        p {
+          position: relative;
+          line-height: 21px;
+          font-size: 14px;
+          color: rgb(242, 242, 242);
+          z-index: 3;
+          opacity: 0;
+        }
+      }
+      .info {
+        width: 100%;
+        overflow: hidden;
+        .name {
+          margin-top: 16px;
+        }
+
+        .item {
+          margin: 8px 0;
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.32);
+        }
+        .btn {
+          position: absolute;
+          top: 16px;
+          right: 80px;
+
+          span {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #666;
+            text-align: center;
+            text-decoration: none;
+            background-color: #f5f5f5;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            &:hover{
+              background-color: #e6e6e6;
+            }
+          }
+        }
       }
     }
   }
@@ -79,8 +222,16 @@ const chooseItem = (acIndex: number) => {
     width: 100%;
     height: 66px;
     box-sizing: border-box;
-    padding: 0 30px;
     background-color: white;
+    z-index: 2;
+  }
+  .content {
+    position: relative;
+    width: auto;
+    height: fit-content;
+    min-height: calc(80vh - 166px);
+    background-color: white;
+    z-index: 1;
   }
 }
 </style>
