@@ -35,7 +35,7 @@ const router = createRouter({
 
 router.beforeEach(async (to, from) => {
   // 获取用户登录状态
-  // ！请求报错会终止路由
+  // ！请求报错会终止路由 需要刷新页面
   await useUserStore().refreshInfo()
   // 动态title
   if (to.meta.title) {

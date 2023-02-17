@@ -11,6 +11,7 @@ export const useUserStore = defineStore("user", {
   actions: {
     // 刷新用户信息
     async refreshInfo() {
+      if (!storage.get("access_token")) return
       const res = await getUserInfoApi()
       if (res.code === 200) {
         this.login(res.data, true)

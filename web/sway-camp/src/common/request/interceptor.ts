@@ -80,9 +80,12 @@ export default class AxiosInterceptor {
               }
             })
           })
-        } else {
-          return response
+        } else if (response.data.code === HttpStatusCode.Unauthorized) {
+          storage.remove("access_token")
+          storage.remove("refresh_token")
+          SwayNotion("登录", "请重新登录", "warning")
         }
+        return response
       },
       (error) => {
         return Promise.reject(error)
