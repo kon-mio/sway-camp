@@ -1,7 +1,7 @@
 <template>
   <div class="info">
     <em>点击相应信息进行修改</em>
-    <button class="info-btn-sub">提交修改</button>
+    <button class="info-btn-sub" @click="updateUserInfo">提交修改</button>
     <!-- 账户信息 -->
     <h3>账号信息 <span>*不可修改</span></h3>
     <div v-for="(p, item) in accountInfo" :key="item" class="info-group">
@@ -49,6 +49,7 @@
 import { onMounted, reactive, toRefs } from "vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
+import { getUserInfoApi } from "@/api/user/api"
 export default {
   name: "UserInfo",
   setup() {
@@ -96,8 +97,13 @@ export default {
       InfoTabs.basicInfo = basicInfo
       InfoTabs.contactInfo = contactInfo
     })
+
+    const updateUserInfo = () => {
+      getUserInfoApi()
+    }
     return {
       userInfo,
+      updateUserInfo,
       ...toRefs(InfoTabs)
     }
   }

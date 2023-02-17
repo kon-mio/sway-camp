@@ -38,15 +38,15 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, reactive, ref, toRefs } from "vue"
-import { codeLoginApi, getCodeApi } from "@/api/user/api"
-import { useInterval } from "@/hooks/useInterval.hooks"
+import { computed, reactive, ref } from "vue"
 import SwayNotion from "@/utils/notice"
 import { useGlobalStore } from "@/stores/global.sotre"
-import { isEmpty } from "@/utils/valid"
-import type { LoginDto, UserInfo } from "@/api/user/type"
 import { HttpStatusCode } from "@/common/enum"
-import { isEmail, isPhone } from "@/utils/valid"
+import { isEmpty,isEmail, isPhone } from "@/utils/valid"
+import { useInterval } from "@/hooks/useInterval.hooks"
+import { codeLoginApi, getCodeApi } from "@/api/user/api"
+import type { LoginDto, UserInfo } from "@/api/user/type"
+
 
 const emits = defineEmits<{
   (e: "regist", type: boolean): void

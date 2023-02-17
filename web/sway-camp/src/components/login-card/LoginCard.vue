@@ -76,7 +76,7 @@ import { useGlobalStore } from "@/stores/global.sotre"
 import { useUserStore } from "@/stores/user.store"
 import SwayNotion from "@/utils/notice"
 import { storeToRefs } from "pinia"
-import { defineComponent, ref } from "vue"
+import { defineComponent, onMounted, ref } from "vue"
 import CodeForm from "./components/CodeForm.vue"
 import PasswordForm from "./components/PasswordForm.vue"
 export default defineComponent({
@@ -96,11 +96,13 @@ export default defineComponent({
     const { loginCard } = storeToRefs(globalStore)
     const { closeLoginCard } = globalStore
     const loginSuccess = (userInfo: UserInfo) => {
-      userStore.setUserInfo(userInfo)
-      userStore.login()
+      userStore.login(userInfo)
       closeLoginCard()
       SwayNotion("登录", "登录成功", "success")
     }
+    onMounted(() => {
+      userStore.refreshInfo()
+    })
     return {
       isLogin,
       codeLogin,

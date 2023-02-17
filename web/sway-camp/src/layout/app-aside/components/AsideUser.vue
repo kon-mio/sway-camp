@@ -131,13 +131,6 @@ export default defineComponent({
     // 全局登录卡片
     const globalStore = useGlobalStore()
     const { openLoginCard } = globalStore
-    onMounted(() => {
-      if (isLogin) {
-        if (!userInfo || !userInfo.value?.token) {
-          userStore.exit()
-        }
-      }
-    })
     return {
       isLogin,
       userInfo,

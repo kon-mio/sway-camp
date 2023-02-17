@@ -45,3 +45,31 @@ export async function getCodeApi(account: string | number): Promise<CommonResult
     throw newError()
   }
 }
+
+/**
+ * 获取用户信息
+ * @returns 用户信息
+ */
+export async function getUserInfoApi(): Promise<CommonResult<Type.UserInfo>> {
+  try {
+    const { data } = await request.get<Type.UserInfo>("/user/info")
+    return data
+  } catch (e) {
+    throw e
+    console.log(e)
+    // throw newError()
+  }
+}
+
+/**
+ * 刷新token
+ * @returns 新token
+ */
+export async function refreshTokenApi(): Promise<CommonResult<Type.TokenInfo>> {
+  try {
+    const { data } = await request.get<Type.TokenInfo>("/user/refresh")
+    return data
+  } catch {
+    throw newError()
+  }
+}
