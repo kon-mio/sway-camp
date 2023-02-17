@@ -1,6 +1,7 @@
 package com.zxy.swaycamp.utils.request;
 
 import com.zxy.swaycamp.common.constant.CommonConst;
+import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
@@ -60,9 +61,9 @@ public class TokenUtil {
                     .parseClaimsJws(token)
                     .getBody();
         } catch (ExpiredJwtException e) {
-            throw new ServiceException("token已过期");
+            throw new ServiceException(HttpStatus.FORBIDDEN, "token已过期");
         } catch (Exception e){
-            throw new ServiceException(e.getMessage());
+            throw new ServiceException(HttpStatus.UNAUTHORIZED, "token不合法");
         }
     }
 
@@ -90,10 +91,10 @@ public class TokenUtil {
             return null;
         }
         if(isTokenExpired(claims)){
-            throw new ServiceException("token已过期");
+            throw new ServiceException(HttpStatus.FORBIDDEN, "token已过期");
         }
         if(claims.get("id") == null){
-            throw new ServiceException("token不合法");
+            throw new ServiceException(HttpStatus.UNAUTHORIZED, "token不合法");
         }
         return (Integer) claims.get("id");
     }

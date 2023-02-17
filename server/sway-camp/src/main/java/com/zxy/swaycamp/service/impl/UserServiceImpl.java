@@ -254,7 +254,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         Integer userId = SwayUtil.getCurrentUserId();
         String refreshToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + userId);
         if (refreshToken == null || !SwayUtil.getToken().equals(refreshToken)) {
-            throw new ServiceException(HttpStatus.FORBIDDEN, "Token过期，请重新登录");
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "请求token过期，请重新登录");
         }
         LoginUser loginUser = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + userId);
         if(loginUser == null){
