@@ -1,19 +1,23 @@
 import { isRef, ref, unref, watch, getCurrentScope, onScopeDispose } from "vue"
-import { isClient, isFunction } from "@/utils/data/valid"
-import type { Fn, MaybeComputedRef, Pausable } from "../utils/data/types"
+import type { ComputedRef, Ref } from "vue"
+import { isClient, isFunction } from "@/utils/valid"
 
-/**
- * Get the value of value/ref/getter.
- */
+type Fn = () => void
+
+type MaybeComputedRef<T> = T | Ref<T> | (() => T) | ComputedRef<T>
+
+interface Pausable {
+  isActive: Readonly<Ref<boolean>>
+
+  pause: Fn
+
+  resume: Fn
+}
+
 function resolveUnref<T>(r: MaybeComputedRef<T>): T {
   return typeof r === "function" ? (r as any)() : unref(r)
 }
 
-/**
- * Call onScopeDispose() if it's inside an effect scope lifecycle, if not, do nothing
- *
- * @param fn
- */
 export function tryOnScopeDispose(fn: Fn) {
   if (getCurrentScope()) {
     onScopeDispose(fn)

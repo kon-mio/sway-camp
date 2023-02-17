@@ -40,8 +40,8 @@ import { useGlobalStore } from "@/stores/global.sotre"
 import { loginApi } from "@/api/user/api"
 import type { LoginDto, UserInfo } from "@/api/user/type"
 import SwayNotion from "@/utils/notice"
-import { isEmpty } from "@/utils/data/valid"
-import { regexpEmail, regexpPhone } from "@/utils/data/regexp"
+import { isEmpty } from "@/utils/valid"
+import { isEmail, isPhone } from "@/utils/valid"
 import { HttpStatusCode } from "@/common/enum"
 
 const emits = defineEmits<{
@@ -61,7 +61,7 @@ const loginSumbit = async () => {
     globalStore.openMessageMini("请输入账号密码")
     return
   }
-  if (!regexpEmail(loginForm.account!.toString()) && !regexpPhone(loginForm.account!.toString())) {
+  if (!isEmail(loginForm.account!.toString()) && !isPhone(loginForm.account!.toString())) {
     globalStore.openMessageMini("请输入正确的手机/邮箱账号")
     return
   }

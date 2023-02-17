@@ -46,7 +46,7 @@ import { useUserStore } from "@/stores/user.store"
 import { useGlobalStore } from "@/stores/global.sotre"
 import type { userTabItemType } from "../type"
 import LoginCard from "@/components/login-card/LoginCard.vue"
-import { isEmpty } from "@/utils/data/valid"
+import { isEmpty } from "@/utils/valid"
 
 // 用户导航栏方法
 function userTabMoudel() {
