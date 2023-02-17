@@ -51,9 +51,4 @@ router.afterEach((to) => {
   document.title = String(to.meta.title)
 })
 
-router.onError((error, to, from) => {
-  console.log(error)
-  return { name: "Home" }
-})
-
 export default router
