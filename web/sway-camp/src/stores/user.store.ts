@@ -13,7 +13,6 @@ export const useUserStore = defineStore("user", {
     async refreshInfo() {
       const res = await getUserInfoApi()
       if (res.code === 200) {
-        console.log(2222)
         this.login(res.data, true)
       }
     },

@@ -54,10 +54,8 @@ export async function getUserInfoApi(): Promise<CommonResult<Type.UserInfo>> {
   try {
     const { data } = await request.get<Type.UserInfo>("/user/info")
     return data
-  } catch (e) {
-    throw e
-    console.log(e)
-    // throw newError()
+  } catch {
+    throw newError()
   }
 }
 

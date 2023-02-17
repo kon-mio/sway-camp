@@ -1,4 +1,5 @@
 import { refreshTokenApi } from "@/api/user/api"
+import SwayNotion from "@/utils/notice"
 import { storage } from "@/utils/storage"
 import { AxiosInstance } from "axios"
 import { HttpStatusCode } from "../enum"
@@ -22,6 +23,7 @@ export default class AxiosInterceptor {
   private request() {
     if (this.instance === null) return
     this.instance.interceptors.request.use((config) => {
+      console.log(config.url)
       // 存在请求token
       if (storage.get("access_token")) {
         // 刷新token
@@ -43,6 +45,10 @@ export default class AxiosInterceptor {
               storage.set("refresh_token", res.data.refreshToken)
               config.headers["Authorization"] = res.data.accessToken
               resolve(config)
+            } else {
+              storage.remove("refresh_token")
+              location.reload()
+              SwayNotion("登录", "请重新登录", "warning")
             }
           })
         })
@@ -66,6 +72,11 @@ export default class AxiosInterceptor {
                 storage.set("refresh_token", res.data.refreshToken)
                 response.config.headers["Authorization"] = "Bearer " + res.data.accessToken
                 resolve(this.instance!(response.config))
+              } else {
+                storage.remove("access_token")
+                storage.remove("refresh_token")
+                location.reload()
+                SwayNotion("登录", "请重新登录", "warning")
               }
             })
           })

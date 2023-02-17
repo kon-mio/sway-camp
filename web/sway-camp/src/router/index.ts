@@ -20,9 +20,9 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/views/home/Index.vue"),
     meta: {
       index: 0,
-      title: "深渊制造",
+      title: "摇曳",
       rootRouteName: "Home",
-      elName: "#abyss-home"
+      elName: "#sway-home"
     }
   },
   ...routeList
@@ -33,8 +33,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, from) => {
   // 获取用户登录状态
+  // ！请求报错会终止路由
   await useUserStore().refreshInfo()
   // 动态title
   if (to.meta.title) {
@@ -42,13 +43,17 @@ router.beforeEach(async (to, from, next) => {
   }
   const { isLogin } = storeToRefs(useUserStore())
   if (to.meta.login) {
-    isLogin.value ? next() : next({ name: "Home" })
-  } else {
-    next()
+    return isLogin.value ? true : { name: "Home" }
   }
+  return true
 })
 router.afterEach((to) => {
   document.title = String(to.meta.title)
+})
+
+router.onError((error, to, from) => {
+  console.log(error)
+  return { name: "Home" }
 })
 
 export default router
