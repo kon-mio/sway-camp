@@ -12,6 +12,7 @@ import com.zxy.swaycamp.domain.dto.LoginDTO;
 import com.zxy.swaycamp.domain.dto.RegisterDTO;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.model.LoginUser;
+import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.mapper.UserMapper;
 import com.zxy.swaycamp.service.UserService;
@@ -74,23 +75,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if (!SecurityUtil.matchesPassword(loginDto.getPassword(),one.getPassword())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "密码错误");
         }
-        // 生成token
-        String accessToken = TokenUtil.createToken(one.getId(), TimeConst.TOKEN_EXPIRE_ACCESS);
-        String refreshToken = TokenUtil.createToken(one.getId(), TimeConst.TOKEN_EXPIRE_REFRESH);
-        // 存入用户登录信息和用户token
+
         LoginUser loginUser = new LoginUser();
-        BeanUtils.copyProperties(one, loginUser);
-        loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
-        loginUser.setToken(accessToken);
-        redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
-        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + loginUser.getId(), accessToken, TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
-        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + loginUser.getId(), refreshToken, TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);
+        loginUser.setId(one.getId());
+        loginUser.setUserRole(one.getUserRole());
+        TokenVO tokenVO = createToken(loginUser);
+
         // 返回用户信息
         UserVO userVo = new UserVO();
         BeanUtils.copyProperties(one, userVo);
-        userVo.setAccessToken(accessToken);
-        userVo.setRefreshToken(refreshToken);
+        userVo.setAccessToken(tokenVO.getAccessToken());
+        userVo.setRefreshToken(tokenVO.getRefreshToken());
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
         return userVo;
@@ -156,24 +151,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                  throw new ServiceException();
              }
         }
-        // 生成token
-        String accessToken = TokenUtil.createToken(one.getId(), TimeConst.TOKEN_EXPIRE_ACCESS);
-        String refreshToken = TokenUtil.createToken(one.getId(), TimeConst.TOKEN_EXPIRE_REFRESH);
-        // 存入用户登录信息和用户token
         LoginUser loginUser = new LoginUser();
-        BeanUtils.copyProperties(one, loginUser);
-        loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
-        loginUser.setToken(accessToken);
-        redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
-        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + loginUser.getId(), accessToken, TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
-        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + loginUser.getId(), refreshToken, TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);
+        loginUser.setId(one.getId());
+        loginUser.setUserRole(one.getUserRole());
+        TokenVO tokenVO = createToken(loginUser);
 
         // 返回用户信息
         UserVO userVo = new UserVO();
         BeanUtils.copyProperties(one, userVo);
-        userVo.setAccessToken(accessToken);
-        userVo.setRefreshToken(refreshToken);
+        userVo.setAccessToken(tokenVO.getAccessToken());
+        userVo.setRefreshToken(tokenVO.getRefreshToken());
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
         return userVo;
@@ -255,5 +242,43 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String account = RandomUtil.randomNumbers(8);
         User one = lambdaQuery().eq(User::getSwayId,account).one();
         return one == null ? account : getAccount();
+    }
+
+
+    /**
+     * 刷新token
+     * @return 双token
+     */
+    @Override
+    public TokenVO refreshToken(){
+        Integer userId = SwayUtil.getCurrentUserId();
+        String refreshToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + userId);
+        if (refreshToken == null || !SwayUtil.getToken().equals(refreshToken)) {
+            throw new ServiceException(HttpStatus.FORBIDDEN, "Token过期，请重新登录");
+        }
+        LoginUser loginUser = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + userId);
+        if(loginUser == null){
+            throw new ServiceException("请求错误");
+        }
+        return createToken(loginUser);
+    }
+
+    /**
+     * 生成Token并存入Redis
+     *
+     * @param loginUser 登录用户
+     * @return token
+     */
+    private TokenVO createToken(LoginUser loginUser){
+        TokenVO tokenVO = new TokenVO();
+        tokenVO.setAccessToken(TokenUtil.createToken(loginUser.getId(), TimeConst.TOKEN_EXPIRE_ACCESS));
+        tokenVO.setRefreshToken(TokenUtil.createToken(loginUser.getId(), TimeConst.TOKEN_EXPIRE_REFRESH));
+        loginUser.setLoginTime(System.currentTimeMillis());
+        loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
+        loginUser.setAccessToken(tokenVO.getAccessToken());
+        redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);
+        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + loginUser.getId(), tokenVO.getAccessToken(), TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
+        redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + loginUser.getId(), tokenVO.getRefreshToken(), TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);
+        return tokenVO;
     }
 }

@@ -39,7 +39,7 @@ public class LoginUser implements Serializable {
     /**
      * token
      */
-    private String token;
+    private String accessToken;
 
 
 }

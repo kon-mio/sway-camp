@@ -38,7 +38,6 @@ public class TokenUtil {
         calendar.add(Calendar.DATE, expireTime);
         Date time = calendar.getTime();
         HashMap<String, Object> map = new HashMap<>();
-        //you can put any data in the map
         map.put("id", userId);
         return Jwts.builder()
                 .setClaims(map)
@@ -63,7 +62,7 @@ public class TokenUtil {
         } catch (ExpiredJwtException e) {
             throw new ServiceException("token已过期");
         } catch (Exception e){
-            throw new ServiceException("token不合法");
+            throw new ServiceException(e.getMessage());
         }
     }
 
@@ -71,7 +70,6 @@ public class TokenUtil {
      * token是否过期
      * @param claims token
      */
-
     public static boolean isTokenExpired(Claims claims) {
         return claims.getExpiration().before(new Date());
     }
@@ -85,6 +83,7 @@ public class TokenUtil {
         if (token == null) {
             return null;
         }
+        log.info(token);
         token = token.replace(CommonConst.TOKEN_PREFIX, "");
         Claims claims = getClaimByToken(token);
         if(claims == null) {
@@ -93,6 +92,9 @@ public class TokenUtil {
         if(isTokenExpired(claims)){
             throw new ServiceException("token已过期");
         }
-        return Integer.valueOf(claims.getSubject());
+        if(claims.get("id") == null){
+            throw new ServiceException("token不合法");
+        }
+        return (Integer) claims.get("id");
     }
 }

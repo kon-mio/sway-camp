@@ -1,5 +1,6 @@
 package com.zxy.swaycamp.domain.vo;
 
+import jdk.nashorn.internal.parser.Token;
 import lombok.Data;
 
 /**
@@ -9,7 +10,7 @@ import lombok.Data;
  * @since 2023/1/25
  */
 @Data
-public class UserVO {
+public class UserVO extends TokenVO {
 
     private Integer id;
     private String username;
@@ -18,7 +19,5 @@ public class UserVO {
     private Integer gender;
     private String avatar;
     private String introduction;
-    private String accessToken;
-    private String refreshToken;
 
 }

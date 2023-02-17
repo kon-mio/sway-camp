@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zxy.swaycamp.domain.dto.LoginDTO;
 import com.zxy.swaycamp.domain.dto.RegisterDTO;
 import com.zxy.swaycamp.domain.entity.User;
+import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
 
 /**
@@ -47,5 +48,11 @@ public interface UserService extends IService<User> {
      * @param account 邮箱/手机
      */
     void getCode(String account);
+
+    /**
+     * 刷新token
+     * @return 双token
+     */
+    TokenVO refreshToken();
 
 }

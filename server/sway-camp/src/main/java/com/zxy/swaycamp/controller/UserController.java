@@ -7,6 +7,7 @@ import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.domain.dto.LoginDTO;
 import com.zxy.swaycamp.domain.dto.RegisterDTO;
+import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.request.SwayResult;
@@ -81,8 +82,6 @@ public class UserController {
         return SwayResult.success();
     }
 
-
-
     /**
      * 修改密码
      *
@@ -99,6 +98,15 @@ public class UserController {
         userService.updatePassword(updatePassword.get(CommonConst.LITERAL_PASSWORD),
                 Integer.valueOf(updatePassword.get(CommonConst.LITERAL_CODE)));
         return SwayResult.success();
+    }
+
+    /**
+     * 刷新token
+     * @return 双token
+     */
+    @GetMapping("/refresh")
+    public SwayResult<TokenVO> refreshToken(){
+        return SwayResult.success(userService.refreshToken());
     }
 }
 
