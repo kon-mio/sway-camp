@@ -77,9 +77,9 @@ function userTabMoudel() {
   // 退出
   const Exit = () => {
     userStore.exit()
-    // router.push({
-    //   name: 'Home'
-    // })
+    router.push({
+      name: 'Home'
+    })
   }
   // 跳转用户主页
   const userSpace = () => {

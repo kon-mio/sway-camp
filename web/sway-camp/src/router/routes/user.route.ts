@@ -17,6 +17,7 @@ export default {
   path: "/user/:id",
   component: User,
   meta: {
+    login: true,
     ...commonMeta
   },
   children: [

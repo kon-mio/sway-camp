@@ -100,9 +100,6 @@ export default defineComponent({
       closeLoginCard()
       SwayNotion("登录", "登录成功", "success")
     }
-    onMounted(() => {
-      userStore.refreshInfo()
-    })
     return {
       isLogin,
       codeLogin,

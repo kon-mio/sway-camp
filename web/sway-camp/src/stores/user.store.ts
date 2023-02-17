@@ -30,6 +30,8 @@ export const useUserStore = defineStore("user", {
     exit() {
       this.isLogin = false
       this.userInfo = null
+      storage.remove("access_token")
+      storage.remove("refresh_token")
     }
   }
 })

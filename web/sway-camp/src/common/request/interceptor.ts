@@ -1,7 +1,6 @@
 import { refreshTokenApi } from "@/api/user/api"
 import { storage } from "@/utils/storage"
 import { AxiosInstance } from "axios"
-import { ElNotification } from "element-plus"
 import { HttpStatusCode } from "../enum"
 
 /**
