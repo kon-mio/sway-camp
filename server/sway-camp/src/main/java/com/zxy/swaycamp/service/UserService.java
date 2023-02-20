@@ -1,11 +1,13 @@
 package com.zxy.swaycamp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zxy.swaycamp.domain.dto.LoginDTO;
-import com.zxy.swaycamp.domain.dto.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.LoginDTO;
+import com.zxy.swaycamp.domain.dto.user.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.UpdateUserInfoDTO;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户信息 服务类
@@ -35,6 +37,19 @@ public interface UserService extends IService<User> {
      * @return 用户信息
      */
    UserVO getUserInfo();
+
+    /**
+     * 更新用户信息
+     *
+     * @return UserVO
+     */
+   UserVO updateUserInfo(UpdateUserInfoDTO updateUserInfoDTO);
+
+    /**
+     * 更换头像
+     * @param file 头像
+     */
+    void updateAvatar(MultipartFile file);
 
     /**
      * 更新用户密码

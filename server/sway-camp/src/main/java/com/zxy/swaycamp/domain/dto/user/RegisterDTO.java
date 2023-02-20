@@ -1,4 +1,4 @@
-package com.zxy.swaycamp.domain.dto;
+package com.zxy.swaycamp.domain.dto.user;
 
 import lombok.Data;
 

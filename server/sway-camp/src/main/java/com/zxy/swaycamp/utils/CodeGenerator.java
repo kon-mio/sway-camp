@@ -102,7 +102,7 @@ public class CodeGenerator {
         strategy.setEntityTableFieldAnnotationEnable(true);
 
         strategy.setInclude(scanner("表名，多个英文逗号分割").split(","));
-        strategy.setLogicDeleteFieldName("deleted");
+        strategy.setLogicDeleteFieldName("is_deleted");
         mpg.setStrategy(strategy);
 
         mpg.execute();

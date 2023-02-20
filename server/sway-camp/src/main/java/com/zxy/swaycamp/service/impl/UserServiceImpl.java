@@ -2,31 +2,39 @@ package com.zxy.swaycamp.service.impl;
 
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.common.constant.*;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.enums.Gender;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.common.mail.MailTemplate;
-import com.zxy.swaycamp.domain.dto.LoginDTO;
-import com.zxy.swaycamp.domain.dto.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.LoginDTO;
+import com.zxy.swaycamp.domain.dto.user.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.UpdateUserInfoDTO;
 import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.model.LoginUser;
+import com.zxy.swaycamp.domain.vo.FileVO;
 import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.mapper.UserMapper;
+import com.zxy.swaycamp.service.OssService;
+import com.zxy.swaycamp.service.SwayFileService;
 import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.SecurityUtil;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.mail.MailUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.TokenUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.sql.Time;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,11 +50,18 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Resource
     private MailUtil mailUtil;
     @Resource
     private RedisCache redisCache;
+
+    @Resource
+    private OssService ossService;
+    @Resource
+    private SwayFileService swayFileService;
 
 
     /**
@@ -79,6 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LoginUser loginUser = new LoginUser();
         loginUser.setId(one.getId());
         loginUser.setUserRole(one.getUserRole());
+        loginUser.setUsername(one.getUsername());
         TokenVO tokenVO = createToken(loginUser);
 
         // 返回用户信息
@@ -155,6 +171,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         LoginUser loginUser = new LoginUser();
         loginUser.setId(one.getId());
         loginUser.setUserRole(one.getUserRole());
+        loginUser.setUsername(one.getUsername());
         TokenVO tokenVO = createToken(loginUser);
 
         // 返回用户信息
@@ -167,7 +184,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
         return userVo;
     }
-
 
     /**
      * 根据token获取用户信息
@@ -224,6 +240,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
+
+    /**
+     * 更新用户信息
+     *
+     * @return UserVO
+     */
+    @Override
+    public UserVO updateUserInfo(UpdateUserInfoDTO updateUserInfoDTO){
+        Integer userId = SwayUtil.getCurrentUserId();
+        Integer count = lambdaQuery().eq(User::getUsername,updateUserInfoDTO.getUsername()).ne(User::getId,userId).count();
+        if(count != 0){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "用户名重复");
+        }
+       try{
+            boolean update =  lambdaUpdate().eq(User::getId, userId)
+                    .set(User::getUsername, updateUserInfoDTO.getUsername())
+                    .set(User::getGender, updateUserInfoDTO.getGender())
+                    .set(User::getBirthday, updateUserInfoDTO.getBirthday())
+                    .update();
+            if(!update){
+                throw new ServiceException("更新失败");
+            }
+            User one = lambdaQuery().eq(User::getId, userId).one();
+            LoginUser loginUser = new LoginUser();
+            loginUser.setId(one.getId());
+            loginUser.setUsername(one.getUsername());
+            loginUser.setUserRole(one.getUserRole());
+            redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE_REFRESH,TimeUnit.DAYS);
+
+            UserVO userVo = new UserVO();
+            BeanUtils.copyProperties(one, userVo);
+            // 信息脱敏
+            userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+            userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
+            return userVo;
+        }catch (Exception e){
+            log.error("更新用户信息错误：{}", e.getMessage());
+            throw new ServiceException();
+        }
+    }
+
+    /**
+     * 更换头像
+     * @param file 头像
+     */
+    @Override
+    public  void updateAvatar(MultipartFile file){
+        Integer userId = SwayUtil.getCurrentUserId();
+        Integer count =  lambdaQuery().eq(User::getId, userId)
+                .eq(User::getDeleted, false).count();
+        if(count == 0){
+            throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+        }
+        FileVO fileVo = ossService.uploadImage(file,userId, "image/avatar/");
+        try{
+            lambdaUpdate().eq(User::getId, userId)
+                    .eq(User::getDeleted,false)
+                    .set(User::getAvatar, fileVo.getUrl());
+        }
+        catch (Exception e){
+            log.error("更新用户头像：{}",e.getMessage());
+            throw new ServiceException();
+        }
+    }
+
     /**
      * 获取验证码
      * @param account 邮箱/手机
@@ -247,7 +328,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User one = lambdaQuery().eq(User::getSwayId,account).one();
         return one == null ? account : getAccount();
     }
-
 
     /**
      * 刷新token
@@ -277,9 +357,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         TokenVO tokenVO = new TokenVO();
         tokenVO.setAccessToken(TokenUtil.createToken(loginUser.getId(), TimeConst.TOKEN_EXPIRE_ACCESS));
         tokenVO.setRefreshToken(TokenUtil.createToken(loginUser.getId(), TimeConst.TOKEN_EXPIRE_REFRESH));
-        loginUser.setLoginTime(System.currentTimeMillis());
-        loginUser.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
-        loginUser.setAccessToken(tokenVO.getAccessToken());
         redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + loginUser.getId(), loginUser, TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);
         redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + loginUser.getId(), tokenVO.getAccessToken(), TimeConst.TOKEN_EXPIRE_ACCESS, TimeUnit.DAYS);
         redisCache.setCacheObject(CacheConstants.LOGIN_TOKEN_REFRESH_KEY + loginUser.getId(), tokenVO.getRefreshToken(), TimeConst.TOKEN_EXPIRE_REFRESH, TimeUnit.DAYS);

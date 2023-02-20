@@ -84,7 +84,6 @@ public class TokenUtil {
         if (token == null) {
             return null;
         }
-        log.info(token);
         token = token.replace(CommonConst.TOKEN_PREFIX, "");
         Claims claims = getClaimByToken(token);
         if(claims == null) {

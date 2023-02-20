@@ -19,27 +19,11 @@ public class LoginUser implements Serializable {
      * id
      */
     private Integer id;
+    private String username;
 
     /**
      * 用户角色
      */
     private Integer userRole;
-
-
-    /**
-     * 登录时间
-     */
-    private long loginTime;
-
-    /**
-     * 过期时间
-     */
-    private long expireTime;
-
-    /**
-     * token
-     */
-    private String accessToken;
-
 
 }

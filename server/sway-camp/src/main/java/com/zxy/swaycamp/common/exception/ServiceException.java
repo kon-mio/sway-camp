@@ -1,7 +1,9 @@
 package com.zxy.swaycamp.common.exception;
 
+import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import lombok.Getter;
+import org.aspectj.apache.bcel.classfile.Code;
 
 /**
  * 业务异常
@@ -15,11 +17,13 @@ public class ServiceException extends RuntimeException {
 
     public ServiceException() {
         super();
+        this.code = CodeMsg.FAIL.getCode();
+        this.msg = CodeMsg.FAIL.getMsg();
     }
 
     public ServiceException(String msg) {
         super(msg);
-        this.code = 500;
+        this.code = HttpStatus.ERROR;
         this.msg = msg;
     }
 

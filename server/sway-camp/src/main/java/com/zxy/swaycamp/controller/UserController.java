@@ -5,15 +5,19 @@ import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.common.enums.CodeMsg;
-import com.zxy.swaycamp.domain.dto.LoginDTO;
-import com.zxy.swaycamp.domain.dto.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.LoginDTO;
+import com.zxy.swaycamp.domain.dto.user.RegisterDTO;
+import com.zxy.swaycamp.domain.dto.user.UpdateUserInfoDTO;
 import com.zxy.swaycamp.domain.vo.TokenVO;
 import com.zxy.swaycamp.domain.vo.UserVO;
 import com.zxy.swaycamp.service.UserService;
+import com.zxy.swaycamp.utils.file.SwayFileUtil;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -65,6 +69,31 @@ public class UserController {
     @GetMapping("/info")
     public SwayResult<UserVO> getUserInfo(){
         return SwayResult.success(userService.getUserInfo());
+    }
+
+    /**
+     * 更新用户信息
+     *
+     * @param updateUserInfoDTO 新的用户信息
+     * @return 新的用户信息
+     */
+    @LoginCheck
+    @PostMapping("/info/update")
+    public SwayResult<UserVO> updateUserInfo(@RequestBody @Validated UpdateUserInfoDTO updateUserInfoDTO){
+        return SwayResult.success(userService.updateUserInfo(updateUserInfoDTO));
+    }
+
+    /**
+     * 更新用户头像
+     *
+     * @param file 头像文件
+     * @return
+     */
+    @LoginCheck
+    @PostMapping("/avatar/update")
+    public SwayResult updateAvatar(@RequestBody MultipartFile file){
+        userService.updateAvatar(file);
+        return SwayResult.success();
     }
 
     /**

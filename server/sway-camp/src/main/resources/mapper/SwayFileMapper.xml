@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.swaycamp.mapper.SwayFileMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zxy.swaycamp.domain.entity.SwayFile">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="file_type" property="fileType" />
+        <result column="name" property="name" />
+        <result column="md5" property="md5" />
+        <result column="relative_path" property="relativePath" />
+        <result column="url" property="url" />
+        <result column="submit_name" property="submitName" />
+        <result column="extension" property="extension" />
+        <result column="size" property="size" />
+        <result column="description" property="description" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="status" property="status" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, file_type, name, md5, relative_path, url, submit_name, extension, size, description, create_time, update_time, status, is_deleted
+    </sql>
+
+</mapper>
