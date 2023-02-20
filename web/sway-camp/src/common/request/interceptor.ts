@@ -64,22 +64,30 @@ export default class AxiosInterceptor {
     this.instance.interceptors.response.use(
       (response) => {
         // 请求token过期
-        if (response.data.code === HttpStatusCode.Forbidden) {
-          return new Promise((resolve, reject) => {
-            refreshTokenApi().then((res) => {
-              if (res.code === 200) {
-                storage.set("access_token", res.data.accessToken)
-                storage.set("refresh_token", res.data.refreshToken)
-                response.config.headers["Authorization"] = "Bearer " + res.data.accessToken
-                resolve(this.instance!(response.config))
-              } else {
-                storage.remove("access_token")
-                storage.remove("refresh_token")
-                location.reload()
-                SwayNotion("登录", "请重新登录", "warning")
-              }
+        if (
+          response.data.code === HttpStatusCode.Forbidden ||
+          response.data.code === HttpStatusCode.Unauthorized
+        ) {
+          if (storage.get("refresh_token")) {
+            return new Promise((resolve, reject) => {
+              refreshTokenApi().then((res) => {
+                if (res.code === 200) {
+                  storage.set("access_token", res.data.accessToken)
+                  storage.set("refresh_token", res.data.refreshToken)
+                  response.config.headers["Authorization"] = "Bearer " + res.data.accessToken
+                  resolve(this.instance!(response.config))
+                } else {
+                  storage.remove("access_token")
+                  storage.remove("refresh_token")
+                  location.reload()
+                  SwayNotion("登录", "请重新登录", "warning")
+                }
+              })
             })
-          })
+          }
+          else{
+            return response
+          }
         } else if (response.data.code === HttpStatusCode.Unauthorized) {
           storage.remove("access_token")
           storage.remove("refresh_token")

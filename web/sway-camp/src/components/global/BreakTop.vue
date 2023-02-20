@@ -22,7 +22,8 @@ export default defineComponent({
       transform: `translateY(${visible.value ? "0px" : "-86vh"})`
     }))
     const hasTarget = computed(() => props.target !== "")
-    
+
+    // 监听滚动事件
     const scroller = (e: Event) => {
       throttle(() => {
         const scTop = (e.target as HTMLElement).scrollTop
@@ -37,6 +38,7 @@ export default defineComponent({
       if (!hasTarget.value || dom.value === null) return
       dom.value?.removeEventListener("scroll", scroller)
     }
+    // 点击事件
     const breakTop = () => {
       if (dom.value === null) return
       dom.value?.scrollTo({
@@ -49,7 +51,6 @@ export default defineComponent({
     onMounted(() => {
       if (!hasTarget.value) return
       dom.value = document.querySelector("#" + props.target) as HTMLElement
-      console.log(dom.value)
       addEvent()
     })
     onBeforeUnmount(() => {

@@ -18,14 +18,8 @@ import AppRouter from "./layout/app-router/AppRouter.vue"
 import { useGlobalStore } from "./stores/global.sotre"
 import MessageMini from "./components/konmio/message/message-mini.vue"
 import { storeToRefs } from "pinia"
-import { useUserStore } from "./stores/user.store"
-import { onBeforeMount } from "vue"
 // mini消息框
 const { messageMini } = storeToRefs(useGlobalStore())
-
-onBeforeMount(() => {
-  useUserStore().refreshInfo()
-})
 </script>
 
 <style lang="less">

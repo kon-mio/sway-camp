@@ -239,7 +239,7 @@ const chooseItem = (acIndex: number) => {
   height: fit-content;
   box-sizing: border-box;
   padding: 40px 60px 20px;
-  min-height: calc(80vh - 166px);
+  min-height: calc(100% - 166px);
   background-color: white;
   z-index: 1;
 }
