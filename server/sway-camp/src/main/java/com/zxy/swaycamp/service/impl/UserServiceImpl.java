@@ -88,6 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userVo.setRefreshToken(tokenVO.getRefreshToken());
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+        userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
         return userVo;
     }
 
@@ -144,7 +145,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
              one.setCreateTime(LocalDateTime.now());
              one.setUserRole(RoleConst.ROLE_USER);
              one.setUserStatus(true);
-             one.setIsDeleted(false);
+             one.setDeleted(false);
              try{
                  save(one);
              }catch (Exception e){
@@ -163,6 +164,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userVo.setRefreshToken(tokenVO.getRefreshToken());
         // 信息脱敏
         userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+        userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
         return userVo;
     }
 
@@ -178,9 +180,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(user == null){
             throw new ServiceException("用户不存在");
         }
-        UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(user,userVO);
-        return userVO;
+        UserVO userVo = new UserVO();
+        BeanUtils.copyProperties(user,userVo);
+        userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
+        userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
+        return userVo;
     }
 
     /**
