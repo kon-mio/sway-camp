@@ -9,7 +9,7 @@
     <span class="icon">
       <SwayIcon :name="navItem.icon" :color="navItem.color" :size="navItem.size" />
     </span>
-    <span class="text" :class="{ 'item-active': active }">{{ navItem.title }}</span>
+    <span class="text" :class="{ 'item-active': active || isEnter }">{{ navItem.title }}</span>
     <span class="num" v-if="navItem.num">{{ navItem.num }}</span>
   </div>
 </template>

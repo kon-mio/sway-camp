@@ -20,5 +20,8 @@ module.exports = {
     "plugin:vue/vue3-recommended", // vue3解析 https://eslint.vuejs.org/
     "plugin:prettier/recommended" // 使 eslint 使用 prettierrc 的规则来校验，避免两者之间的格式冲突，添加到数组的最后一个元素覆盖来去除不必要的规则冲突。
   ],
-  rules: []
+  rules: {
+    eqeqeq: ["error", "always"],
+    "vue/multi-word-component-names": 0
+  }
 }

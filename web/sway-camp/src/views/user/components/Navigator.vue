@@ -49,11 +49,11 @@ const cursorStyle = computed<CSSProperties>(() => {
   return {
     left:
       mouseEnterId.value != null
-        ? getCursorStyle(mouseEnterId.value!) + "px"
+        ? getCursorStyle(mouseEnterId.value) + "px"
         : getCursorStyle(activeIndex.value) + "px",
     width:
       mouseEnterId.value != null
-        ? getCursorStyle(mouseEnterId.value!, true) + "px"
+        ? getCursorStyle(mouseEnterId.value, true) + "px"
         : getCursorStyle(activeIndex.value, true) + "px",
     transition: `all ${cursorTransTime.value}s ease`
   }
@@ -69,7 +69,7 @@ const getCurrentIndex = () => {
   return currentIndex
 }
 // 获取'提示线'宽高
-const getCursorStyle = (acIndex: number, isWidth: boolean = false) => {
+const getCursorStyle = (acIndex: number, isWidth = false) => {
   if (props.navList.length === 0) {
     return null
   }
@@ -77,15 +77,17 @@ const getCursorStyle = (acIndex: number, isWidth: boolean = false) => {
     acIndex = getCurrentIndex()
   }
   if (isWidth) {
-    let width = props.navList.find((item, index) => {
+    const width = props.navList.find((item, index) => {
       return index === acIndex
-    })?.width!
-    return width + 4
+    })?.width
+    return width ? width + 4 : null
   } else {
     let count = 0
     props.navList.forEach((item, index) => {
       if (index < acIndex) {
-        count += item.width! + 30
+        if (item.width) {
+          count += item.width + 30
+        }
       }
     })
     return count

@@ -65,15 +65,7 @@ export default {
     //用户信息tab
     const InfoTabs = reactive({
       // 账号信息
-      accountInfo: [] as InfoTabItemType[],
-      // 用户信息
-      basicInfo: [] as InfoTabItemType[],
-      // 联系方式
-      contactInfo: [] as InfoTabItemType[]
-    })
-    onMounted(() => {
-      // 信息栏赋值
-      const accountInfo = [
+      accountInfo: [
         {
           id: 1,
           title: "角色",
@@ -83,20 +75,23 @@ export default {
         { id: 2, title: "账号", type: "input", Info: userInfo.value?.sid },
         { id: 3, title: "邮箱", type: "input", Info: userInfo.value?.email },
         { id: 4, title: "注册时间", type: "input", Info: userInfo.value?.username }
-      ] as InfoTabItemType[]
-      const basicInfo = [
+      ] as InfoTabItemType[],
+      // 用户信息
+      basicInfo: [
         { id: 1, title: "昵称", type: "input", Info: userInfo.value?.username },
         { id: 2, title: "性别", type: "radio", Info: userInfo.value?.gender },
         { id: 3, title: "生日", type: "date", Info: userInfo.value?.username }
-      ] as InfoTabItemType[]
-      const contactInfo = [
+      ] as InfoTabItemType[],
+      // 联系方式
+      contactInfo: [
         { id: 1, title: "QQ", type: "input", Info: "" },
         { id: 2, title: "手机", type: "input", Info: "" }
       ] as InfoTabItemType[]
-      InfoTabs.accountInfo = accountInfo
-      InfoTabs.basicInfo = basicInfo
-      InfoTabs.contactInfo = contactInfo
     })
+    onMounted(() => {})
+
+
+    
 
     const updateUserInfo = () => {
       getUserInfoApi()

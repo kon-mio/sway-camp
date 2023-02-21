@@ -1,21 +1,21 @@
 <template>
   <div class="user">
-    <div class="unlogin" v-if="!isLogin" @click="openLoginCard">
+    <div v-if="!isLogin" class="unlogin" @click="openLoginCard">
       <span>未登录</span>
     </div>
     <div v-else class="login">
       <div class="login-user__avatar" @click="userSpace">
         <img
-          src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg"
+          src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
           class="base-img"
         />
       </div>
       <div class="login-user__name" @click="userSpace">{{ userInfo?.username }}</div>
       <div class="login-user__tab">
         <div
-          class="login-user__tab--item"
           v-for="(index, item) in userTabList"
           :key="item"
+          class="login-user__tab--item"
           :title="index.title"
         >
           <el-popconfirm
@@ -78,7 +78,7 @@ function userTabMoudel() {
   const Exit = () => {
     userStore.exit()
     router.push({
-      name: 'Home'
+      name: "Home"
     })
   }
   // 跳转用户主页

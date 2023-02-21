@@ -80,10 +80,12 @@ const navList = reactive<NavigatorItemType[]>([
   { id: 5, title: "账号设置", name: "UserAccount", icon: "shezhi1", color: "#23c9ed", size: 20 }
 ])
 const chooseItem = (acIndex: number) => {
-  let activeItem = navList.find((item, index) => {
+  const activeItem = navList.find((item, index) => {
     return index === acIndex
   })
-  $router.push({ name: activeItem!.name, params: { id: userInfo.value?.id } })
+  if (activeItem) {
+    $router.push({ name: activeItem.name, params: { id: userInfo.value?.id } })
+  }
 }
 </script>
 
