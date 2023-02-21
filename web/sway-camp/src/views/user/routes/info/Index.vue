@@ -13,13 +13,13 @@
     <div v-for="(p, item) in basicInfo" :key="item" class="info-group base-info">
       <b>{{ p.title }}</b>
       <div v-if="p.type.includes('input')" class="check-input">
-        <input type="text" v-model="p.Info" style="width: 200px" placeholder="请输入昵称" />
+        <input v-model="p.Info" type="text" style="width: 200px" placeholder="请输入昵称" />
         <p></p>
       </div>
       <div v-else-if="p.type.includes('date')" style="position: relative; bottom: 4px">
         <el-date-picker
-          value-format="YYYY-MM-DD"
           v-model="p.Info"
+          value-format="YYYY-MM-DD"
           type="date"
           placeholder="Pick a day"
           size="large"
@@ -38,7 +38,7 @@
     <div v-for="(p, item) in contactInfo" :key="item" class="info-group">
       <b>{{ p.title }}</b>
       <div v-show="false">
-        <input disabled type="text" v-model="p.Info" />
+        <input v-model="p.Info" disabled type="text" />
         <p></p>
       </div>
     </div>
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { onMounted, reactive, toRefs } from "vue"
+import { reactive, toRefs } from "vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
 import { getUserInfoApi } from "@/api/user/api"
@@ -88,10 +88,6 @@ export default {
         { id: 2, title: "手机", type: "input", Info: "" }
       ] as InfoTabItemType[]
     })
-    onMounted(() => {})
-
-
-    
 
     const updateUserInfo = () => {
       getUserInfoApi()

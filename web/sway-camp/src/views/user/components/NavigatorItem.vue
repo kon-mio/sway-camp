@@ -1,7 +1,7 @@
 <template>
   <div
-    class="nav-item"
     ref="navItemRef"
+    class="nav-item"
     @click="click"
     @mouseenter="mouseEnter"
     @mouseleave="mouseLeave"
@@ -10,7 +10,7 @@
       <SwayIcon :name="navItem.icon" :color="navItem.color" :size="navItem.size" />
     </span>
     <span class="text" :class="{ 'item-active': active || isEnter }">{{ navItem.title }}</span>
-    <span class="num" v-if="navItem.num">{{ navItem.num }}</span>
+    <span v-if="navItem.num" class="num">{{ navItem.num }}</span>
   </div>
 </template>
 
@@ -54,7 +54,7 @@ const click = () => {
 
 onMounted(() => {
   // 宽度需要减去padding
-  if (navItemRef.value != null) {
+  if (navItemRef.value !== null) {
     emits("getWidth", props.itemIndex, navItemRef.value.offsetWidth - 30)
   }
 })

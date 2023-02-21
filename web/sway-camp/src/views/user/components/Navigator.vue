@@ -48,11 +48,11 @@ const cursorTransTime = ref(0)
 const cursorStyle = computed<CSSProperties>(() => {
   return {
     left:
-      mouseEnterId.value != null
+      mouseEnterId.value !== null
         ? getCursorStyle(mouseEnterId.value) + "px"
         : getCursorStyle(activeIndex.value) + "px",
     width:
-      mouseEnterId.value != null
+      mouseEnterId.value !== null
         ? getCursorStyle(mouseEnterId.value, true) + "px"
         : getCursorStyle(activeIndex.value, true) + "px",
     transition: `all ${cursorTransTime.value}s ease`
@@ -113,7 +113,7 @@ const mouseLeave = () => {
 // 获取每个导航宽度
 const getWidth = (itemIndex: number, width: number) => {
   props.navList.forEach((item, index) => {
-    if (index == itemIndex) {
+    if (index === itemIndex) {
       item.width = width
       return
     }

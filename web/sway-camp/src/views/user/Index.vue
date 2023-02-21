@@ -44,6 +44,11 @@
       </router-view>
     </div>
   </div>
+  <kon-cropper
+    v-if="true"
+    :options="{}"
+    img-link="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
+  />
   <break-top target="user" />
 </template>
 
@@ -54,6 +59,7 @@ import Navigator from "./components/Navigator.vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
 import type { NavigatorItemType } from "./types/user-nav"
+import KonCropper from "@/components/cropper/KonCropper.vue"
 
 const $router = useRouter()
 const { userInfo } = storeToRefs(useUserStore())
