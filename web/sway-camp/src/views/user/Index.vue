@@ -8,7 +8,7 @@
     <div class="base-info">
       <!-- 用户资料 -->
       <div class="wapper">
-        <div class="avatar">
+        <div class="avatar" @click="changeAvatar">
           <img
             src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg"
             class="base-img"
@@ -45,15 +45,16 @@
     </div>
   </div>
   <kon-cropper
-    v-if="true"
-    :options="{}"
-    img-link="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
+    v-if="cropper"
+    src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
+    @current-image="currentImage"
+    @close-cropper="cropper = false"
   />
   <break-top target="user" />
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { reactive, ref } from "vue"
 import { useRouter } from "vue-router"
 import Navigator from "./components/Navigator.vue"
 import { storeToRefs } from "pinia"
@@ -63,6 +64,7 @@ import KonCropper from "@/components/cropper/KonCropper.vue"
 
 const $router = useRouter()
 const { userInfo } = storeToRefs(useUserStore())
+const cropper = ref(false)
 // 导航列表
 const navList = reactive<NavigatorItemType[]>([
   { id: 1, title: "主页", name: "User", icon: "shouye", color: "skyblue", size: 24 },
@@ -92,6 +94,14 @@ const chooseItem = (acIndex: number) => {
   if (activeItem) {
     $router.push({ name: activeItem.name, params: { id: userInfo.value?.id } })
   }
+}
+// 更换头像
+const changeAvatar = () => {
+  cropper.value = true
+}
+// 裁切头像
+const currentImage = (image: File) => {
+  console.log(image)
 }
 </script>
 

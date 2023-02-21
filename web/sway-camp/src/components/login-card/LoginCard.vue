@@ -1,6 +1,6 @@
 <template>
   <Transition name="login">
-    <div class="login-card" v-if="loginCard && !isLogin">
+    <div v-if="loginCard && !isLogin" class="login-card">
       <div class="login-card-mark" @click="closeLoginCard" />
       <div class="login-card-container">
         <div class="login-card-close" @click="closeLoginCard">
@@ -33,10 +33,10 @@
             </div>
             <!-- 密码登录 -->
             <div class="login-form">
-              <div class="login-form__password" v-show="!codeLogin">
+              <div v-show="!codeLogin" class="login-form__password">
                 <password-form @regist="changeLoginType" @login-success="loginSuccess" />
               </div>
-              <div class="login-form__email" v-show="codeLogin">
+              <div v-show="codeLogin" class="login-form__email">
                 <code-form @login-success="loginSuccess" />
               </div>
             </div>
@@ -76,7 +76,7 @@ import { useGlobalStore } from "@/stores/global.sotre"
 import { useUserStore } from "@/stores/user.store"
 import SwayNotion from "@/utils/notice"
 import { storeToRefs } from "pinia"
-import { defineComponent, onMounted, ref } from "vue"
+import { defineComponent, ref } from "vue"
 import CodeForm from "./components/CodeForm.vue"
 import PasswordForm from "./components/PasswordForm.vue"
 export default defineComponent({

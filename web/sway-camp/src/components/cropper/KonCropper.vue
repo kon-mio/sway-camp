@@ -1,6 +1,6 @@
 <template>
   <div class="kon-cropper">
-    <div class="kon-cropper-mark"></div>
+    <div class="kon-cropper-mark" @click="closeCropper"></div>
     <div class="kon-cropper-container">
       <!-- 图片源 -->
       <div class="kon-cropper__source">
@@ -16,8 +16,8 @@
       </div>
       <!-- 选择图片 -->
       <div class="kon-tip__choose">
-        <span>选择图片</span>
-        <input ref="chooseInput" type="file" accept="image/*" />
+        <span @click="chooseImage">选择图片</span>
+        <input ref="localInput" type="file" accept="image/*" @change="ImageChange" />
       </div>
       <!-- 预览图片 -->
       <div class="kon-tip__preview">
@@ -28,17 +28,17 @@
       </div>
       <!-- 操作按钮 -->
       <div class="kon-btn">
-        <button class="kon-btn__cropper">裁剪</button>
+        <button class="kon-btn__cropper" @click="currentImage">裁剪</button>
         <div class="kon-btn__route">
-          <button class="route-left">左转</button>
-          <button class="route-right">右转</button>
+          <button class="route-left" @click="turnLeft">左转</button>
+          <button class="route-right" @click="turnRight">右转</button>
         </div>
       </div>
       <!-- 标题 -->
       <div class="kon-title">
         <b>裁剪图片</b>
       </div>
-      <div class="close">
+      <div class="close" @click="closeCropper">
         <sway-icon name="guanbi" :size="24" color="#999" />
       </div>
     </div>
@@ -53,10 +53,10 @@ import { base64ToFile, getBase64Image, loadImage } from "./util/ImageUtil"
 
 const props = withDefaults(
   defineProps<{
-    options: Cropper.Options<HTMLImageElement>
-    imgLink: string
+    options?: Cropper.Options<HTMLImageElement> | null
+    src?: string
   }>(),
-  {}
+  { options: null, src: "", isOpen: false }
 )
 const emits = defineEmits<{
   (e: "currentImage", image: File): void
@@ -89,9 +89,41 @@ const swayCropper = ref<Cropper>()
 const sourceImg = ref<HTMLImageElement>()
 const cropperOptions = ref<Cropper.Options<HTMLImageElement>>({})
 
+// 选择图片
+const localInput = ref<HTMLInputElement>()
+const chooseImage = () => {
+  if (!localInput.value) return
+  localInput.value.click()
+}
+const ImageChange = () => {
+  //获取file对象blob
+  if (localInput.value?.files && swayCropper.value) {
+    const localImage = localInput.value.files[0]
+    swayCropper.value.replace(URL.createObjectURL(localImage))
+  }
+}
+
+// 裁切图片回调
+const currentImage = () => {
+  if (!swayCropper.value) return
+  const canvas = swayCropper.value.getCroppedCanvas()
+  const image = canvas.toDataURL("image/webp")
+  emits("currentImage", base64ToFile(image))
+}
+// 左转右转
+const turnLeft = () => {
+  swayCropper.value?.rotate(-90)
+}
+const turnRight = () => {
+  swayCropper.value?.rotate(90)
+}
+// 关闭裁切框
+const closeCropper = () => {
+  emits("closeCropper")
+}
 // 合并默认属性
 const handleOption = (
-  propOptions: Cropper.Options<HTMLImageElement>
+  propOptions: Cropper.Options<HTMLImageElement> | null
 ): Cropper.Options<HTMLImageElement> => {
   return Object.assign(defineOptions, propOptions)
 }
@@ -102,12 +134,12 @@ const cropperInit = (image: HTMLImageElement) => {
   sourceImg.value.src = base64Image
   swayCropper.value = new Cropper(sourceImg.value, cropperOptions.value)
 }
-onMounted(async () => {
+onMounted(() => {
   if (!sourceImg.value) return
   // 整合配置项
-  cropperOptions.value = handleOption(props.options as Cropper.Options<HTMLImageElement>)
+  cropperOptions.value = handleOption(props.options)
   // 图片链接处理
-  loadImage(props.imgLink, cropperInit)
+  loadImage(props.src, cropperInit)
 })
 </script>
 
