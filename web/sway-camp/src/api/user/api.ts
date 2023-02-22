@@ -72,6 +72,18 @@ export async function updateAvatarApi(FormData: FormData): Promise<CommonResult<
 }
 
 /**
+ * 更新用户信息
+ */
+export async function updateUserInfoApi(info: Type.UpdateUserInfoDto): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>("/user/info/update", info)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
  * 刷新token
  * @returns 新token
  */

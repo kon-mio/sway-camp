@@ -4,101 +4,120 @@
     <button class="info-btn-sub" @click="updateUserInfo">提交修改</button>
     <!-- 账户信息 -->
     <h3>账号信息 <span>*不可修改</span></h3>
-    <div v-for="(p, item) in accountInfo" :key="item" class="info-group">
-      <b>{{ p.title }}</b>
-      <div class="info-group-msg">{{ p.Info }}</div>
+    <div class="info-group">
+      <b>权限</b>
+      <div class="info-group-msg">{{ infoList.id }}</div>
+    </div>
+    <div class="info-group">
+      <b>账号</b>
+      <div class="info-group-msg">{{ infoList.swayId }}</div>
+    </div>
+    <div class="info-group">
+      <b>邮箱</b>
+      <div class="info-group-msg">{{ infoList.email }}</div>
+    </div>
+    <div class="info-group">
+      <b>注册时间</b>
+      <div class="info-group-msg">{{ infoList.birthday }}</div>
     </div>
     <!-- 用户信息 -->
     <h3>基本信息</h3>
-    <div v-for="(p, item) in basicInfo" :key="item" class="info-group base-info">
-      <b>{{ p.title }}</b>
-      <div v-if="p.type.includes('input')" class="check-input">
-        <input v-model="p.Info" type="text" style="width: 200px" placeholder="请输入昵称" />
+    <div class="info-group base-info">
+      <b>昵称</b>
+      <div class="check-input">
+        <input
+          v-model="infoList.username"
+          type="text"
+          style="width: 200px"
+          placeholder="请输入昵称"
+        />
         <p></p>
       </div>
-      <div v-else-if="p.type.includes('date')" style="position: relative; bottom: 4px">
+    </div>
+    <div class="info-group base-info">
+      <b>性别</b>
+      <div style="position: relative; bottom: 4px">
+        <el-radio-group v-model="infoList.gender" size="large">
+          <el-radio-button :label="2">女</el-radio-button>
+          <el-radio-button :label="1">男</el-radio-button>
+          <el-radio-button :label="0">保密</el-radio-button>
+        </el-radio-group>
+      </div>
+    </div>
+    <div class="info-group base-info">
+      <b>生日</b>
+      <div style="position: relative; bottom: 4px">
         <el-date-picker
-          v-model="p.Info"
+          v-model="infoList.birthday"
           value-format="YYYY-MM-DD"
           type="date"
           placeholder="Pick a day"
           size="large"
         />
       </div>
-      <div v-else style="position: relative; bottom: 4px">
-        <el-radio-group v-model="p.Info" size="large">
-          <el-radio-button label="女" />
-          <el-radio-button label="男" />
-          <el-radio-button label="保密" />
-        </el-radio-group>
-      </div>
     </div>
     <!-- 联系方式 -->
     <h3>联系方法 <span>*暂不可用</span></h3>
-    <div v-for="(p, item) in contactInfo" :key="item" class="info-group">
-      <b>{{ p.title }}</b>
+    <div class="info-group">
+      <b>手机号</b>
       <div v-show="false">
-        <input v-model="p.Info" disabled type="text" />
-        <p></p>
+        <input disabled type="text" />
+      </div>
+    </div>
+    <div class="info-group">
+      <b>QQ</b>
+      <div v-show="false">
+        <input disabled type="text" />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { reactive, toRefs } from "vue"
+<script lang="ts" setup>
+import { reactive, onMounted } from "vue"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
-import { getUserInfoApi } from "@/api/user/api"
-export default {
-  name: "UserInfo",
-  setup() {
-    interface InfoTabItemType {
-      id: number
-      title: string
-      type: string
-      Info: string | number
-    }
+import { UpdateUserInfoDto, UserInfo } from "@/api/user/type"
+import { updateUserInfoApi } from "@/api/user/api"
+import SwayNotion from "@/utils/notice"
 
-    const userStore = useUserStore()
-    const { userInfo } = storeToRefs(userStore)
-    //用户信息tab
-    const InfoTabs = reactive({
-      // 账号信息
-      accountInfo: [
-        {
-          id: 1,
-          title: "角色",
-          type: "input",
-          Info: "用户"
-        },
-        { id: 2, title: "账号", type: "input", Info: userInfo.value?.sid },
-        { id: 3, title: "邮箱", type: "input", Info: userInfo.value?.email },
-        { id: 4, title: "注册时间", type: "input", Info: userInfo.value?.username }
-      ] as InfoTabItemType[],
-      // 用户信息
-      basicInfo: [
-        { id: 1, title: "昵称", type: "input", Info: userInfo.value?.username },
-        { id: 2, title: "性别", type: "radio", Info: userInfo.value?.gender },
-        { id: 3, title: "生日", type: "date", Info: userInfo.value?.username }
-      ] as InfoTabItemType[],
-      // 联系方式
-      contactInfo: [
-        { id: 1, title: "QQ", type: "input", Info: "" },
-        { id: 2, title: "手机", type: "input", Info: "" }
-      ] as InfoTabItemType[]
-    })
+const userStore = useUserStore()
+const { userInfo } = storeToRefs(userStore)
+//用户信息展示
+const infoList = reactive<UserInfo>({
+  id: 0,
+  username: "",
+  email: "",
+  gender: 0,
+  avatar: "",
+  birthday: "",
+  introduction: "",
+  accessToken: "",
+  refreshToken: ""
+})
+// 更新用户信息参数
+const updateInfo = reactive<UpdateUserInfoDto>({
+  username: "",
+  gender: 0,
+  birthday: ""
+})
+const updateUserInfo = async () => {
+  updateInfo.username = infoList.username
+  updateInfo.gender = infoList.gender
+  updateInfo.birthday = infoList.birthday + " 00:00:00"
 
-    const updateUserInfo = () => {
-      getUserInfoApi()
-    }
-    return {
-      userInfo,
-      updateUserInfo,
-      ...toRefs(InfoTabs)
-    }
+  const res = await updateUserInfoApi(updateInfo)
+  if (res.code === 200) {
+    userStore.refreshInfo()
+    SwayNotion("更新信息", "更新成功", "success")
+  } else {
+    SwayNotion("更新信息", "更新失败", "success")
   }
 }
+onMounted(() => {
+  Object.assign(infoList, userInfo.value)
+  infoList.birthday = infoList.birthday.split("T")[0]
+})
 </script>
 
 <style lang="less" scoped>

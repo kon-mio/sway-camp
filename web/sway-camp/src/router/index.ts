@@ -33,7 +33,7 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to, from) => {
+router.beforeEach(async (to) => {
   // 获取用户登录状态
   // ！请求报错会终止路由 需要刷新页面
   await useUserStore().refreshInfo()

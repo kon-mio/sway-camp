@@ -7,17 +7,25 @@ export interface LoginDto {
   code?: string
 }
 
+// 更新用户信息参数
+export interface UpdateUserInfoDto {
+  username: string
+  gender: number
+  birthday: string
+}
+
 /**响应/接收参数 */
 
 // 用户信息
 export interface UserInfo extends TokenInfo {
   id: number
   username: string
-  sid?: number
+  swayId?: number
   phoneNumber?: string
   email: string
-  gender: string
+  gender: number
   avatar: string
+  birthday: string
   introduction: string
 }
 

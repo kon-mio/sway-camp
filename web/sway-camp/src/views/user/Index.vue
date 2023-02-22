@@ -20,7 +20,7 @@
             </div>
           </div>
           <div class="item">
-            <b>Sid:{{ userInfo?.sid }}</b>
+            <b>{{ userInfo?.swayId }}</b>
           </div>
           <div class="btn">
             <span>预设按钮</span>
