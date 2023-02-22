@@ -23,7 +23,6 @@ export default class AxiosInterceptor {
   private request() {
     if (this.instance === null) return
     this.instance.interceptors.request.use((config) => {
-      console.log(config.url)
       // 存在请求token
       if (storage.get("access_token")) {
         // 刷新token
@@ -38,7 +37,7 @@ export default class AxiosInterceptor {
       }
       // 请求时没有请求token但有刷新token时，先获取请求token
       if (!storage.get("access_token") && storage.get("refresh_token")) {
-        return new Promise((resolve, _reject) => {
+        return new Promise((resolve) => {
           refreshTokenApi().then((res) => {
             if (res.code === 200) {
               storage.set("access_token", res.data.accessToken)
@@ -69,13 +68,14 @@ export default class AxiosInterceptor {
           response.data.code === HttpStatusCode.Unauthorized
         ) {
           if (storage.get("refresh_token")) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
               refreshTokenApi().then((res) => {
                 if (res.code === 200) {
                   storage.set("access_token", res.data.accessToken)
                   storage.set("refresh_token", res.data.refreshToken)
                   response.config.headers["Authorization"] = "Bearer " + res.data.accessToken
-                  resolve(this.instance!(response.config))
+                  if (!this.instance) return
+                  resolve(this.instance(response.config))
                 } else {
                   storage.remove("access_token")
                   storage.remove("refresh_token")
@@ -84,11 +84,11 @@ export default class AxiosInterceptor {
                 }
               })
             })
-          }
-          else{
+          } else {
             return response
           }
-        } else if (response.data.code === HttpStatusCode.Unauthorized) {
+        }
+        if (response.data.code === HttpStatusCode.Unauthorized) {
           storage.remove("access_token")
           storage.remove("refresh_token")
           SwayNotion("登录", "请重新登录", "warning")
