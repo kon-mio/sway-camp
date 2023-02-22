@@ -18,6 +18,7 @@ import com.zxy.swaycamp.domain.vo.FileVO;
 import com.zxy.swaycamp.service.OssService;
 import com.zxy.swaycamp.service.SwayFileService;
 import com.zxy.swaycamp.utils.file.SwayFileUtil;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 /**
  * @author XinYuan Zhao
@@ -57,6 +59,8 @@ public class OssServiceImpl implements OssService {
     @Override
     public FileVO uploadImage(MultipartFile file, Integer userId, String path){
 
+        String[] imageTypes = {"jpg", "png", "webp", "jpeg"};
+
         if(file == null){
             throw new ServiceException(CodeMsg.PARAMETER_ERROR);
         }
@@ -69,6 +73,10 @@ public class OssServiceImpl implements OssService {
         String fileType = SwayFileUtil.getType(file);
         if(!StringUtils.hasText(fileType)){
             throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+        }
+        // 判断是否是图片
+        if(!Arrays.asList(imageTypes).contains(fileType)){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "图片类型错误");
         }
 
         //文件原始昵称
@@ -83,6 +91,7 @@ public class OssServiceImpl implements OssService {
         }
         //如果文件存在直接返回文件信息
         String md5 = SwayFileUtil.compMd5(file);
+        logger.info(md5);
         swayFile = swayFileService.getOne(new LambdaQueryWrapper<SwayFile>().eq(SwayFile::getMd5, md5));
         if(swayFile != null){
             fileVo.setUrl(swayFile.getUrl());
@@ -108,7 +117,7 @@ public class OssServiceImpl implements OssService {
         swayFile.setMd5(md5);
         swayFile.setName(fileName);
         swayFile.setUrl(url);
-        swayFile.setRelativePath("/avatar");
+        swayFile.setRelativePath(path);
         swayFile.setIsDeleted(false);
 
         try {

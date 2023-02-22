@@ -55,6 +55,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (userId == null) {
             throw new ServiceException(HttpStatus.UNAUTHORIZED, "Token不合法");
         }
+
         // 验证token是否过期
         String userToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + userId);
         if (userToken == null || !SwayUtil.getToken().equals(userToken)) {

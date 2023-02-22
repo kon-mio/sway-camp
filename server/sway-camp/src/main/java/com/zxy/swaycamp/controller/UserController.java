@@ -91,7 +91,12 @@ public class UserController {
      */
     @LoginCheck
     @PostMapping("/avatar/update")
-    public SwayResult updateAvatar(@RequestBody MultipartFile file){
+    public SwayResult updateAvatar(MultipartFile file){
+        if(file == null){
+            return SwayResult.fail();
+        }
+        System.out.println(file.getSize());
+        System.out.println(file);
         userService.updateAvatar(file);
         return SwayResult.success();
     }

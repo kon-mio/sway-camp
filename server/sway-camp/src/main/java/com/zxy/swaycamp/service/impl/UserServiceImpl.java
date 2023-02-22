@@ -293,11 +293,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(count == 0){
             throw new ServiceException(CodeMsg.PARAMETER_ERROR);
         }
-        FileVO fileVo = ossService.uploadImage(file,userId, "image/avatar/");
+        FileVO fileVo = ossService.uploadImage(file, userId, "image/avatar/");
+        if(fileVo == null){
+            throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+        }
         try{
             lambdaUpdate().eq(User::getId, userId)
                     .eq(User::getDeleted,false)
-                    .set(User::getAvatar, fileVo.getUrl());
+                    .set(User::getAvatar, fileVo.getUrl())
+                    .update();
         }
         catch (Exception e){
             log.error("更新用户头像：{}",e.getMessage());

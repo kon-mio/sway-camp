@@ -1,6 +1,7 @@
 package com.zxy.swaycamp.utils.file;
 
 import com.zxy.swaycamp.common.exception.ServiceException;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,11 +21,6 @@ import java.util.Objects;
  */
 public class SwayFileUtil {
     private static final Logger logger = LoggerFactory.getLogger(SwayFileUtil.class);
-
-    /**
-     * 密码提花
-     */
-    private static final char[] hexCode = "0123456789ABCDEF".toCharArray();
 
     /**
      * 获取图片类型
@@ -76,31 +72,12 @@ public class SwayFileUtil {
     public static String compMd5(MultipartFile multipartFile) {
         try {
             InputStream stream = multipartFile.getInputStream();
-            MessageDigest digest = MessageDigest.getInstance("MD5");
-            byte[] buf = new byte[8192];
-            int len;
-            while ((len = stream.read(buf)) > 0) {
-                digest.update(buf, 0, len);
-            }
-            StringBuilder md5 = new StringBuilder(digest.digest().length * 2);
-            for (byte b : digest.digest()) {
-                md5.append(hexCode[(b >> 4) & 0xF]);
-                md5.append(hexCode[(b & 0xF)]);
-            }
+            String md5 = DigestUtils.md5Hex(stream);
             stream.close();
             return md5.toString();
         } catch (Exception e){
             logger.error("获取文件md5错误: {}", e.getMessage());
             throw new ServiceException();
         }
-    }
-
-    public static String toHexString(byte[] data) {
-        StringBuilder r = new StringBuilder(data.length * 2);
-        for (byte b : data) {
-            r.append(hexCode[(b >> 4) & 0xF]);
-            r.append(hexCode[(b & 0xF)]);
-        }
-        return r.toString();
     }
 }
