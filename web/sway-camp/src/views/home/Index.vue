@@ -43,7 +43,6 @@ const carouselItems = reactive<carouselType[]>([
     imgUrl: "http://file.takagi-san.cn/image/kon_all_5.webp"
   }
 ])
-
 </script>
 <style lang="less" scoped>
 .sway-home {

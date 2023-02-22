@@ -2,14 +2,14 @@
   <div class="banner-carousel">
     <el-carousel
       ref="elCarousel"
+      height="100%"
       :autoplay="autoPlay"
       :pause-on-hover="true"
+      :style="carouselStyle"
       indicator-position="none"
       @change="carouselChange"
       @mouseleave="navLeave"
       @mouseenter="navEnter(null)"
-      height="100%"
-      :style="carouselStyle"
     >
       <el-carousel-item
         v-for="(index, item) in list"
@@ -27,8 +27,9 @@
     </el-carousel>
     <div class="carousel-nav">
       <div
-        class="carousel-nav-item"
         v-for="(item, index) in list"
+        :key="index"
+        class="carousel-nav-item"
         @mouseleave="navLeave"
         @mouseenter="navEnter(index)"
       >
@@ -118,7 +119,7 @@ export default defineComponent({
     const navEnter = (id: number | null = null) => {
       autoPlay.value = false
       borderTransTime.value = 0
-      if (id != null) {
+      if (id !== null) {
         elCarousel.value?.setActiveItem(id)
       }
     }
