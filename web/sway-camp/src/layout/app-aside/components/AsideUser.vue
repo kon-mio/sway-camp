@@ -5,10 +5,7 @@
     </div>
     <div v-else class="login">
       <div class="login-user__avatar" @click="userSpace">
-        <img
-          src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
-          class="base-img"
-        />
+        <img :src="userInfo?.avatar" class="base-img" />
       </div>
       <div class="login-user__name" @click="userSpace">{{ userInfo?.username }}</div>
       <div class="login-user__tab">
@@ -30,7 +27,7 @@
               <SwayIcon :name="index.icon" :size="16" />
             </template>
           </el-popconfirm>
-          <SwayIcon v-else :name="index.icon" @click="userTabMeth(index.func)" :size="16" />
+          <SwayIcon v-else :name="index.icon" :size="16" @click="userTabMeth(index.func)" />
         </div>
       </div>
     </div>
@@ -39,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from "vue"
+import { defineComponent, PropType } from "vue"
 import { useRouter } from "vue-router"
 import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
@@ -89,7 +86,7 @@ function userTabMoudel() {
     router.push({
       name: "User",
       params: {
-        id: userInfo.value!.id
+        id: userInfo.value?.id
       }
     })
   }

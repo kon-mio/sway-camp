@@ -9,21 +9,18 @@
       <!-- 用户资料 -->
       <div class="wapper">
         <div class="avatar" @click="changeAvatar">
-          <img
-            src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg"
-            class="base-img"
-          />
+          <img :src="userInfo?.avatar" class="base-img" />
           <p>更换头像</p>
         </div>
         <div class="info">
           <div class="name">
             <div style="position: relative">
-              <b>你好</b>
+              <b>{{ userInfo?.username }}</b>
               <sway-icon name="icon" :size="10" style="position: relative; top: -6px; left: 2px" />
             </div>
           </div>
           <div class="item">
-            <b>Sid:123</b>
+            <b>Sid:{{ userInfo?.sid }}</b>
           </div>
           <div class="btn">
             <span>预设按钮</span>
@@ -46,7 +43,7 @@
   </div>
   <kon-cropper
     v-if="cropper"
-    src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/006d0a5855f74f05bc77d029805dd0e3.webp"
+    :src="userInfo?.avatar"
     @current-image="currentImage"
     @close-cropper="cropper = false"
   />
@@ -61,8 +58,10 @@ import { storeToRefs } from "pinia"
 import { useUserStore } from "@/stores/user.store"
 import type { NavigatorItemType } from "./types/user-nav"
 import KonCropper from "@/components/cropper/KonCropper.vue"
+import { updateAvatarApi } from "@/api/user/api"
 
 const $router = useRouter()
+const userStore = useUserStore()
 const { userInfo } = storeToRefs(useUserStore())
 const cropper = ref(false)
 // 导航列表
@@ -100,8 +99,17 @@ const changeAvatar = () => {
   cropper.value = true
 }
 // 裁切头像
-const currentImage = (image: File) => {
+const currentImage = async (image: File) => {
   console.log(image)
+  const param = new FormData() // 创建form对象
+  param.append("file", image) // 通过append向form对象添加数据
+  const res = await updateAvatarApi(param)
+  if (res.code === 200) {
+    userStore.refreshInfo()
+    cropper.value = false
+  } else {
+    cropper.value = false
+  }
 }
 </script>
 

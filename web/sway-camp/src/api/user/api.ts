@@ -60,6 +60,18 @@ export async function getUserInfoApi(): Promise<CommonResult<Type.UserInfo>> {
 }
 
 /**
+ * 更新用户头像
+ */
+export async function updateAvatarApi(FormData: FormData): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>("/user/avatar/update", FormData)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
  * 刷新token
  * @returns 新token
  */
