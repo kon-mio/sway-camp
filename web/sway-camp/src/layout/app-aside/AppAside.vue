@@ -9,7 +9,7 @@
       </div>
       <div class="sway-aside-main__tab">
         <AsideTab>
-          <AsideTabItem v-for="(index, item) in routerList" :key="item" :tabItem="index" />
+          <AsideTabItem v-for="(index, item) in routerList" :key="item" :tab-item="index" />
         </AsideTab>
       </div>
     </div>

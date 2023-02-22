@@ -41,12 +41,16 @@
       </router-view>
     </div>
   </div>
-  <kon-cropper
-    v-if="cropper"
-    :src="userInfo?.avatar"
-    @current-image="currentImage"
-    @close-cropper="cropper = false"
-  />
+  <transition name="cropper">
+    <kon-cropper
+      v-if="cropper"
+      ref="cropperRef"
+      :src="userInfo?.avatar"
+      @current-image="currentImage"
+      @close-cropper="cropper = false"
+    />
+  </transition>
+
   <break-top target="user" />
 </template>
 
@@ -59,11 +63,13 @@ import { useUserStore } from "@/stores/user.store"
 import type { NavigatorItemType } from "./types/user-nav"
 import KonCropper from "@/components/cropper/KonCropper.vue"
 import { updateAvatarApi } from "@/api/user/api"
+import SwayNotion from "@/utils/notice"
 
 const $router = useRouter()
 const userStore = useUserStore()
 const { userInfo } = storeToRefs(useUserStore())
 const cropper = ref(false)
+const cropperRef = ref<InstanceType<typeof KonCropper>>()
 // 导航列表
 const navList = reactive<NavigatorItemType[]>([
   { id: 1, title: "主页", name: "User", icon: "shouye", color: "skyblue", size: 24 },
@@ -100,15 +106,17 @@ const changeAvatar = () => {
 }
 // 裁切头像
 const currentImage = async (image: File) => {
-  console.log(image)
   const param = new FormData() // 创建form对象
   param.append("file", image) // 通过append向form对象添加数据
   const res = await updateAvatarApi(param)
   if (res.code === 200) {
     userStore.refreshInfo()
+    cropperRef.value?.closeCurrentLoading()
     cropper.value = false
+    SwayNotion("更换头像", "更换成功", "success")
   } else {
-    cropper.value = false
+    cropperRef.value?.closeCurrentLoading()
+    SwayNotion("更换头像", "更换失败", "warning")
   }
 }
 </script>
@@ -276,5 +284,16 @@ const currentImage = async (image: File) => {
 .fade-enter-from {
   opacity: 0;
   transform: translateY(50px);
+}
+
+/* 下面我们会解释这些 class 是做什么的 */
+.cropper-enter-active,
+.cropper-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.cropper-enter-from,
+.cropper-leave-to {
+  opacity: 0;
 }
 </style>

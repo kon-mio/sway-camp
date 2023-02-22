@@ -1,9 +1,9 @@
 <template>
   <div class="kon-cropper">
     <div class="kon-cropper-mark" @click="closeCropper"></div>
-    <div class="kon-cropper-container">
+    <div v-loading="currentLoading" class="kon-cropper-container">
       <!-- 图片源 -->
-      <div class="kon-cropper__source">
+      <div v-loading="sourceLoading" class="kon-cropper__source">
         <div class="kon-cropper__source--img">
           <img id="image" ref="sourceImg" class="image-source" />
         </div>
@@ -84,6 +84,8 @@ const defineOptions: Cropper.Options<HTMLImageElement> = {
   checkCrossOrigin: false
 }
 
+const sourceLoading = ref(true)
+const currentLoading = ref(false)
 // 初始化裁剪插件实例
 const swayCropper = ref<Cropper>()
 const sourceImg = ref<HTMLImageElement>()
@@ -105,6 +107,7 @@ const ImageChange = () => {
 
 // 裁切图片回调
 const currentImage = () => {
+  currentLoading.value = true
   if (!swayCropper.value) return
   const canvas = swayCropper.value.getCroppedCanvas()
   const image = canvas.toDataURL("image/webp")
@@ -120,6 +123,10 @@ const turnRight = () => {
 // 关闭裁切框
 const closeCropper = () => {
   emits("closeCropper")
+}
+// 关闭裁切加载动画
+const closeCurrentLoading = () => {
+  currentLoading.value = false
 }
 // 合并默认属性
 const handleOption = (
@@ -140,6 +147,14 @@ onMounted(() => {
   cropperOptions.value = handleOption(props.options)
   // 图片链接处理
   loadImage(props.src, cropperInit)
+
+  sourceImg.value.addEventListener("ready", () => {
+    sourceLoading.value = false
+  })
+})
+
+defineExpose({
+  closeCurrentLoading
 })
 </script>
 
