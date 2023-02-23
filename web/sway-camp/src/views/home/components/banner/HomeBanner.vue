@@ -1,6 +1,6 @@
 <template>
   <div class="sway-home__banner--left">
-    <slot name="Carosel"> </slot>
+    <slot name="Carousel"> </slot>
   </div>
   <div class="sway-home__banner--right">
     <div class="view-img">

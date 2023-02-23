@@ -11,7 +11,8 @@ export default defineComponent({
   props: {
     img: {
       type: String,
-      default: "http://file.takagi-san.cn/image/kon_all_30.webp"
+      default:
+        "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/81e7bbcc651b49e493f4897a8d8c1915.webp"
     }
   },
   setup(props) {
