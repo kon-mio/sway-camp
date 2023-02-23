@@ -64,6 +64,7 @@ import type { NavigatorItemType } from "./types/user-nav"
 import KonCropper from "@/components/cropper/KonCropper.vue"
 import { updateAvatarApi } from "@/api/user/api"
 import SwayNotion from "@/utils/notice"
+import { HttpStatusCode } from "@/common/enum"
 
 const $router = useRouter()
 const userStore = useUserStore()
@@ -109,7 +110,7 @@ const currentImage = async (image: File) => {
   const param = new FormData() // 创建form对象
   param.append("file", image) // 通过append向form对象添加数据
   const res = await updateAvatarApi(param)
-  if (res.code === 200) {
+  if (res.code === HttpStatusCode.Success) {
     userStore.refreshInfo()
     cropperRef.value?.closeCurrentLoading()
     cropper.value = false

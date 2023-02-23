@@ -66,7 +66,7 @@ const loginSumbit = async () => {
     return
   }
   const res = await loginApi(loginForm)
-  if (res.code === HttpStatusCode.Suceess) {
+  if (res.code === HttpStatusCode.Success) {
     emits("loginSuccess", res.data)
   } else {
     SwayNotion("登录", res.msg, "warning")

@@ -1,5 +1,5 @@
 export enum HttpStatusCode {
-  Suceess = 200,
+  Success = 200,
   // 资源已被移除
   MovedPrem = 301,
   // 参数列表错误（缺少，格式不匹配）

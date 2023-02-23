@@ -7,7 +7,7 @@ const newError = () => new Error("错误请求")
 /**
  * 密码登录
  * @param {Type.LoginDto} LoginForm 登录参数
- * @returns {CommonResult<LoginVo>} 用户信息
+ * @returns {Type.UserInfo} 用户信息
  */
 export async function loginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
   try {
@@ -21,7 +21,7 @@ export async function loginApi(LoginForm: Type.LoginDto): Promise<CommonResult<T
 /**
  * 验证码登录
  * @param {Type.LoginDto} LoginForm 登录参数
- * @returns {CommonResult<LoginVo>} 用户信息
+ * @returns {Type.UserInfo} 用户信息
  */
 export async function codeLoginApi(LoginForm: Type.LoginDto): Promise<CommonResult<Type.UserInfo>> {
   try {
@@ -35,7 +35,7 @@ export async function codeLoginApi(LoginForm: Type.LoginDto): Promise<CommonResu
 /**
  * 获取验证码
  * @param {string | number} account 邮箱/手机号
- * @returns {CommonResult<null>} null
+ * @returns {null} null
  */
 export async function getCodeApi(account: string | number): Promise<CommonResult<null>> {
   try {
@@ -48,7 +48,7 @@ export async function getCodeApi(account: string | number): Promise<CommonResult
 
 /**
  * 获取用户信息
- * @returns 用户信息
+ * @returns {Type.UserInfo} 用户信息
  */
 export async function getUserInfoApi(): Promise<CommonResult<Type.UserInfo>> {
   try {
@@ -61,6 +61,8 @@ export async function getUserInfoApi(): Promise<CommonResult<Type.UserInfo>> {
 
 /**
  * 更新用户头像
+ * @param {FormData} FormData 头像文件表单
+ * @returns {null} null
  */
 export async function updateAvatarApi(FormData: FormData): Promise<CommonResult<null>> {
   try {
@@ -73,6 +75,8 @@ export async function updateAvatarApi(FormData: FormData): Promise<CommonResult<
 
 /**
  * 更新用户信息
+ * @param {Type.UpdateUserInfoDto} info 用户信息
+ * @returns {null} null
  */
 export async function updateUserInfoApi(info: Type.UpdateUserInfoDto): Promise<CommonResult<null>> {
   try {
@@ -85,7 +89,7 @@ export async function updateUserInfoApi(info: Type.UpdateUserInfoDto): Promise<C
 
 /**
  * 刷新token
- * @returns 新token
+ * @returns {Type.TokenInfo} 新token
  */
 export async function refreshTokenApi(): Promise<CommonResult<Type.TokenInfo>> {
   try {

@@ -6,7 +6,7 @@
     <h3>账号信息 <span>*不可修改</span></h3>
     <div class="info-group">
       <b>权限</b>
-      <div class="info-group-msg">{{ infoList.id }}</div>
+      <div class="info-group-msg">{{ infoList.id === 1 ? "用户" : "管理员" }}</div>
     </div>
     <div class="info-group">
       <b>账号</b>
@@ -80,6 +80,7 @@ import { useUserStore } from "@/stores/user.store"
 import { UpdateUserInfoDto, UserInfo } from "@/api/user/type"
 import { updateUserInfoApi } from "@/api/user/api"
 import SwayNotion from "@/utils/notice"
+import { HttpStatusCode } from "@/common/enum"
 
 const userStore = useUserStore()
 const { userInfo } = storeToRefs(userStore)
@@ -107,7 +108,7 @@ const updateUserInfo = async () => {
   updateInfo.birthday = infoList.birthday + " 00:00:00"
 
   const res = await updateUserInfoApi(updateInfo)
-  if (res.code === 200) {
+  if (res.code === HttpStatusCode.Success) {
     userStore.refreshInfo()
     SwayNotion("更新信息", "更新成功", "success")
   } else {
@@ -193,18 +194,18 @@ onMounted(() => {
   height: 40px;
   background: @bg-gray-1;
   border-radius: 5px;
-}
 
-.check-input input[type="text"] {
-  flex: 1;
-  height: 100%;
-  color: @text-gray-3;
-  border: none;
-  padding: 0 10px;
-  box-sizing: border-box;
-  font-size: 1rem;
-  line-height: 1.5;
-  outline: 0 !important;
-  background: 0 0;
+  input[type="text"] {
+    flex: 1;
+    height: 100%;
+    color: @text-gray-7;
+    border: none;
+    padding: 0 10px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    line-height: 1.5;
+    outline: 0 !important;
+    background: 0 0;
+  }
 }
 </style>

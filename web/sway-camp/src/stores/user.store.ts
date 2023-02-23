@@ -2,6 +2,7 @@ import { defineStore } from "pinia"
 import type { UserInfo } from "@/api/user/type"
 import { storage } from "@/utils/storage"
 import { getUserInfoApi } from "@/api/user/api"
+import { HttpStatusCode } from "@/common/enum"
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -13,12 +14,12 @@ export const useUserStore = defineStore("user", {
     async refreshInfo() {
       if (!storage.get("access_token")) return
       const res = await getUserInfoApi()
-      if (res.code === 200) {
+      if (res.code === HttpStatusCode.Success) {
         this.login(res.data, true)
       }
     },
     // 登录
-    login(userInfo: UserInfo, refresh: boolean = false) {
+    login(userInfo: UserInfo, refresh = false) {
       this.isLogin = true
       this.userInfo = userInfo
       // 刷新信息不修改token

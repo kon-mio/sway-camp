@@ -39,7 +39,7 @@ export default class AxiosInterceptor {
       if (!storage.get("access_token") && storage.get("refresh_token")) {
         return new Promise((resolve) => {
           refreshTokenApi().then((res) => {
-            if (res.code === 200) {
+            if (res.code === HttpStatusCode.Success) {
               storage.set("access_token", res.data.accessToken)
               storage.set("refresh_token", res.data.refreshToken)
               config.headers["Authorization"] = res.data.accessToken
@@ -70,7 +70,7 @@ export default class AxiosInterceptor {
           if (storage.get("refresh_token")) {
             return new Promise((resolve) => {
               refreshTokenApi().then((res) => {
-                if (res.code === 200) {
+                if (res.code === HttpStatusCode.Success) {
                   storage.set("access_token", res.data.accessToken)
                   storage.set("refresh_token", res.data.refreshToken)
                   response.config.headers["Authorization"] = "Bearer " + res.data.accessToken

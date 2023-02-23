@@ -70,7 +70,7 @@ const loginSubmit = async () => {
   }
   // 待校验账号格式
   const { code, msg, data } = await codeLoginApi(loginForm)
-  if (code === HttpStatusCode.Suceess && !isEmpty(data)) {
+  if (code === HttpStatusCode.Success && !isEmpty(data)) {
     emits("loginSuccess", data)
   } else {
     SwayNotion("登录", msg, "warning")
@@ -114,7 +114,7 @@ const getCode = async () => {
     return
   }
   const res = await getCodeApi(loginForm.account!)
-  if (res.code === HttpStatusCode.Suceess) {
+  if (res.code === HttpStatusCode.Success) {
     SwayNotion("验证码", "发送成功", "success")
     // 开启倒计时效果
     if (codeTimer.value === 0) {
