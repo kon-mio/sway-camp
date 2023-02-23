@@ -97,11 +97,8 @@ function userTabMoudel() {
   }
   // 发表
   const writeArticle = () => {
-    // if (userInfo.value.abyssRole === 1) {
-    //   return
-    // }
     router.push({
-      name: "WriteArticle",
+      name: "Write",
       params: {
         // userId: userInfo.value.id
       }
