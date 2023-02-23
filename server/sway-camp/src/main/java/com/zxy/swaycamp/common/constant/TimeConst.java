@@ -1,9 +1,10 @@
 package com.zxy.swaycamp.common.constant;
 
 /**
+ * 时间常量
+ *
  * @author XinYuan Zhao
- * @date 2023/1/27
- * @apiNote
+ * @since 2023/1/27
  */
 public class TimeConst {
 
@@ -12,7 +13,15 @@ public class TimeConst {
     /**
      * Token过期时间：7天
      */
-    public static final Integer TOKEN_EXPIRE = 7;
+    public static final Integer TOKEN_EXPIRE_REFRESH = 30;
+    public static final Integer TOKEN_EXPIRE_ACCESS = 7;
+
+    /**
+     * 验证码过期时间
+     */
+    public static final Integer TOKEN_CODE = 5;
+
+
 
     /**
      * 时间戳 1s

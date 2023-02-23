@@ -36,7 +36,7 @@ public class LoginCheckAspect {
 
     @Around("@annotation(loginCheck)")
     public Object around(ProceedingJoinPoint joinPoint, LoginCheck loginCheck) throws Throwable {
-        LoginUser user = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + SwayUtil.getLoginUserId());
+        LoginUser user = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + SwayUtil.getCurrentUserId());
         if (user == null) {
             throw new ServiceException(CodeMsg.LOGIN_EXPIRED.getMsg());
         }
@@ -47,13 +47,6 @@ public class LoginCheckAspect {
         // 用户权限为 2，接口所需权限为 0 则返回
         if (loginCheck.value() == RoleConst.ROLE_SUPER_ADMIN && user.getUserRole() == RoleConst.ROLE_ADMIN) {
             throw new ServiceException(HttpStatus.FORBIDDEN, "权限不足");
-        }
-        // 间隔大于一天，小于7天自动刷新Token
-        if (System.currentTimeMillis() - user.getLoginTime() > TimeConst.MILLIS_SECOND && System.currentTimeMillis() - user.getLoginTime() < TimeConst.MILLIS_DAY_SEVEN) {
-                user.setLoginTime(System.currentTimeMillis());
-                user.setExpireTime(System.currentTimeMillis() + TimeConst.MILLIS_DAY_SEVEN);
-                redisCache.setCacheObject(CacheConstants.LOGIN_USER_KEY + user.getId(), user, TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
-                redisCache.expire(CacheConstants.LOGIN_TOKEN_KEY + user.getId(), TimeConst.TOKEN_EXPIRE, TimeUnit.DAYS);
         }
         return joinPoint.proceed();
     }

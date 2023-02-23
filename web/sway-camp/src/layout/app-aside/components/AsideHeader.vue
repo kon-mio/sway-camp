@@ -7,9 +7,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent } from "vue"
 export default defineComponent({
-  name: 'AsideHeader'
+  name: "AsideHeader"
 })
 </script>
 
@@ -38,7 +38,7 @@ export default defineComponent({
     height: 100%;
     h2 {
       font-size: 24px;
-      color: @h-1;
+      color: @h-blue-3;
     }
   }
 }

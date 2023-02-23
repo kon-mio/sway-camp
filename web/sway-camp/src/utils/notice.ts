@@ -1,11 +1,11 @@
-import { ElNotification } from 'element-plus'
-import type { EpPropMergeType } from 'element-plus/es/utils'
+import { ElNotification } from "element-plus"
+import type { EpPropMergeType } from "element-plus/es/utils"
 
 const SwayNotion = (
   title: string,
   msg: string,
   type:
-    | EpPropMergeType<StringConstructor, '' | 'success' | 'warning' | 'info' | 'error', unknown>
+    | EpPropMergeType<StringConstructor, "" | "success" | "warning" | "info" | "error", unknown>
     | undefined
 ) => {
   ElNotification.closeAll()
@@ -17,3 +17,6 @@ const SwayNotion = (
 }
 
 export default SwayNotion
+
+
+

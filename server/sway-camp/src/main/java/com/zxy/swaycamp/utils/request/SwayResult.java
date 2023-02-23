@@ -7,9 +7,10 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
+ * 统一返回值
+ *
  * @author XinYuan Zhao
- * @date 2023/1/24
- * @apiNote
+ * @since 2023/1/24
  */
 @Data
 public class SwayResult<T> implements Serializable {

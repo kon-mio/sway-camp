@@ -4,8 +4,7 @@ package com.zxy.swaycamp.common.constant;
  * 返回状态码
  *
  * @author XinYuan Zhao
- * @date 2023/1/24
- * @apiNote
+ * @since 2023/1/24
  */
 public class HttpStatus {
 

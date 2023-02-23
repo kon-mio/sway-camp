@@ -8,10 +8,10 @@
 </template>
 
 <script lang="ts">
-import { computed, CSSProperties, defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, CSSProperties, defineComponent } from "vue"
+import { useRoute } from "vue-router"
 export default defineComponent({
-  name: 'AsideTab',
+  name: "AsideTab",
   setup() {
     const route = useRoute()
     const lineStyle = computed(() => {
@@ -50,7 +50,7 @@ export default defineComponent({
     .line {
       width: 5px;
       height: 40px;
-      background-color: @line-1;
+      background-color: @line-gray-3;
       border-radius: 6px;
     }
   }

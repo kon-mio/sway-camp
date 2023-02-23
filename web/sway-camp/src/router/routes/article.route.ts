@@ -1,16 +1,16 @@
-const Article = () => import('@/views/article/Index.vue')
+const Article = () => import("@/views/article/Index.vue")
 
 const commonMeta = {
   index: 1,
-  rootRouteName: 'Article'
+  rootRouteName: "Article"
 }
 
 export default {
-  path: '/article',
-  name: 'Article',
+  path: "/article",
+  name: "Article",
   component: Article,
   meta: {
-    title: '三千佳丽',
+    title: "三千佳丽",
     ...commonMeta
   }
 }

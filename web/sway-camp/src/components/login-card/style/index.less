@@ -1,0 +1,32 @@
+.form-btn {
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+  user-select: none;
+  .universal-btn {
+    box-sizing: border-box;
+    width: 194px;
+    height: 40px;
+    border-radius: 8px;
+    line-height: 40px;
+    text-align: center;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .register-btn {
+    border: 1px solid @line-gray-2;
+    color: @text-black-0;
+    margin-right: 13px;
+  }
+
+  .login-btn {
+    background-color: @bg-blue-3;
+    color: @text-white-0;
+    transition: background-color 0.2s;
+    &:hover {
+      background-color: @bg-blue-5;
+    }
+  }
+}

@@ -1,15 +1,59 @@
-import { AxiosInstance } from 'axios'
-import { ElNotification } from 'element-plus'
+import { refreshTokenApi } from "@/api/user/api"
+import SwayNotion from "@/utils/notice"
+import { storage } from "@/utils/storage"
+import { AxiosInstance } from "axios"
+import { HttpStatusCode } from "../enum"
 
 /**
  * axios辅助函数
  */
 export default class AxiosInterceptor {
+  // 请求实例
   private instance: AxiosInstance | null = null
+  // 构造器
   constructor(instance: AxiosInstance) {
     this.instance = instance
     this.response()
     this.request()
+  }
+
+  /**
+   * 请求拦截器
+   */
+  private request() {
+    if (this.instance === null) return
+    this.instance.interceptors.request.use((config) => {
+      // 存在请求token
+      if (storage.get("access_token")) {
+        // 刷新token
+        if (config.url === "/user/refresh") {
+          if (!storage.get("refresh_token")) return config
+          const token = "Bearer " + storage.get("refresh_token")
+          config.headers["Authorization"] = token
+        } else {
+          const token = "Bearer " + storage.get("access_token")
+          config.headers["Authorization"] = token
+        }
+      }
+      // 请求时没有请求token但有刷新token时，先获取请求token
+      if (!storage.get("access_token") && storage.get("refresh_token")) {
+        return new Promise((resolve) => {
+          refreshTokenApi().then((res) => {
+            if (res.code === HttpStatusCode.Success) {
+              storage.set("access_token", res.data.accessToken)
+              storage.set("refresh_token", res.data.refreshToken)
+              config.headers["Authorization"] = res.data.accessToken
+              resolve(config)
+            } else {
+              storage.remove("refresh_token")
+              location.reload()
+              SwayNotion("登录", "请重新登录", "warning")
+            }
+          })
+        })
+      }
+      return config
+    })
   }
   /**
    * 响应拦截器
@@ -18,39 +62,42 @@ export default class AxiosInterceptor {
     if (this.instance === null) return
     this.instance.interceptors.response.use(
       (response) => {
-        console.log(response)
+        // 请求token过期
+        if (
+          response.data.code === HttpStatusCode.Forbidden ||
+          response.data.code === HttpStatusCode.Unauthorized
+        ) {
+          if (storage.get("refresh_token")) {
+            return new Promise((resolve) => {
+              refreshTokenApi().then((res) => {
+                if (res.code === HttpStatusCode.Success) {
+                  storage.set("access_token", res.data.accessToken)
+                  storage.set("refresh_token", res.data.refreshToken)
+                  response.config.headers["Authorization"] = "Bearer " + res.data.accessToken
+                  if (!this.instance) return
+                  resolve(this.instance(response.config))
+                } else {
+                  storage.remove("access_token")
+                  storage.remove("refresh_token")
+                  location.reload()
+                  SwayNotion("登录", "请重新登录", "warning")
+                }
+              })
+            })
+          } else {
+            return response
+          }
+        }
+        if (response.data.code === HttpStatusCode.Unauthorized) {
+          storage.remove("access_token")
+          storage.remove("refresh_token")
+          SwayNotion("登录", "请重新登录", "warning")
+        }
         return response
       },
       (error) => {
-        const status = error.toString()
-        if (
-          ['timeout ', 'Invalid URL', '401', '403', '404', 'Network Error'].some((item) =>
-            status.includes(item)
-          )
-        ) {
-          ElNotification({
-            type: 'error',
-            title: '请求失败',
-            message: '请求失败'
-          })
-        }
-        return Promise.reject()
+        return Promise.reject(error)
       }
     )
-  }
-  /**
-   * 请求拦截器
-   */
-  private request() {
-    if (this.instance === null) return
-    this.instance.interceptors.request.use((request) => {
-      if (localStorage.getItem('abyss_token') !== null) {
-        const token = 'Bearer ' + JSON.parse(localStorage.getItem('abyss_token') as string)
-        if (request.headers != undefined) {
-          request.headers['Authorization'] = token
-        }
-      }
-      return request
-    })
   }
 }

@@ -63,7 +63,6 @@ public class LogAspect {
      */
     @AfterThrowing(value = "@annotation(controllerLog)", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, Log controllerLog, Exception e) {
-        logger.info("error");
         handleLog(joinPoint, controllerLog, e, null);
     }
 
@@ -73,7 +72,7 @@ public class LogAspect {
             SystemLog systemLog = new SystemLog();
             systemLog.setStatus(CommonConst.STATUS_TRUE);
             // 获取当前的用户ID
-            Integer userId = SwayUtil.getLoginUserId();
+            Integer userId = SwayUtil.getCurrentUserId();
             if (userId != null) {
                 systemLog.setRequestUser(userId);
             }
@@ -107,7 +106,6 @@ public class LogAspect {
         }
     }
 
-
     /**
      * 忽略敏感属性
      */
@@ -135,7 +133,7 @@ public class LogAspect {
         if (argList.isEmpty()) {
             return "";
         }
-        return argList.size() == 1 ? JSONUtil.toJsonStr(argList.get(0)) : JSONUtil.toJsonStr(argList);
+        return argList.size() == 1 ? JSON.toJSONString(argList.get(0),excludePropertyPreFilter()) : JSON.toJSONString(argList,excludePropertyPreFilter());
     }
 
 }

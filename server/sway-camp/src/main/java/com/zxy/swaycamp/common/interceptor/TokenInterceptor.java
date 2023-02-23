@@ -50,16 +50,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (request.getHeader(CommonConst.TOKEN_HEADER) == null) {
             throw new ServiceException(HttpStatus.UNAUTHORIZED, "Token为空");
         }
-        String token = SwayUtil.getToken();
-        if (token == null) {
-            throw new ServiceException(HttpStatus.UNAUTHORIZED, "Token不合法");
-        }
-        Integer userId = TokenUtil.getClaims(token);
+
+        Integer userId = SwayUtil.getCurrentUserId();
         if (userId == null) {
             throw new ServiceException(HttpStatus.UNAUTHORIZED, "Token不合法");
         }
+
         // 验证token是否过期
-        String userToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_KEY + userId);
+        String userToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + userId);
         if (userToken == null || !SwayUtil.getToken().equals(userToken)) {
             throw new ServiceException(HttpStatus.FORBIDDEN, "Token过期，请重新登录");
         }

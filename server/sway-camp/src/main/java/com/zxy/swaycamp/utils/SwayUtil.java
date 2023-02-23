@@ -34,13 +34,15 @@ public class SwayUtil {
      * 获取Token
      */
     public static String getToken() {
-        return SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER);
+        return SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER) == null
+                ? null
+                : SwayUtil.getRequest().getHeader(CommonConst.TOKEN_HEADER).replace(CommonConst.TOKEN_PREFIX,"");
     }
 
     /**
      * 获取token中的UserId
      */
-    public static Integer getLoginUserId() {
-        return SwayUtil.getToken() == null ? null : TokenUtil.getClaims(SwayUtil.getToken());
+    public static Integer getCurrentUserId() {
+        return SwayUtil.getToken() == null ? null : TokenUtil.getUserId(SwayUtil.getToken());
     }
 }

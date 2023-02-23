@@ -1,21 +1,18 @@
 <template>
   <div class="user">
-    <div class="unlogin" v-if="!isLogin" @click="openLoginCard">
+    <div v-if="!isLogin" class="unlogin" @click="openLoginCard">
       <span>未登录</span>
     </div>
     <div v-else class="login">
       <div class="login-user__avatar" @click="userSpace">
-        <img
-          src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg"
-          class="base-img"
-        />
+        <img :src="userInfo?.avatar" class="base-img" />
       </div>
-      <div class="login-user__name" @click="userSpace">你好</div>
+      <div class="login-user__name" @click="userSpace">{{ userInfo?.username }}</div>
       <div class="login-user__tab">
         <div
-          class="login-user__tab--item"
           v-for="(index, item) in userTabList"
           :key="item"
+          class="login-user__tab--item"
           :title="index.title"
         >
           <el-popconfirm
@@ -30,7 +27,7 @@
               <SwayIcon :name="index.icon" :size="16" />
             </template>
           </el-popconfirm>
-          <SwayIcon v-else :name="index.icon" @click="userTabMeth(index.func)" :size="16" />
+          <SwayIcon v-else :name="index.icon" :size="16" @click="userTabMeth(index.func)" />
         </div>
       </div>
     </div>
@@ -39,13 +36,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType } from 'vue'
-import { useRouter } from 'vue-router'
-import { storeToRefs } from 'pinia'
-import { useUserStore } from '@/store/user.store'
-import { useGlobalStore } from '@/store/global.sotre'
-import type { userTabItemType } from '../type'
-import LoginCard from '@/components/user/login/LoginCard.vue'
+import { defineComponent, PropType } from "vue"
+import { useRouter } from "vue-router"
+import { storeToRefs } from "pinia"
+import { useUserStore } from "@/stores/user.store"
+import { useGlobalStore } from "@/stores/global.sotre"
+import type { userTabItemType } from "../type"
+import LoginCard from "@/components/login-card/LoginCard.vue"
+import { isEmpty } from "@/utils/valid"
 
 // 用户导航栏方法
 function userTabMoudel() {
@@ -54,20 +52,20 @@ function userTabMoudel() {
   const { userInfo } = storeToRefs(userStore)
   const userTabMeth = (methName: string | undefined) => {
     switch (methName) {
-      case 'Exit':
+      case "Exit":
         Exit()
         break
-      case 'userSpace':
+      case "userSpace":
         userSpace()
         break
-      case 'userFav':
+      case "userFav":
         userFav()
         break
-      case 'writeArticle':
+      case "writeArticle":
         writeArticle()
         break
-      case 'parrot':
-        console.log('I own a parrot')
+      case "parrot":
+        console.log("I own a parrot")
         break
       default:
         break
@@ -76,25 +74,25 @@ function userTabMoudel() {
   // 退出
   const Exit = () => {
     userStore.exit()
-    // router.push({
-    //   name: 'Home'
-    // })
+    router.push({
+      name: "Home"
+    })
   }
   // 跳转用户主页
   const userSpace = () => {
-    if (Object.keys(userInfo).length === 0) {
+    if (isEmpty(userInfo)) {
       return
     }
     router.push({
-      name: 'User',
+      name: "User",
       params: {
-        // uid: userInfo.value.id
+        id: userInfo.value?.id
       }
     })
   }
   const userFav = () => {
     router.push({
-      name: 'SpaceFav'
+      name: "SpaceFav"
     })
   }
   // 发表
@@ -103,7 +101,7 @@ function userTabMoudel() {
     //   return
     // }
     router.push({
-      name: 'WriteArticle',
+      name: "WriteArticle",
       params: {
         // userId: userInfo.value.id
       }
@@ -115,7 +113,7 @@ function userTabMoudel() {
   }
 }
 export default defineComponent({
-  name: 'AsideUser',
+  name: "AsideUser",
   components: { LoginCard },
   props: {
     userTabList: {
@@ -130,13 +128,6 @@ export default defineComponent({
     // 全局登录卡片
     const globalStore = useGlobalStore()
     const { openLoginCard } = globalStore
-    onMounted(() => {
-      if (isLogin) {
-        if (!userInfo || !userInfo.value?.token) {
-          userStore.exit()
-        }
-      }
-    })
     return {
       isLogin,
       userInfo,
@@ -163,7 +154,7 @@ export default defineComponent({
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    background-color: @bg-2;
+    background-color: @bg-gray-1;
     overflow: hidden;
     cursor: pointer;
     span {

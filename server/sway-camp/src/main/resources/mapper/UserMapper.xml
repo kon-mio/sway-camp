@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zxy.swaycamp.domain.entity.User">
         <id column="id" property="id"/>
+        <result column="sway_id" property="swayId"/>
         <result column="username" property="username"/>
         <result column="phone_number" property="phoneNumber"/>
         <result column="email" property="email"/>
@@ -19,13 +20,13 @@
         <result column="open_id" property="openId"/>
         <result column="user_role" property="userRole"/>
         <result column="user_status" property="userStatus"/>
-        <result column="deleted" property="deleted"/>
+        <result column="is_deleted" property="deleted"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         id
-        , username, phone_number, email, password, gender, avatar, introduction, birthday, create_time, update_time, update_by, open_id, user_role, user_status, deleted
+        , username, phone_number, email, password, gender, avatar, introduction, birthday, create_time, update_time, update_by, open_id, user_role, user_status, is_deleted
     </sql>
 
 </mapper>

@@ -1,15 +1,15 @@
-import axios from 'axios'
-import { globalConfig as config } from '@/config/global.config'
-import AxiosInterceptor from './Interceptor'
-import { CommonResult } from './result.type'
+import axios from "axios"
+import { globalConfig as config } from "@/config/global.config"
+import AxiosInterceptor from "./Interceptor"
+import { CommonResult } from "./result.type"
 
 // 创建公共实例
 const instance = axios.create({
   baseURL: config.server.ip + config.server.commonChart,
+  // baseURL: "",
   timeout: config.server.timeout
 })
 new AxiosInterceptor(instance)
-
 
 /**
  * 请求 - get
