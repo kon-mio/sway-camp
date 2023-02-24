@@ -91,7 +91,6 @@ public class OssServiceImpl implements OssService {
         }
         //如果文件存在直接返回文件信息
         String md5 = SwayFileUtil.compMd5(file);
-        logger.info(md5);
         swayFile = swayFileService.getOne(new LambdaQueryWrapper<SwayFile>().eq(SwayFile::getMd5, md5));
         if(swayFile != null){
             fileVo.setUrl(swayFile.getUrl());
