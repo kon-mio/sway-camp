@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @since 2023/1/23
  */
 @Configuration
-@MapperScan({"com.zxy.swaycamp.mapper"})
+@MapperScan("com.zxy.swaycamp.mapper")
 public class MybatisPlusConfig {
 
     @Bean

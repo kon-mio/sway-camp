@@ -19,7 +19,12 @@ public class CacheConstants {
     /**
      * 登录用户token redis key
      */
-    public static final String LOGIN_USER_KEY = "sway_user:";
+    public static final String LOGIN_USER_KEY = "sway_login_user:";
+
+    /**
+     * 用户信息
+     */
+    public static final String USER_KEY = "sway_user:";
 
     /**
      * 邮箱注册/登录验证码

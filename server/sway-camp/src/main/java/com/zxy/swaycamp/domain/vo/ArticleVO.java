@@ -17,7 +17,7 @@ public class ArticleVO {
 
     private Integer userId;
 
-    private Integer username;
+    private String username;
     private String sort;
 
     private String label;

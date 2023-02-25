@@ -1,7 +1,11 @@
 package com.zxy.swaycamp.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zxy.swaycamp.domain.entity.Article;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.zxy.swaycamp.domain.vo.ArticleVO;
+
+import java.util.List;
 
 /**
  * <p>

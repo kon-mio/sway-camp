@@ -1,16 +1,24 @@
 package com.zxy.swaycamp.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.domain.entity.Article;
+import com.zxy.swaycamp.domain.entity.ArticleLabel;
+import com.zxy.swaycamp.domain.entity.ArticleSort;
+import com.zxy.swaycamp.domain.entity.User;
 import com.zxy.swaycamp.domain.vo.ArticleVO;
 import com.zxy.swaycamp.domain.vo.FileVO;
+import com.zxy.swaycamp.domain.vo.PageVO;
 import com.zxy.swaycamp.mapper.ArticleMapper;
 import com.zxy.swaycamp.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.service.OssService;
 import com.zxy.swaycamp.utils.SwayUtil;
+import com.zxy.swaycamp.utils.query.CommonQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +27,11 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -36,6 +49,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Resource
     private OssService ossService;
 
+    @Resource
+    private CommonQuery commonQuery;
+
+    @Resource
+    private ArticleMapper articleMapper;
+
 
     /**
      * 根据Id查询文章
@@ -43,10 +62,39 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @return 文章详细信息
      */
     public ArticleVO getArticle(Integer articleId){
-        Article article = lambdaQuery().eq(Article::getId, articleId).one();
-        ArticleVO articleVO = new ArticleVO();
-        BeanUtils.copyProperties(article, articleVO);
-        return articleVO;
+        Article article = lambdaQuery().eq(Article::getId, articleId)
+                .eq(Article::getDeleted, false)
+                .eq(Article::getReview, true)
+                .one();
+        if(article == null){
+            throw new ServiceException(HttpStatus.NOT_FOUND, "文章不存在");
+        }
+        Integer userId = SwayUtil.getCurrentUserId();
+        if(!article.getViewStatus()){
+            if(userId == null || !userId.equals(article.getUserId())){
+                throw new ServiceException(HttpStatus.NOT_FOUND, "权限不足");
+            }
+        }
+        return buildArticleVO(article);
+    }
+
+    /**
+     * 分页查询文章
+     * @param index 索引
+     * @param size 大小
+     * @return 文章列表
+     */
+    @Override
+    public PageVO<ArticleVO> listArticle(Integer index, Integer size){
+        Page<Article> articles = lambdaQuery().page(new Page<>(index, size));
+        if(articles == null || CollectionUtils.isEmpty(articles.getRecords())){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "查询页数超出总页数");
+        }
+        List<ArticleVO> articleVos =  articles.getRecords().stream().map(item -> buildArticleVO(item)).collect(Collectors.toList());
+        PageVO<ArticleVO> pageVO = new PageVO<>();
+        pageVO.setList(articleVos);
+        pageVO.setTotal((int) articles.getTotal());
+        return pageVO;
     }
 
     /**
@@ -87,5 +135,33 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             logger.error("上传文章报错：{}", e.getMessage());
             throw new ServiceException();
         }
+    }
+
+
+
+    private ArticleVO buildArticleVO(Article article){
+        ArticleVO articleVO = new ArticleVO();
+        BeanUtils.copyProperties(article, articleVO);
+        User user = commonQuery.getUser(article.getUserId());
+        articleVO.setUsername(user.getUsername());
+        List<ArticleSort> sortInfo = commonQuery.getSortInfo();
+        if (sortInfo != null) {
+            for (ArticleSort s : sortInfo) {
+                if (s.getId().equals(article.getSortId())) {
+                    articleVO.setSort(s.getSortName());
+                    if (!CollectionUtils.isEmpty(s.getLabels())) {
+                        for (int j = 0; j < s.getLabels().size(); j++) {
+                            ArticleLabel l = s.getLabels().get(j);
+                            if (l.getId().equals(article.getSortId())) {
+                                articleVO.setLabel(l.getLableName());
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return articleVO;
     }
 }
