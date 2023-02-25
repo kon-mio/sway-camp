@@ -2,6 +2,7 @@ const Article = () => import("@/views/article/Index.vue")
 
 const Library = () => import("@/views/article/routes/search/Index.vue")
 const Write = () => import("@/views/article/routes/write/Index.vue")
+const Read = () => import("@/views/article/routes/read/Index.vue")
 
 const commonMeta = {
   index: 1,
@@ -29,6 +30,15 @@ export default {
       path: "write",
       name: "Write",
       component: Write,
+      meta: {
+        title: "各务原抚子",
+        ...commonMeta
+      }
+    },
+    {
+      path: "read",
+      name: "Read",
+      component: Read,
       meta: {
         title: "各务原抚子",
         ...commonMeta
