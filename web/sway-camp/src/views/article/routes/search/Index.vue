@@ -1,6 +1,6 @@
 <template>
   <div class="article-search">
-    <div class="test" @click="ReadArticle(1)"><article-cover ref="coverTarget" /></div>
+    <div class="test" @click="readArticle(1)"><article-cover ref="coverTarget" /></div>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import ArticleCover from "@/components/article-cover/ArticleCover.vue"
 import { useReadArticle } from "@/hooks/useReadArticle.hooks"
 
-const { ReadArticle, coverTarget } = useReadArticle()
+const { readArticle, coverTarget } = useReadArticle()
 </script>
 
 <style lang="less" scoped>

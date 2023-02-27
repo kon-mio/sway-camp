@@ -5,10 +5,7 @@
     <div class="article-card__cover">
       <div class="cover-img">
         <div class="cover-img--trans">
-          <img
-            src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/71b0c74745064a3a8b9257c62d836bef.webp"
-            alt=""
-          />
+          <article-cover ref="coverTarget" :src="article.cover" />
         </div>
       </div>
     </div>
@@ -17,31 +14,43 @@
       <div class="info-header">
         <div class="time">
           <sway-icon name="riqi_o" />
-          <span>now</span>
+          <span>{{ article.createTime }}</span>
         </div>
         <div class="label">
           <sway-icon name="riqi_o" />
-          <span> 其他 </span>
+          <span> {{ article.label }} </span>
         </div>
       </div>
       <div class="info-main">
         <div class="title">
-          <h2>Hello World</h2>
+          <h2>{{ article.title }}</h2>
         </div>
         <div class="introduction">
-          <div>sdfsdfsdfsdfsdf</div>
+          <div>{{ article.introduction }}</div>
         </div>
       </div>
       <div class="info-footer">
         <span class="author">
           <sway-icon name="zuozhe" />
-          <span>莉可</span>
+          <span>{{ article.username }}</span>
         </span>
-        <div class="read">阅 读</div>
+        <div class="read" @click="readArticle(article.id)">阅 读</div>
       </div>
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+import { ArticleInfo } from "@/api/article/type"
+import ArticleCover from "@/components/article-cover/ArticleCover.vue"
+import { useReadArticle } from "@/hooks/useReadArticle.hooks"
+
+const props = defineProps<{
+  article: ArticleInfo
+}>()
+
+const { readArticle, coverTarget } = useReadArticle()
+</script>
 
 <style lang="less" scoped>
 @icon-color: #999;

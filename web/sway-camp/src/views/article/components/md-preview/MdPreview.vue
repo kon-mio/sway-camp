@@ -1,10 +1,11 @@
 <template>
+  <!-- 预览模式 -->
   <md-editor
     v-model="viewText"
-    :preview-only="view"
+    code-theme="paraiso"
+    :preview-only="true"
+    :show-code-row-number="true"
     :class="mdClass"
-    @on-change="textChange"
-    :showCodeRowNumber="true"
     preview-theme="default"
   />
 </template>

@@ -2,9 +2,20 @@ import { defineConfig } from "vite"
 import path from "path"
 import vue from "@vitejs/plugin-vue"
 import ElementPlus from "unplugin-element-plus/vite"
+import prismjs from "vite-plugin-prismjs"
 
 export default defineConfig({
-  plugins: [vue(), ElementPlus()],
+  plugins: [
+    vue(),
+    ElementPlus(),
+    prismjs({
+      languages: ["html", "js", "java", "less"],
+      // languages: 'all',
+      plugins: ["line-numbers"], //配置显示行号插件
+      theme: "dark", //主题名称
+      css: true
+    })
+  ],
   resolve: {
     // 配置路径别名
     alias: {

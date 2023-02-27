@@ -22,8 +22,8 @@
         </template>
       </main-left>
       <main-center>
-        <div class="article-item" v-for="index in 20" :key="index">
-          <article-card />
+        <div v-for="(item, index) in articleList.list" :key="index" class="article-item">
+          <article-card :article="item" />
         </div>
       </main-center>
       <main-right></main-right>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from "vue"
+import { reactive, onMounted } from "vue"
 import HomeBanner from "./components/banner/HomeBanner.vue"
 import HomeCarousel from "./components/banner/components/HomeCarousel.vue"
 import type { carouselType } from "./components/banner/type"
@@ -44,6 +44,9 @@ import MainLeft from "./components/main/MainLeft.vue"
 import MainRight from "./components/main/MainRight.vue"
 import WebSiteCard from "./components/WebSiteCard.vue"
 import ArticleCard from "./components/article/ArticleCard.vue"
+import { listArticleApi } from "@/api/article/api"
+import { ArticleList } from "@/api/article/type"
+import { HttpStatusCode } from "@/common/enum"
 
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
@@ -64,6 +67,19 @@ const carouselItems = reactive<carouselType[]>([
       "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/940935cb641541889b946472021b815f.webp"
   }
 ])
+
+const articleList = reactive<ArticleList>({
+  list: [],
+  total: 0
+})
+
+onMounted(async () => {
+  const res = await listArticleApi(1, 2)
+  if (res.code === HttpStatusCode.Success) {
+    articleList.list.push(...res.data.list)
+    articleList.total = res.data.total
+  }
+})
 </script>
 <style lang="less" scoped>
 .sway-home {

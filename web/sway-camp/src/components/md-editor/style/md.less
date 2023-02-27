@@ -1,0 +1,421 @@
+.konmio-md-style {
+  code[class*="language-"],
+  pre[class*="language-"] {
+    color: #ccc;
+    font-size: 14px;
+    font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
+    line-height: 1.6;
+    white-space: pre;
+    text-align: left;
+    word-wrap: normal;
+    word-break: normal;
+    word-spacing: normal;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+    background: none;
+  }
+  pre[class*="language-"].line-numbers {
+    position: relative;
+    padding-left: 5em;
+    counter-reset: linenumber;
+  }
+  pre[class*="language-"] {
+    padding: 2em;
+    margin: 0.5em 0;
+    overflow: auto;
+    border: 0.3em solid hsl(30, 20%, 40%);
+    border-radius: 0.5em;
+    box-shadow: 1px 1px 0.5em black inset;
+    &:before {
+      content: attr(data-ext);
+      position: absolute;
+      z-index: 3;
+      top: 0.8em;
+      right: 1em;
+      font-size: 0.75rem;
+      color: #9e9e9e;
+    }
+  }
+  pre {
+    &::-webkit-scrollbar {
+      // width: 10px;
+      // color: black;
+      height: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: #d3d1cb;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: #aeaca6;
+    }
+    &::-webkit-scrollbar-track {
+      background-color: #edece9;
+    }
+  }
+  code {
+    padding: 0.25rem 0.5rem;
+    color: #476582;
+    font-size: 0.85em;
+    background-color: rgba(27, 31, 35, 0.05);
+    border-radius: 3px;
+    .token.deleted {
+      color: #ec5975;
+    }
+    .token.inserted {
+      color: #3eaf7c;
+    }
+    span {
+    }
+  }
+}
+
+.konmio-md-style {
+  .token.block-comment,
+  .token.cdata,
+  .token.comment,
+  .token.doctype,
+  .token.prolog {
+    color: #999;
+  }
+  .token.punctuation {
+    color: #ccc;
+  }
+  .token.attr-name,
+  .token.deleted,
+  .token.namespace,
+  .token.tag {
+    color: #e2777a;
+  }
+  .token.function-name {
+    color: #6196cc;
+  }
+  .token.boolean,
+  .token.function,
+  .token.number {
+    color: #f08d49;
+  }
+  .token.class-name,
+  .token.constant,
+  .token.property,
+  .token.symbol {
+    color: #f8c555;
+  }
+  .token.atrule,
+  .token.builtin,
+  .token.important,
+  .token.keyword,
+  .token.selector {
+    color: #cc99cd;
+  }
+  .token.attr-value,
+  .token.char,
+  .token.regex,
+  .token.string,
+  .token.variable {
+    color: #7ec699;
+  }
+  .token.entity,
+  .token.operator,
+  .token.url {
+    color: #67cdcc;
+  }
+  .token.bold,
+  .token.important {
+    font-weight: 700;
+  }
+  .token.italic {
+    font-style: italic;
+  }
+  .token.entity {
+    cursor: help;
+  }
+  .token.inserted {
+    color: green;
+  }
+}
+
+.konmio-md-style pre[class*="language-"] {
+  margin: 0.85rem 0;
+  overflow: auto;
+  background-color: #282c34;
+  border-radius: 6px;
+  border: none;
+}
+.konmio-md-style pre[class*="language-"] code,
+.konmio-md-style pre code {
+  padding: 0;
+  color: #fff;
+  background-color: transparent;
+  border-radius: 0;
+}
+// 代码类型
+.konmio-md-style {
+  div[class~="language-js"]::before {
+    content: "js";
+  }
+  div[class~="language-ts"]::before {
+    content: "ts";
+  }
+  div[class~="language-html"]::before {
+    content: "html";
+  }
+  div[class~="language-md"]::before {
+    content: "md";
+  }
+  div[class~="language-vue"]::before {
+    content: "vue";
+  }
+  div[class~="language-css"]::before {
+    content: "css";
+  }
+  div[class~="language-sass"]::before {
+    content: "sass";
+  }
+  div[class~="language-less"]::before {
+    content: "less";
+  }
+  div[class~="language-scss"]::before {
+    content: "scss";
+  }
+  div[class~="language-stylus"]::before {
+    content: "stylus";
+  }
+  div[class~="language-go"]::before {
+    content: "go";
+  }
+  div[class~="language-java"]::before {
+    content: "java";
+  }
+  div[class~="language-c"]::before {
+    content: "c";
+  }
+  div[class~="language-sh"]::before {
+    content: "sh";
+  }
+  div[class~="language-yaml"]::before {
+    content: "yaml";
+  }
+  div[class~="language-py"]::before {
+    content: "py";
+  }
+  div[class~="language-docker"]::before {
+    content: "docker";
+  }
+  div[class~="language-dockerfile"]::before {
+    content: "dockerfile";
+  }
+  div[class~="language-makefile"]::before {
+    content: "makefile";
+  }
+  div[class~="language-javascript"]::before {
+    content: "js";
+  }
+  div[class~="language-typescript"]::before {
+    content: "ts";
+  }
+  div[class~="language-markup"]::before {
+    content: "html";
+  }
+  div[class~="language-markdown"]::before {
+    content: "md";
+  }
+  div[class~="language-json"]::before {
+    content: "json";
+  }
+  div[class~="language-ruby"]::before {
+    content: "rb";
+  }
+  div[class~="language-python"]::before {
+    content: "py";
+  }
+  div[class~="language-bash"]::before {
+    content: "sh";
+  }
+  div[class~="language-php"]::before {
+    content: "php";
+  }
+}
+
+.konmio-md-style:not(.custom) {
+  padding: 2rem 2.5rem;
+}
+@media (max-width: 959px) {
+  .konmio-md-style:not(.custom) {
+    padding: 2rem;
+  }
+}
+@media (max-width: 419px) {
+  .konmio-md-style:not(.custom) {
+    padding: 1.5rem;
+  }
+}
+.konmio-md-style .table-of-contents .badge {
+  vertical-align: middle;
+}
+.konmio-md-style {
+  color: #2c3e50;
+  font-size: 16px;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+    Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff;
+}
+.konmio-md-style:not(.custom) a:hover {
+  text-decoration: underline;
+}
+.konmio-md-style:not(.custom) p.demo {
+  padding: 1rem 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+.konmio-md-style:not(.custom) img {
+  max-width: 100%;
+}
+.konmio-md-style.custom {
+  margin: 0;
+  padding: 0;
+}
+.konmio-md-style.custom img {
+  max-width: 100%;
+}
+.konmio-md-style a {
+  font-weight: 500;
+  text-decoration: none;
+}
+.konmio-md-style a,
+.konmio-md-style p a code {
+  color: #3eaf7c;
+}
+.konmio-md-style p a code {
+  font-weight: 400;
+}
+.konmio-md-style kbd {
+  padding: 0 0.15em;
+  background: #eee;
+  border: 0.15rem solid #ddd;
+  border-bottom: 0.25rem solid #ddd;
+  border-radius: 0.15rem;
+}
+.konmio-md-style blockquote {
+  color: #666;
+  border-left: 4px solid #ddd;
+  padding-left: 20px;
+  margin-left: 0;
+  font-size: 14px;
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+.konmio-md-style blockquote > p {
+  margin: 0;
+}
+.konmio-md-style ol,
+.konmio-md-style ul {
+  margin: 1em 0;
+  padding-left: 1.2em;
+}
+.konmio-md-style strong {
+  font-weight: 600;
+}
+.konmio-md-style h1,
+.konmio-md-style h2,
+.konmio-md-style h3,
+.konmio-md-style h4,
+.konmio-md-style h5,
+.konmio-md-style h6 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+.konmio-md-style h1 {
+  margin: 0.67em 0;
+  font-size: 2.2rem;
+}
+.konmio-md-style h2 {
+  margin: 0.83em 0;
+  padding-bottom: 0.3rem;
+  font-size: 1.65rem;
+  border-bottom: 1px solid #eaecef;
+}
+.konmio-md-style h3 {
+  margin: 1em 0;
+  font-size: 1.35rem;
+}
+.konmio-md-style h4 {
+  margin: 1.33em 0;
+}
+.konmio-md-style h5 {
+  margin: 1.67em 0;
+}
+.konmio-md-style h6 {
+  margin: 2.33em 0;
+}
+.konmio-md-style i,
+.konmio-md-style em {
+  font-style: italic;
+}
+.konmio-md-style ul {
+  list-style-type: disc;
+}
+.konmio-md-style ul ul,
+.konmio-md-style ol ul {
+  list-style-type: circle;
+}
+.konmio-md-style ol ol ul,
+.konmio-md-style ol ul ul,
+.konmio-md-style ul ol ul,
+.konmio-md-style ul ul ul {
+  list-style-type: square;
+}
+.konmio-md-style ol {
+  list-style-type: decimal;
+}
+.konmio-md-style .line-number,
+.konmio-md-style code,
+.konmio-md-style kbd {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace;
+}
+.konmio-md-style ol,
+.konmio-md-style p,
+.konmio-md-style ul {
+  line-height: 1.7;
+}
+.konmio-md-style hr {
+  border: 0;
+  border-top: 1px solid #eaecef;
+}
+.konmio-md-style table {
+  display: block;
+  margin: 1rem 0;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+.konmio-md-style tr {
+  border-top: 1px solid #dfe2e5;
+}
+.konmio-md-style tr:nth-child(2n) {
+  background-color: #f6f8fa;
+}
+.konmio-md-style td,
+.konmio-md-style th {
+  padding: 0.6em 1em;
+  border: 1px solid #dfe2e5;
+}
+.konmio-md-style .v-md-svg-outbound {
+  position: relative;
+  top: -1px;
+  display: inline-block;
+  color: #aaa;
+  vertical-align: middle;
+}
+@media (max-width: 419px) {
+  .konmio-md-style h1 {
+    font-size: 1.9rem;
+  }
+  .konmio-md-style div[class*="language-"] {
+    margin: 0.85rem -1.5rem;
+    border-radius: 0;
+  }
+}

@@ -7,22 +7,22 @@ export const useReadArticle = () => {
   const $router = useRouter()
   const { setCoverInfo } = useArticleStore()
   const coverTarget = ref<InstanceType<typeof cover> | null>(null)
-  //   const coverTarget = ref()
 
-  const ReadArticle = (aid: number) => {
+  const readArticle = (aid: number) => {
     if (!coverTarget.value) return
-    console.log(aid)
-    console.log(coverTarget.value)
     const coverInfo = coverTarget.value.getCover()
     if (coverInfo) {
       setCoverInfo(coverInfo)
     }
     $router.push({
-      name: "Read"
+      name: "Read",
+      params: {
+        id: aid
+      }
     })
   }
   return {
     coverTarget,
-    ReadArticle
+    readArticle
   }
 }

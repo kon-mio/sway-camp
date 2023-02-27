@@ -36,9 +36,10 @@ export default {
       }
     },
     {
-      path: "read",
+      path: "read/:id",
       name: "Read",
       component: Read,
+      props: true,
       meta: {
         title: "各务原抚子",
         ...commonMeta

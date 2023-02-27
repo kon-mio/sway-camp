@@ -1,0 +1,64 @@
+code[class*="language-"] .line-numbers-rows {
+  position: absolute;
+  top: -30px;
+  left: -80px;
+  padding-top: 28px;
+  width: 4rem;
+  height: calc(100% + 60px);
+  box-sizing: border-box;
+  text-align: center;
+  color: #9e9e9e;
+  border-color: black;
+  counter-reset: line-number;
+  &::before {
+    content: "";
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: calc(100% + 2rem);
+    color: white;
+  }
+  span {
+    position: relative;
+    z-index: 3;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    &::before {
+      padding-right: 1.4rem;
+    }
+  }
+}
+
+// 自定义代码段行号
+.code-container {
+  display: flex;
+  margin: 0 20px;
+}
+.num-wrapper,
+.hljs {
+  margin: 14px 0;
+  line-height: 22px;
+}
+.hljs {
+  padding: 0 10px 0 10px;
+}
+.num-wrapper {
+  counter-reset: code-num;
+  display: flex;
+  flex-direction: column;
+  background: #0d1117;
+  border-right: #565656 solid thin;
+  width: 40px;
+}
+.num-item {
+  position: relative;
+  height: 22px;
+}
+.num-item:before {
+  counter-increment: code-num;
+  content: counter(code-num);
+  position: absolute;
+  right: 10px;
+}

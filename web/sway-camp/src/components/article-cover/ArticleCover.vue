@@ -11,7 +11,7 @@ const props = withDefaults(
     src?: string
   }>(),
   {
-    src: "http://file.konmio.com/image/385392109cc6485fa587dc6f845f945f.webp"
+    src: "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/540083f441c14c8e839dd6b70a831eaa.webp"
   }
 )
 

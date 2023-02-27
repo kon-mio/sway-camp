@@ -3,7 +3,7 @@ import type { ArticleCover } from "@/components/article-cover/type"
 
 export const useArticleStore = defineStore("article", {
   state: () => ({
-    coverInfo: {} as ArticleCover
+    coverInfo: null as ArticleCover | null
   }),
   actions: {
     setCoverInfo(info: ArticleCover) {
