@@ -16,7 +16,8 @@
           <div class="center-header"></div>
           <div class="center-main">
             <!-- <kon-md-preview :markdown="articleInfo.content" /> -->
-            <MdPreview class="abyss-md" :text="articleInfo.content" />
+            <!-- <MdPreview class="abyss-md" :text="articleInfo.content" /> -->
+            <VMdPreview class="abyss-md" :content="articleInfo.content" />
           </div>
           <div id="center-comment" class="center-comment"></div>
         </div>
@@ -43,6 +44,7 @@ import type { ArticleInfo } from "@/api/article/type"
 import type { ArticleCover } from "@/components/article-cover/type"
 import KonMdPreview from "@/components/md-editor/KonMdEditor.vue"
 import MdPreview from "../../components/md-preview/MdPreview.vue"
+import VMdPreview from "../../components/md-preview/VMdPreview.vue"
 import SwayNotion from "@/utils/notice"
 // 背景处理
 function CoverFuncModule() {

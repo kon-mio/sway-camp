@@ -48,10 +48,21 @@ export default defineComponent({
       })
     }
 
+    const init = () => {
+      if (!dom.value) return
+      if (dom.value?.scrollTop > 300) return
+      dom.value?.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "smooth"
+      })
+    }
+
     onMounted(() => {
       if (!hasTarget.value) return
       dom.value = document.querySelector("#" + props.target) as HTMLElement
       addEvent()
+      init()
     })
     onBeforeUnmount(() => {
       removeEvent()
