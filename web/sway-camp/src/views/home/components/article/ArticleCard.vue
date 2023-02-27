@@ -5,7 +5,7 @@
     <div class="article-card__cover">
       <div class="cover-img">
         <div class="cover-img--trans">
-          <article-cover ref="coverTarget" :src="article.cover" />
+          <article-cover ref="coverTarget" :src="articleInfo.cover" />
         </div>
       </div>
     </div>
@@ -14,27 +14,27 @@
       <div class="info-header">
         <div class="time">
           <sway-icon name="riqi_o" />
-          <span>{{ article.createTime }}</span>
+          <span>{{ articleInfo.createTime }}</span>
         </div>
         <div class="label">
           <sway-icon name="riqi_o" />
-          <span> {{ article.label }} </span>
+          <span> {{ articleInfo.label }} </span>
         </div>
       </div>
       <div class="info-main">
         <div class="title">
-          <h2>{{ article.title }}</h2>
+          <h2>{{ articleInfo.title }}</h2>
         </div>
         <div class="introduction">
-          <div>{{ article.introduction }}</div>
+          <div>{{ articleInfo.introduction }}</div>
         </div>
       </div>
       <div class="info-footer">
         <span class="author">
           <sway-icon name="zuozhe" />
-          <span>{{ article.username }}</span>
+          <span>{{ articleInfo.username }}</span>
         </span>
-        <div class="read" @click="readArticle(article.id)">阅 读</div>
+        <div class="read" @click="readArticle(articleInfo.id)">阅 读</div>
       </div>
     </div>
   </div>
@@ -44,10 +44,15 @@
 import { ArticleInfo } from "@/api/article/type"
 import ArticleCover from "@/components/article/article-cover/ArticleCover.vue"
 import { useReadArticle } from "@/hooks/useReadArticle.hooks"
+import { computed } from "vue"
 
 const props = defineProps<{
   article: ArticleInfo
 }>()
+
+const articleInfo = computed(() => {
+  return props.article
+})
 
 const { readArticle, coverTarget } = useReadArticle()
 </script>

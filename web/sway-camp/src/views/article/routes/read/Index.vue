@@ -9,7 +9,12 @@
     </div>
     <!-- 内容 -->
     <Transition name="base">
-      <div v-if="articleInfo.content" class="article-read-frame">
+      <div
+        v-if="articleInfo.content"
+        ref="scrollTarget"
+        class="article-read-frame"
+        @scroll="scroll(readScroll)"
+      >
         <div class="left">
           <title-box title="更多推荐">
             <article-card
@@ -22,7 +27,9 @@
         </div>
         <!-- 文章 -->
         <div class="center">
-          <div class="center-header"></div>
+          <div class="center-header">
+            <article-header :article-info="articleInfo" />
+          </div>
           <div class="center-main">
             <v-md-preview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
@@ -54,6 +61,17 @@
         </div>
       </div>
     </Transition>
+    <div
+      v-if="articleInfo.content"
+      class="break-page"
+      title="点击回到上一页"
+      @click="$router.back()"
+      @mouseenter="backRouteEnter"
+      @mouseleave="backRouteLeave"
+    >
+      <sway-icon :name="backIcon" :size="20" color="#999" title="返回上一页" />
+    </div>
+    <div v-if="articleInfo.content" class="bottom-deck"></div>
   </div>
 </template>
 
@@ -71,6 +89,8 @@ import TimeCard from "@/components/time-card/TimeCard.vue"
 import { Catalogue } from "../../type"
 import TitleBox from "@/components/title-box/TitleBox.vue"
 import ArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
+import { useScroll } from "@/hooks/useScroll.hooks"
+import ArticleHeader from "../../components/read-main/article-header/ArticleHeader.vue"
 // 背景处理
 function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
@@ -109,27 +129,53 @@ function coverFuncModule() {
 }
 // 目录处理
 function catalogueModule() {
+  const activeIndex = ref(0)
   const catalogues = reactive<Catalogue[]>([])
-
   // 获取目录
   const getCataLogue = (catalogueList: Catalogue[]) => {
-    console.log(catalogueList)
     Object.assign(catalogues, catalogueList)
   }
   // 目录跳转
   const directoryJump = (targetName: string) => {
+    console.log(catalogues)
+    console.log("------", scrollData.scrollTop)
     document.querySelector(targetName)?.scrollIntoView(true)
   }
   // 滚动刷新目录
   const refreshCatalogue = () => {
-    return
+    if (catalogues.length <= 0) return
+    catalogues.forEach((item, index) => {
+      if (scrollData.scrollTop > item.ofTop) {
+        activeIndex.value = index
+      }
+    })
+    catalogues.forEach((item) => {
+      item.active = false
+    })
+    catalogues[activeIndex.value].active = true
   }
 
   return {
+    activeIndex,
     catalogues,
     getCataLogue,
     directoryJump,
     refreshCatalogue
+  }
+}
+// 返回上一页
+function backRouteModule() {
+  const backIcon = ref("jiantouzuo")
+  const backRouteEnter = () => {
+    backIcon.value = "jiantouyou"
+  }
+  const backRouteLeave = () => {
+    backIcon.value = "jiantouzuo"
+  }
+  return {
+    backIcon,
+    backRouteEnter,
+    backRouteLeave
   }
 }
 // 通过路由传递文章ID
@@ -139,7 +185,13 @@ const props = defineProps<{
 const articleStore = useArticleStore()
 const { coverInfo } = storeToRefs(articleStore)
 const { transBgRef, coverMark, coverInit, removeAnime } = coverFuncModule()
-const { catalogues, getCataLogue, directoryJump } = catalogueModule()
+const { catalogues, getCataLogue, directoryJump, refreshCatalogue } = catalogueModule()
+const { backIcon, backRouteEnter, backRouteLeave } = backRouteModule()
+// 滚动事件
+const { scrollData, scrollTarget, scroll } = useScroll()
+const readScroll = () => {
+  refreshCatalogue()
+}
 
 // 文章信息
 const articleInfo = reactive<ArticleInfo>({
@@ -304,8 +356,8 @@ onMounted(async () => {
       min-width: 500px;
       max-width: 800px;
       height: fit-content;
-      margin: 0 30px;
-      padding: 20px;
+      margin: 0 30px 120px 30px;
+      padding: 30px;
       box-sizing: border-box;
       border-radius: 12px;
       background-color: white;
@@ -394,6 +446,42 @@ onMounted(async () => {
         background-color: #ebedef;
         border-radius: 4px;
       }
+    }
+  }
+  .bottom-deck {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    z-index: 3;
+    background: url("@/assets/img/sketch-bottom.png") repeat center bottom;
+    transform: rotateX(180deg);
+    background-size: auto 100%;
+  }
+  .break-page {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    z-index: 800;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 1;
+    width: 60px;
+    height: 60px;
+    background: #fff;
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    color: #394048;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.25s;
+    box-shadow: 0 2px 10px #00000040;
+
+    &:hover {
+      width: 80px;
     }
   }
 }
