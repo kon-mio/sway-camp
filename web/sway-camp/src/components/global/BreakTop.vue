@@ -4,7 +4,16 @@
   </div>
 </template>
 <script lang="ts">
-import { computed, CSSProperties, defineComponent, onBeforeUnmount, onMounted, ref } from "vue"
+import {
+  computed,
+  CSSProperties,
+  defineComponent,
+  onActivated,
+  onBeforeUnmount,
+  onDeactivated,
+  onMounted,
+  ref
+} from "vue"
 import { throttle } from "@konmio/utils"
 export default defineComponent({
   name: "BreakTop",
@@ -49,20 +58,19 @@ export default defineComponent({
     }
 
     const init = () => {
-      if (!dom.value) return
-      if (dom.value?.scrollTop > 300) return
-      dom.value?.scrollTo({
-        top: 0,
-        left: 0,
-        behavior: "smooth"
-      })
+      visible.value = false
+      console.log(visible.value)
     }
+    onActivated(() => {
+      // 调用时机为首次挂载
+      // 以及每次从缓存中被重新插入时
+      init()
+    })
 
     onMounted(() => {
       if (!hasTarget.value) return
       dom.value = document.querySelector("#" + props.target) as HTMLElement
       addEvent()
-      init()
     })
     onBeforeUnmount(() => {
       removeEvent()

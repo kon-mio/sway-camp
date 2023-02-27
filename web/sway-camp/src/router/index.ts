@@ -1,3 +1,4 @@
+import { createRouteSCM, getRouteSCMInstance } from "@/common/class/RouteScrollCache.class"
 import { useUserStore } from "@/stores/user.store"
 import { storeToRefs } from "pinia"
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router"
@@ -33,7 +34,9 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach(async (to) => {
+createRouteSCM()
+router.beforeEach(async (to, from) => {
+  getRouteSCMInstance().addCache(from.path, from.meta)
   // 获取用户登录状态
   // ！请求报错会终止路由 需要刷新页面
   await useUserStore().refreshInfo()
@@ -48,6 +51,7 @@ router.beforeEach(async (to) => {
   return true
 })
 router.afterEach((to) => {
+  getRouteSCMInstance().setScroll(to.path)
   document.title = String(to.meta.title)
 })
 

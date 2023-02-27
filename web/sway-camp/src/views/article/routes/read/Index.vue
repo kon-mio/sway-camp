@@ -17,16 +17,32 @@
           <div class="center-main">
             <!-- <kon-md-preview :markdown="articleInfo.content" /> -->
             <!-- <MdPreview class="abyss-md" :text="articleInfo.content" /> -->
-            <VMdPreview class="abyss-md" :content="articleInfo.content" />
+            <VMdPreview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
           <div id="center-comment" class="center-comment"></div>
         </div>
         <!-- 导航 -->
         <div class="right">
-          <div class="time"></div>
+          <div class="time">
+            <time-card :card-bg="articleInfo.cover" />
+          </div>
           <div class="right-cata">
             <header>导航目录</header>
-            <div class="right-cata-scrollbar"></div>
+            <div class="right-cata-scrollbar">
+              <div
+                v-for="(item, index) in catalogues"
+                :key="index"
+                class="right-cata__item"
+                :style="`padding-left:${item.indent * 10}px`"
+              >
+                <!-- <a :class="item.active === true ? 'active' : ''" :href="`#${item.id}`">{{ item.title }}</a> -->
+                <a
+                  @click="directoryJump(item.tagName)"
+                  :class="item.active === true ? 'active' : ''"
+                  >{{ item.title }}</a
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -46,8 +62,10 @@ import KonMdPreview from "@/components/md-editor/KonMdEditor.vue"
 import MdPreview from "../../components/md-preview/MdPreview.vue"
 import VMdPreview from "../../components/md-preview/VMdPreview.vue"
 import SwayNotion from "@/utils/notice"
+import TimeCard from "@/components/time-card/TimeCard.vue"
+import { Catalogue } from "../../type"
 // 背景处理
-function CoverFuncModule() {
+function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
   const coverMark = ref(false)
   // 添加动画
@@ -82,15 +100,40 @@ function CoverFuncModule() {
   }
   return { transBgRef, coverMark, coverInit, removeAnime }
 }
+// 目录处理
+function catalogueModule() {
+  const catalogues = reactive<Catalogue[]>([])
+
+  // 获取目录
+  const getCataLogue = (catalogueList: Catalogue[]) => {
+    console.log(catalogueList)
+    Object.assign(catalogues, catalogueList)
+  }
+  // 目录跳转
+  const directoryJump = (targetName: string) => {
+    document.querySelector(targetName)?.scrollIntoView(true)
+  }
+  // 滚动刷新目录
+  const refreshCalalogue = () => {
+    return
+  }
+
+  return {
+    catalogues,
+    getCataLogue,
+    directoryJump
+  }
+}
 // 通过路由传递文章ID
 const props = defineProps<{
   id: string
 }>()
 const articleStore = useArticleStore()
 const { coverInfo } = storeToRefs(articleStore)
-const { transBgRef, coverMark, coverInit, removeAnime } = CoverFuncModule()
+const { transBgRef, coverMark, coverInit, removeAnime } = coverFuncModule()
+const { catalogues, getCataLogue, directoryJump } = catalogueModule()
 
-//
+// 文章信息
 const articleInfo = reactive<ArticleInfo>({
   id: 0,
   userId: 0,
@@ -107,7 +150,6 @@ const articleInfo = reactive<ArticleInfo>({
   content: null,
   reprinted: null
 })
-
 const getArticle = async () => {
   const res = await getArticleApi(Number(props.id))
   if (res.code === HttpStatusCode.Success) {
@@ -255,8 +297,8 @@ onMounted(async () => {
       max-width: 800px;
       height: fit-content;
       margin: 0 30px;
+      padding: 20px;
       box-sizing: border-box;
-      padding: 30px;
       border-radius: 12px;
       background-color: white;
 
