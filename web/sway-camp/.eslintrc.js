@@ -22,6 +22,9 @@ module.exports = {
   ],
   rules: {
     eqeqeq: ["error", "always"],
-    "vue/multi-word-component-names": 0
+    "vue/multi-word-component-names": "off",
+    // 关闭空函数校验
+    "no-empty-function": "off",
+    "@typescript-eslint/no-empty-function": "off"
   }
 }

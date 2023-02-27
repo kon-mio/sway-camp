@@ -1,7 +1,7 @@
 import { ref } from "vue"
 import { useRouter } from "vue-router"
 import { useArticleStore } from "@/stores/article.store"
-import cover from "@/components/article-cover/ArticleCover.vue"
+import cover from "@/components/article/article-cover/ArticleCover.vue"
 
 export const useReadArticle = () => {
   const $router = useRouter()

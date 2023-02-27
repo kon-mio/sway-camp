@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import type { ArticleCover } from "@/components/article-cover/type"
+import type { ArticleCover } from "@/components/article/article-cover/type"
 
 export const useArticleStore = defineStore("article", {
   state: () => ({

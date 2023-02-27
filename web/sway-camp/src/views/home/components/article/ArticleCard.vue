@@ -42,7 +42,7 @@
 
 <script lang="ts" setup>
 import { ArticleInfo } from "@/api/article/type"
-import ArticleCover from "@/components/article-cover/ArticleCover.vue"
+import ArticleCover from "@/components/article/article-cover/ArticleCover.vue"
 import { useReadArticle } from "@/hooks/useReadArticle.hooks"
 
 const props = defineProps<{

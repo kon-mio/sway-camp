@@ -10,14 +10,21 @@
     <!-- 内容 -->
     <Transition name="base">
       <div v-if="articleInfo.content" class="article-read-frame">
-        <div class="left"></div>
+        <div class="left">
+          <title-box title="更多推荐">
+            <article-card
+              v-for="index in 6"
+              :key="index"
+              :article="articleInfo"
+              :article-index="index"
+            />
+          </title-box>
+        </div>
         <!-- 文章 -->
         <div class="center">
           <div class="center-header"></div>
           <div class="center-main">
-            <!-- <kon-md-preview :markdown="articleInfo.content" /> -->
-            <!-- <MdPreview class="abyss-md" :text="articleInfo.content" /> -->
-            <VMdPreview :content="articleInfo.content" @get-catalogues="getCataLogue" />
+            <v-md-preview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
           <div id="center-comment" class="center-comment"></div>
         </div>
@@ -37,8 +44,8 @@
               >
                 <!-- <a :class="item.active === true ? 'active' : ''" :href="`#${item.id}`">{{ item.title }}</a> -->
                 <a
-                  @click="directoryJump(item.tagName)"
                   :class="item.active === true ? 'active' : ''"
+                  @click="directoryJump(item.tagName)"
                   >{{ item.title }}</a
                 >
               </div>
@@ -57,13 +64,13 @@ import { getArticleApi } from "@/api/article/api"
 import { useArticleStore } from "@/stores/article.store"
 import { HttpStatusCode } from "@/common/enum"
 import type { ArticleInfo } from "@/api/article/type"
-import type { ArticleCover } from "@/components/article-cover/type"
-import KonMdPreview from "@/components/md-editor/KonMdEditor.vue"
-import MdPreview from "../../components/md-preview/MdPreview.vue"
+import type { ArticleCover } from "@/components/article/article-cover/type"
 import VMdPreview from "../../components/md-preview/VMdPreview.vue"
 import SwayNotion from "@/utils/notice"
 import TimeCard from "@/components/time-card/TimeCard.vue"
 import { Catalogue } from "../../type"
+import TitleBox from "@/components/title-box/TitleBox.vue"
+import ArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
 // 背景处理
 function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
@@ -114,14 +121,15 @@ function catalogueModule() {
     document.querySelector(targetName)?.scrollIntoView(true)
   }
   // 滚动刷新目录
-  const refreshCalalogue = () => {
+  const refreshCatalogue = () => {
     return
   }
 
   return {
     catalogues,
     getCataLogue,
-    directoryJump
+    directoryJump,
+    refreshCatalogue
   }
 }
 // 通过路由传递文章ID

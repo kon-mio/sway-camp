@@ -1,5 +1,5 @@
 <template>
-  <div id="sway-home" class="sway-home">
+  <div id="sway-home" ref="scrollTarget" class="sway-home" @scroll="scroll(homeScroll)">
     <div class="sway-home__banner">
       <home-banner>
         <template #Carousel>
@@ -20,10 +20,29 @@
         <template #website>
           <web-site-card />
         </template>
+        <template #article>
+          <title-box title="受欢迎文章">
+            <recommend-article-card
+              v-for="(item, index) in recomArticleList"
+              :key="index"
+              :article="item"
+              :article-index="index"
+            />
+          </title-box>
+        </template>
       </main-left>
       <main-center>
         <div v-for="(item, index) in articleList.list" :key="index" class="article-item">
           <article-card :article="item" />
+        </div>
+        <div class="loading-tip">
+          <div v-show="loading" class="loading-anime animate__animated animate__fadeInUp">
+            <notion-loading />
+            <span>{{ loadText }}</span>
+          </div>
+          <span v-if="page.all && !loading" class="animate__animated animate__fadeInUp"
+            >加载完成</span
+          >
         </div>
       </main-center>
       <main-right></main-right>
@@ -33,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue"
+import { reactive, onMounted, ref, computed } from "vue"
 import HomeBanner from "./components/banner/HomeBanner.vue"
 import HomeCarousel from "./components/banner/components/HomeCarousel.vue"
 import type { carouselType } from "./components/banner/type"
@@ -44,10 +63,15 @@ import MainLeft from "./components/main/MainLeft.vue"
 import MainRight from "./components/main/MainRight.vue"
 import WebSiteCard from "./components/WebSiteCard.vue"
 import ArticleCard from "./components/article/ArticleCard.vue"
-import { listArticleApi } from "@/api/article/api"
-import { ArticleList } from "@/api/article/type"
+import { listArticleApi, listRecommendApi } from "@/api/article/api"
+import { ArticleInfo, ArticleList } from "@/api/article/type"
 import { HttpStatusCode } from "@/common/enum"
+import TitleBox from "@/components/title-box/TitleBox.vue"
+import RecommendArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
+import { useScroll } from "@/hooks/useScroll.hooks"
+import NotionLoading from "@/components/loading/NotionLoading.vue"
 
+const { scrollData, scrollTarget, scroll, open, close } = useScroll()
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
   {
@@ -67,18 +91,53 @@ const carouselItems = reactive<carouselType[]>([
       "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/940935cb641541889b946472021b815f.webp"
   }
 ])
-
+// 文章分页信息
+const loading = ref(false)
+const loadText = computed(() => {
+  return loading.value ? "加载中" : "加载完成"
+})
+const page = reactive<{ index: number; size: number; max: number; all: boolean }>({
+  index: 1,
+  size: 2,
+  max: 40,
+  all: false
+})
+// 文章列表
 const articleList = reactive<ArticleList>({
   list: [],
   total: 0
 })
-
-onMounted(async () => {
-  const res = await listArticleApi(1, 2)
+// 推荐文章列表
+const recomArticleList = reactive<ArticleInfo[]>([])
+const getArticleList = async () => {
+  loading.value = true
+  const res = await listArticleApi(page.index, page.size)
   if (res.code === HttpStatusCode.Success) {
     articleList.list.push(...res.data.list)
     articleList.total = res.data.total
+    page.index++
+    open()
+  } else {
+    page.all = true
   }
+  loading.value = false
+}
+const listRecomArticle = async () => {
+  const res = await listRecommendApi(3)
+  if (res.code === HttpStatusCode.Success) {
+    recomArticleList.push(...res.data)
+  }
+}
+// 滚动事件
+const homeScroll = () => {
+  if (scrollData.scrollTop + scrollData.clientHeight + 100 > scrollData.scrollHeight) {
+    close()
+    getArticleList()
+  }
+}
+onMounted(() => {
+  getArticleList()
+  listRecomArticle()
 })
 </script>
 <style lang="less" scoped>
@@ -111,6 +170,28 @@ onMounted(async () => {
     .article-item {
       height: 225px;
       margin-bottom: 20px;
+    }
+    .loading-tip {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      height: 60px;
+      .loading-anime {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 20px;
+      }
+      span {
+        position: relative;
+        top: 20px;
+        font-size: 12px;
+        color: #a1a1a1;
+      }
     }
   }
 }

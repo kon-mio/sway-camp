@@ -18,6 +18,12 @@ export async function getArticleApi(id: number): Promise<CommonResult<Type.Artic
   }
 }
 
+/**
+ * 分页查询文章列表
+ * @param index
+ * @param size
+ * @returns
+ */
 export async function listArticleApi(
   index: number,
   size: number
@@ -26,6 +32,21 @@ export async function listArticleApi(
     const { data } = await request.get<Type.ArticleList>(
       `/article/list?index=${index}&size=${size}`
     )
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 查询推荐文章列表
+ * @param index
+ * @param size
+ * @returns
+ */
+export async function listRecommendApi(size: number): Promise<CommonResult<Type.ArticleInfo[]>> {
+  try {
+    const { data } = await request.get<Type.ArticleInfo[]>(`/article/list/recommend?size=${size}`)
     return data
   } catch {
     throw newError()

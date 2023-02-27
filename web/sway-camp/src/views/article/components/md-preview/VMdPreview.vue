@@ -1,9 +1,9 @@
 <template>
-  <v-md-preview ref="preview" mode="preview" :text="content" height="400px"></v-md-preview>
+  <v-md-preview ref="preview" mode="preview" :text="markdownContent" height="400px"></v-md-preview>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from "vue"
+import { ref, computed, onMounted } from "vue"
 import type { Catalogue } from "../../type"
 
 const props = withDefaults(
@@ -19,6 +19,9 @@ const emits = defineEmits<{
 }>()
 
 const preview = ref()
+const markdownContent = computed(() => {
+  return props.content
+})
 
 // 目录
 const catalogueList = ref<Catalogue[]>([])

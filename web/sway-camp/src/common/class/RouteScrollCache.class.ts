@@ -50,8 +50,9 @@ class RouteScrollCacheManage {
   public async setScroll(routeName: string) {
     if (this.cache_.has(routeName)) {
       await nextTick()
-      const cache = this.readCache(routeName)!
-      const el = document.querySelector(cache!.elName)
+      const cache = this.readCache(routeName)
+      if (!cache) return
+      const el = document.querySelector(cache.elName)
       // el && (el.scrollTop = cache.scrollTop) // 关闭滚动动画
       // 平滑滚动
       el &&
@@ -79,5 +80,6 @@ export function createRouteSCM() {
   return instance
 }
 export function getRouteSCMInstance() {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return instance!
 }

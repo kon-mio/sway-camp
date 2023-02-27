@@ -7,14 +7,14 @@
         <button>提交</button>
       </div>
       <div class="content">
-        <MdEditor class="abyss-md" />
+        <v-md-editor />
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import MdEditor from "../../components/md-editor/MdEditor.vue"
+import VMdEditor from "../../components/md-editor/VMdEditor.vue"
 </script>
 
 <style lang="less" scoped>
@@ -61,6 +61,7 @@ import MdEditor from "../../components/md-editor/MdEditor.vue"
     }
     .content {
       flex: 1;
+      width: 100%;
     }
   }
 
