@@ -110,12 +110,14 @@ const articleList = reactive<ArticleList>({
 // 推荐文章列表
 const recomArticleList = reactive<ArticleInfo[]>([])
 const getArticleList = async () => {
+  close()
   loading.value = true
   const res = await listArticleApi(page.index, page.size)
   if (res.code === HttpStatusCode.Success) {
     articleList.list.push(...res.data.list)
     articleList.total = res.data.total
     page.index++
+    console.log(page.index)
     open()
   } else {
     page.all = true
@@ -131,7 +133,6 @@ const listRecomArticle = async () => {
 // 滚动事件
 const homeScroll = () => {
   if (scrollData.scrollTop + scrollData.clientHeight + 100 > scrollData.scrollHeight) {
-    close()
     getArticleList()
   }
 }
