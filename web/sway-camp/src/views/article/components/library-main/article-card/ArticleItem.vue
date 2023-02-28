@@ -8,11 +8,11 @@
       <div class="intor">{{ article.introduction }}</div>
       <div class="else">
         <div class="time">
-          <AsIcon name="riqi_o" />
+          <sway-icon name="riqi_o" />
           {{ article.createTime.split(" ")[0] }}
         </div>
         <div class="auther">
-          <AsIcon name="zuozhe" />
+          <sway-icon name="zuozhe" />
           {{ article.username }}
         </div>
       </div>

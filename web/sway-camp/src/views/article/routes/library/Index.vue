@@ -35,7 +35,12 @@
     </div>
     <!-- 内容 -->
     <div class="article-search__content">
-      <div ref="scrollTarget" class="article-search__content--list" @scroll="scroll(libraryScroll)">
+      <div
+        id="library"
+        ref="scrollTarget"
+        class="article-search__content--list"
+        @scroll="scroll(libraryScroll)"
+      >
         <div v-for="(item, index) in articleList" :key="index" class="article-item">
           <ArticleItem :article="item" />
         </div>
@@ -47,6 +52,7 @@
         </div>
       </transition>
     </div>
+    <break-top target="library" />
   </div>
 </template>
 

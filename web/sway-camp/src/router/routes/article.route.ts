@@ -23,6 +23,7 @@ export default {
       component: Library,
       meta: {
         title: "各务原抚子",
+        elName: "#library",
         ...commonMeta
       }
     },
