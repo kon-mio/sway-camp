@@ -1,11 +1,13 @@
 package com.zxy.swaycamp.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
+import com.zxy.swaycamp.domain.dto.article.SearchDTO;
 import com.zxy.swaycamp.domain.entity.Article;
 import com.zxy.swaycamp.domain.entity.ArticleLabel;
 import com.zxy.swaycamp.domain.entity.ArticleSort;
@@ -61,6 +63,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @param articleId 文章ID
      * @return 文章详细信息
      */
+    @Override
     public ArticleVO getArticle(Integer articleId){
         Article article = lambdaQuery().eq(Article::getId, articleId)
                 .eq(Article::getDeleted, false)
@@ -96,6 +99,57 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         pageVO.setTotal((int) articles.getTotal());
         return pageVO;
     }
+
+    /**
+     * 分页搜索文章
+     * @return 文章列表
+     */
+    @Override
+    public List<ArticleVO>  listSearchArticle(SearchDTO searchDTO){
+        Page<Article> articles = new Page<>();
+        if(searchDTO.getSort() == null && searchDTO.getKeyword() == null){
+            articles = lambdaQuery().page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
+        }
+        if(searchDTO.getSort() != null && searchDTO.getKeyword() == null){
+            articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+                    .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
+        }
+        if(searchDTO.getSort() == null && searchDTO.getKeyword() != null){
+            articles = lambdaQuery().like(Article::getTitle, searchDTO.getKeyword())
+                    .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
+        }
+        if(searchDTO.getSort() != null && searchDTO.getKeyword() != null){
+            articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+                    .like(Article::getTitle, searchDTO.getKeyword())
+                    .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
+        }
+        return articles.getRecords().stream().map(item ->{
+            ArticleVO articleVO = buildArticleVO(item);
+            articleVO.setContent(null);
+            return articleVO;
+        }).collect(Collectors.toList());
+
+    }
+
+    /**
+     * 查询推荐文章
+     * @param size 大小
+     * @return 文章列表
+     */
+    @Override
+    public  List<ArticleVO>  listRecommend(Integer size){
+        List<Article> articles = lambdaQuery().eq(Article::getDeleted, false)
+                .eq(Article::getReview, true)
+                .orderByDesc(Article::getViewCount)
+                .last("limit 0, " + size )
+                .list();
+        List<ArticleVO> articleVos =  articles.stream().map(item -> {
+                    item.setContent(null);
+                    return buildArticleVO(item);
+                }).collect(Collectors.toList());
+        return articleVos;
+    }
+
 
     /**
      * 上传文章接口
@@ -153,7 +207,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                         for (int j = 0; j < s.getLabels().size(); j++) {
                             ArticleLabel l = s.getLabels().get(j);
                             if (l.getId().equals(article.getSortId())) {
-                                articleVO.setLabel(l.getLableName());
+                                articleVO.setLabel(l.getLabelName());
                                 break;
                             }
                         }

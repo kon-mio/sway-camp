@@ -38,8 +38,8 @@ public class ArticleLabel implements Serializable {
     /**
      * 标签名称
      */
-    @TableField("lable_name")
-    private String lableName;
+    @TableField("label_name")
+    private String labelName;
 
     /**
      * 标签描述

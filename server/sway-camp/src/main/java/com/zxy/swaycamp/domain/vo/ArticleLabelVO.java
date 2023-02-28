@@ -1,6 +1,19 @@
-package com.zxy.swaycamp.domain.vo;/**
- *
+package com.zxy.swaycamp.domain.vo;
+
+import lombok.Data;
+
+/**
  * @author XinYuan Zhao
  * @since 2023/2/28
- */public class ArticleLabelVO {
+ */
+@Data
+public class ArticleLabelVO {
+
+    private Integer id;
+    private Integer sortId;
+    private String labelName;
+    private Integer articleCount;
+    private String labelDescription;
+
+
 }

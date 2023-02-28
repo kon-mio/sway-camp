@@ -3,15 +3,21 @@ package com.zxy.swaycamp.controller;
 
 import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
+import com.zxy.swaycamp.domain.dto.article.SearchDTO;
+import com.zxy.swaycamp.domain.entity.ArticleSort;
+import com.zxy.swaycamp.domain.vo.ArticleLabelVO;
+import com.zxy.swaycamp.domain.vo.ArticleSortVO;
 import com.zxy.swaycamp.domain.vo.ArticleVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
 import com.zxy.swaycamp.service.ArticleService;
+import com.zxy.swaycamp.utils.query.CommonQuery;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -26,6 +32,8 @@ import java.util.List;
 public class ArticleController {
 
     @Autowired
+    private CommonQuery commonQuery;
+    @Autowired
     private ArticleService articleService;
 
     /**
@@ -35,7 +43,7 @@ public class ArticleController {
      */
     @GetMapping("/{id}")
     public SwayResult uploadArticle(@PathVariable Integer id){
-        return SwayResult.success(articleService.getArticle(1));
+        return SwayResult.success(articleService.getArticle(id));
     }
 
     /**
@@ -50,6 +58,25 @@ public class ArticleController {
     }
 
     /**
+     * 分页查询文章列表
+     * @param searchDTO 检索信息
+     * @return listArticle
+     */
+    @PostMapping("/list/search")
+    public SwayResult<List<ArticleVO> > listSearchArticle(@RequestBody @Validated SearchDTO searchDTO){
+        return SwayResult.success(articleService.listSearchArticle(searchDTO));
+    }
+    /**
+     * 查询推荐文章列表
+     * @param size 大小
+     * @return listArticle
+     */
+    @GetMapping("/list/recommend")
+    public SwayResult<List<ArticleVO> > listRecommend(@RequestParam Integer size){
+        return SwayResult.success(articleService.listRecommend(size));
+    }
+
+    /**
      * 上传文章接口
      * @param articleDTO 文章信息
      * @return null
@@ -60,6 +87,38 @@ public class ArticleController {
         articleService.uploadArticle(articleDTO);
         return SwayResult.success();
     }
+
+
+    /**
+     * 获取文章标签列表
+     * @return 章标签列表
+     */
+    @GetMapping("/sort")
+    public SwayResult getSorts(){
+        List<ArticleSort> articleSorts = commonQuery.getSortInfo();
+        List<ArticleSortVO> articleSortVOS = articleSorts.stream().map(item ->{
+            ArticleSortVO articleSortVO = new ArticleSortVO();
+            articleSortVO.setId(item.getId());
+            articleSortVO.setSortName(item.getSortName());
+            articleSortVO.setSortDescription(item.getSortDescription());
+            articleSortVO.setArticleCount(item.getCountOfSort());
+            if(item.getLabels() != null){
+                List<ArticleLabelVO> articleLabelVOS =  item.getLabels().stream().map(label->{
+                    ArticleLabelVO articleLabelVO = new ArticleLabelVO();
+                    articleLabelVO.setId(label.getId());
+                    articleLabelVO.setLabelName(label.getLabelName());
+                    articleLabelVO.setSortId(label.getSortId());
+                    articleLabelVO.setArticleCount(label.getCountOfLabel());
+                    articleLabelVO.setLabelDescription(label.getLabelDescription());
+                    return articleLabelVO;
+                }).collect(Collectors.toList());
+                articleSortVO.setLabels(articleLabelVOS);
+            }
+            return articleSortVO;
+        }).collect(Collectors.toList());
+        return SwayResult.success(articleSortVOS);
+    }
+
 
 }
 

@@ -37,7 +37,7 @@ public class SwayExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
     public SwayResult<String> serviceExceptionHandler(ServiceException ex) {
-        log.error("业务出错-----------------" + ex.getMessage());
+        log.warn("业务出错-----------------" + ex.getMessage());
         if (ex.getCode() != null) {
             return SwayResult.fail(ex.getCode(), ex.getMsg());
         } else {

@@ -1,11 +1,15 @@
 package com.zxy.swaycamp.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.zxy.swaycamp.common.constant.HttpStatus;
+import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
+import com.zxy.swaycamp.domain.dto.article.SearchDTO;
 import com.zxy.swaycamp.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zxy.swaycamp.domain.vo.ArticleVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
+import com.zxy.swaycamp.utils.SwayUtil;
 
 import java.util.List;
 
@@ -26,13 +30,27 @@ public interface ArticleService extends IService<Article> {
      */
     ArticleVO getArticle(Integer articleId);
 
+
     /**
      * 分页查询文章
      * @param index 索引
      * @param size 大小
      * @return 文章列表
      */
-    PageVO<ArticleVO>   listArticle(Integer index, Integer size);
+    PageVO<ArticleVO> listArticle(Integer index, Integer size);
+
+    /**
+     * 分页搜索文章
+     * @param searchDTO 搜索信息
+     * @return 文章列表
+     */
+    List<ArticleVO> listSearchArticle(SearchDTO searchDTO);
+    /**
+     * 分页查询文章
+     * @param size 大小
+     * @return 文章列表
+     */
+    List<ArticleVO>   listRecommend(Integer size);
 
 
     /**
