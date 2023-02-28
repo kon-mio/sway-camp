@@ -77,10 +77,10 @@ export default class AxiosInterceptor {
                   if (!this.instance) return
                   resolve(this.instance(response.config))
                 } else {
-                  // storage.remove("access_token")
-                  // storage.remove("refresh_token")
-                  // location.reload()
-                  // SwayNotion("登录", "请重新登录", "warning")
+                  storage.remove("access_token")
+                  storage.remove("refresh_token")
+                  location.reload()
+                  SwayNotion("登录", "请重新登录", "warning")
                 }
               })
             })

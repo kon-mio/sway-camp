@@ -6,12 +6,14 @@
         <input
           v-model="searchPage.keyword"
           type="text"
+          :class="[{ disable: isLoading }]"
           style="width: 850px"
           placeholder="请输入文章关键字"
         />
         <el-button
           color="#08D9D6"
           type="primary"
+          :class="[{ disable: isLoading }]"
           style="aspect-ratio: 1/1; height: 100%; margin-left: 6px"
           @click="searchArticle"
         >
@@ -23,7 +25,7 @@
           <li
             v-for="(item, index) in sortList"
             :key="index"
-            :class="item.id === activeIndex ? 'active' : ''"
+            :class="[{ active: item.id === activeIndex }, { disable: isLoading }]"
             @click="filterArticle(item.id)"
           >
             {{ item.sortName }}
@@ -38,21 +40,28 @@
           <ArticleItem :article="item" />
         </div>
       </div>
+      <transition name="loading">
+        <div v-if="isLoading" class="loading-tip">
+          <div class="tip-anime"><notion-loading /></div>
+          <div class="tip-text">加载中</div>
+        </div>
+      </transition>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onBeforeMount, onMounted } from "vue"
+import { reactive, ref, onMounted } from "vue"
 import { listSearchArticleApi, listSortApi } from "@/api/article/api"
 import { ArticleInfo, ArticleSort, SearchArticleDTO } from "@/api/article/type"
 import { HttpStatusCode } from "@/common/enum"
 import ArticleItem from "../../components/library-main/article-card/ArticleItem.vue"
 import { useScroll } from "@/hooks/useScroll.hooks"
-import { filter } from "lodash"
+import NotionLoading from "@/components/loading/NotionLoading.vue"
 
 const { scrollData, scrollTarget, scroll, open, close } = useScroll()
 
+const isLoading = ref(false)
 const activeIndex = ref(0)
 const searchPage = reactive<SearchArticleDTO>({
   index: 1,
@@ -85,12 +94,14 @@ const listSortList = async () => {
 // 查询文章列表
 const listArticle = async () => {
   close()
+  isLoading.value = true
   const res = await listSearchArticleApi(searchPage)
   if (res.code === HttpStatusCode.Success && res.data.length > 0) {
     articleList.push(...res.data)
     searchPage.index++
     open()
   }
+  isLoading.value = false
 }
 const searchArticle = () => {
   searchInit()
@@ -140,6 +151,7 @@ onMounted(async () => {
     width: 100%;
     height: 260px;
     background-color: #c6dfdf;
+    transition: all 0.2s;
     // background: url('@/assets/image/banner.jpg');
     // background-size: cover;
     // filter: blur(1px);
@@ -158,6 +170,7 @@ onMounted(async () => {
         outline: rgb(159, 228, 255);
         font-size: 14px;
         color: #606297;
+        transition: all 0.2s;
 
         &::placeholder {
           font-size: 15px;
@@ -165,12 +178,14 @@ onMounted(async () => {
       }
 
       button {
+        transition: all 0.2s;
         border-radius: 10px;
       }
     }
     &--label {
       width: 900px;
       margin-bottom: 10px;
+      transition: all 0.2s;
       .filter {
         display: flex;
         gap: 20px;
@@ -197,8 +212,14 @@ onMounted(async () => {
         }
       }
     }
+    .disable {
+      opacity: 0.2;
+      cursor: no-drop;
+      pointer-events: none;
+    }
   }
   &__content {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -217,6 +238,37 @@ onMounted(async () => {
     .article-item {
       margin-top: 20px;
     }
+    .loading-tip {
+      position: absolute;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      height: 20px;
+      .tip-anime {
+        position: relative;
+        width: 14px;
+        height: 14px;
+        margin-top: 3px;
+      }
+      .tip-text {
+        margin-left: 12px;
+        padding-right: 80px;
+        box-sizing: border-box;
+        font-size: 12px;
+        line-height: 12px;
+        margin-top: 4px;
+        color: rgb(173, 173, 173);
+      }
+    }
   }
+}
+
+.loading-enter-active {
+  transition: opacity 0.5s ease;
+}
+
+.loading-enter-from {
+  opacity: 0;
 }
 </style>
