@@ -16,11 +16,11 @@
         @scroll="scroll(readScroll)"
       >
         <div class="left">
-          <title-box title="更多推荐">
+          <title-box title="更多推荐" :title-type="1">
             <article-card
-              v-for="index in 6"
+              v-for="(item, index) in recomArticleList"
               :key="index"
-              :article="articleInfo"
+              :article="item"
               :article-index="index"
             />
           </title-box>
@@ -78,7 +78,7 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeMount, ref, reactive } from "vue"
 import { storeToRefs } from "pinia"
-import { getArticleApi } from "@/api/article/api"
+import { getArticleApi, listRecommendApi } from "@/api/article/api"
 import { useArticleStore } from "@/stores/article.store"
 import { HttpStatusCode } from "@/common/enum"
 import type { ArticleInfo } from "@/api/article/type"
@@ -218,6 +218,15 @@ const getArticle = async () => {
     SwayNotion("获取文章失败", "error", "warning")
   }
 }
+// 推荐文章列表
+const recomArticleList = reactive<ArticleInfo[]>([])
+
+const listRecomArticle = async () => {
+  const res = await listRecommendApi(5)
+  if (res.code === HttpStatusCode.Success) {
+    recomArticleList.push(...res.data)
+  }
+}
 
 onBeforeMount(() => {
   // 跳转错误页
@@ -227,7 +236,9 @@ onMounted(async () => {
   // 初始化图片位置
   if (coverInfo.value) {
     articleInfo.cover = coverInit(coverInfo.value)
+    await listRecomArticle()
   } else {
+    await listRecomArticle()
     await getArticle()
     coverMark.value = true
   }
