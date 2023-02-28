@@ -1,6 +1,6 @@
 const Article = () => import("@/views/article/Index.vue")
 
-const Library = () => import("@/views/article/routes/search/Index.vue")
+const Library = () => import("@/views/article/routes/library/Index.vue")
 const Write = () => import("@/views/article/routes/write/Index.vue")
 const Read = () => import("@/views/article/routes/read/Index.vue")
 

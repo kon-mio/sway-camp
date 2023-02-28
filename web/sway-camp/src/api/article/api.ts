@@ -38,6 +38,16 @@ export async function listArticleApi(
   }
 }
 
+export async function listSearchArticleApi(
+  searchDTO: Type.SearchArticleDTO
+): Promise<CommonResult<Type.ArticleInfo[]>> {
+  try {
+    const { data } = await request.post<Type.ArticleInfo[]>(`/article/list/search`, searchDTO)
+    return data
+  } catch {
+    throw newError()
+  }
+}
 /**
  * 查询推荐文章列表
  * @param index
@@ -47,6 +57,19 @@ export async function listArticleApi(
 export async function listRecommendApi(size: number): Promise<CommonResult<Type.ArticleInfo[]>> {
   try {
     const { data } = await request.get<Type.ArticleInfo[]>(`/article/list/recommend?size=${size}`)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 文章分类列表
+ * @returns
+ */
+export async function listSortApi(): Promise<CommonResult<Type.ArticleSort[]>> {
+  try {
+    const { data } = await request.get<Type.ArticleSort[]>(`/article/sort`)
     return data
   } catch {
     throw newError()
