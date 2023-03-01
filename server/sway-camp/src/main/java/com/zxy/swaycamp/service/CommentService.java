@@ -22,15 +22,17 @@ public interface CommentService extends IService<Comment> {
     /**
      * 上传评论
      * @param commentDTO 评论信息
+     * @return 新增评论
      */
-    void uploadComment(CommentDTO commentDTO);
+    CommentVO uploadComment(CommentDTO commentDTO);
 
 
     /**
      * 分页查询评论
      * @param index 页码
      * @param size 分页大小
+     * @param articleId 文章Id
      * @return 评论列表
      */
-    PageVO<CommentVO> listComment(Integer index, Integer size);
+    PageVO<CommentVO> listComment(Integer index, Integer size, Integer articleId);
 }

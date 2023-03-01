@@ -17,4 +17,10 @@ import java.util.List;
  */
 public interface ArticleMapper extends BaseMapper<Article> {
 
+    /**
+     * 分页查询文章
+     * @param page 分页信息
+     * @return 文章列表
+     */
+    List<Article> listArticlePage(IPage<Article> page);
 }

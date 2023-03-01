@@ -4,11 +4,16 @@ package com.zxy.swaycamp.controller;
 import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.domain.dto.comment.CommentDTO;
 import com.zxy.swaycamp.domain.dto.comment.ReplyDTO;
+import com.zxy.swaycamp.domain.vo.PageVO;
+import com.zxy.swaycamp.domain.vo.comment.CommentVO;
+import com.zxy.swaycamp.domain.vo.comment.ReplyVO;
 import com.zxy.swaycamp.service.CommentReplyService;
 import com.zxy.swaycamp.service.CommentService;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * @author Xinyuan Zhao
  * @since 2023-02-28
  */
+@Validated
 @RestController
 @RequestMapping("/api/comment")
 public class CommentController {
@@ -38,9 +44,8 @@ public class CommentController {
      */
     @LoginCheck
     @PostMapping("/upload")
-    public SwayResult uploadComment(@RequestBody @Validated CommentDTO commentDTO){
-        commentService.uploadComment(commentDTO);
-        return SwayResult.success();
+    public SwayResult<CommentVO> uploadComment(@RequestBody @Validated CommentDTO commentDTO){
+        return SwayResult.success(commentService.uploadComment(commentDTO));
     }
 
 
@@ -51,20 +56,37 @@ public class CommentController {
      */
     @LoginCheck
     @PostMapping("/reply/upload")
-    public SwayResult uploadReply(@RequestBody @Validated ReplyDTO replyDTO){
-        commentReplyService.uploadReply(replyDTO);
-        return SwayResult.success();
+    public SwayResult<ReplyVO> uploadReply(@RequestBody @Validated ReplyDTO replyDTO){
+        return SwayResult.success(commentReplyService.uploadReply(replyDTO));
     }
 
-
+    /**
+     * 分页查询评论
+     * @param index 页码
+     * @param size 大小
+     * @param articleId 文章ID
+     * @return 评论列表
+     */
     @GetMapping("/list")
-    public SwayResult listComment(){
-        return SwayResult.success(commentService.listComment(1,10));
+    public SwayResult<PageVO<CommentVO>> listComment(@RequestParam @NotNull Integer index,
+                                                     @RequestParam @NotNull Integer size,
+                                                     @RequestParam @NotNull Integer articleId){
+        return SwayResult.success(commentService.listComment(index, size, articleId));
     }
 
+
+    /**
+     * 分页查询评论回复
+     * @param index 页码
+     * @param size 大小
+     * @param commentId 评论ID
+     * @return 评论列表
+     */
     @GetMapping("/reply/list")
-    public SwayResult listReply(){
-        return SwayResult.success(commentReplyService.listReplyPage(1, 10, 1));
+    public SwayResult<PageVO<ReplyVO>>  listReply(@RequestParam @NotNull Integer index,
+                                                  @RequestParam @NotNull Integer size,
+                                                  @RequestParam @NotNull Integer commentId){
+        return SwayResult.success(commentReplyService.listReplyPage(index, size, commentId));
     }
 }
 

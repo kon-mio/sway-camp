@@ -20,8 +20,9 @@ public interface CommentReplyService extends IService<CommentReply> {
     /**
      * 回复评论
      * @param replyDTO 评论信息
+     * @return 新增回复
      */
-    void uploadReply(ReplyDTO replyDTO);
+    ReplyVO uploadReply(ReplyDTO replyDTO);
 
     /**
      * 分页查询评论回复

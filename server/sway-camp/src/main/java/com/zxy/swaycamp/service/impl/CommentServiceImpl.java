@@ -47,7 +47,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * @param commentDTO 评论信息
      */
     @Override
-    public void uploadComment(CommentDTO commentDTO){
+    public CommentVO uploadComment(CommentDTO commentDTO){
         Integer userId = SwayUtil.getCurrentUserId();
         try{
             Comment comment = new Comment();
@@ -59,6 +59,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             comment.setReplyCount(0);
             comment.setDeleted(false);
             save(comment);
+            return buildCommentVO(comment);
         }catch (Exception e){
             throw new ServiceException();
         }
@@ -69,11 +70,13 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
      * 分页查询评论
      * @param index 页码
      * @param size 分页大小
+     * @param articleId 文章ID
      * @return 评论列表
      */
     @Override
-    public PageVO<CommentVO> listComment(Integer index, Integer size){
-        Page<Comment> comments = lambdaQuery().page(new Page<>(index, size));
+    public PageVO<CommentVO> listComment(Integer index, Integer size, Integer articleId){
+        Page<Comment> comments = lambdaQuery().eq(Comment::getArticleId, articleId)
+                .page(new Page<>(index, size));
         if(comments == null || CollectionUtils.isEmpty(comments.getRecords())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "查询页数超出总页数");
         }

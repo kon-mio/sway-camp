@@ -43,7 +43,7 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
      * @param replyDTO 评论信息
      */
     @Override
-    public void uploadReply(ReplyDTO replyDTO){
+    public ReplyVO uploadReply(ReplyDTO replyDTO){
         Integer userId = SwayUtil.getCurrentUserId();
         CommentReply commentReply = new CommentReply();
         if(replyDTO.getReplyId() != null){
@@ -66,6 +66,7 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
             commentReply.setCreateTime(LocalDateTime.now());
             commentReply.setDeleted(false);
             save(commentReply);
+            return buildReplyVO(commentReply);
         }catch (Exception e){
             throw new ServiceException();
         }

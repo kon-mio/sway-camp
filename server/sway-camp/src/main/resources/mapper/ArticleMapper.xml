@@ -31,5 +31,14 @@
     <sql id="Base_Column_List">
         id, user_id, sort_id, label_id, cover, title, content, introduction, reprinted, reprinted_status, view_count, like_count, view_status, comment_status, recommend_status, review, review_status, create_time, update_time, update_by, is_deleted
     </sql>
+    <select id="listArticlePage" resultType="com.zxy.swaycamp.domain.entity.Article" resultMap="BaseResultMap">
+        SELECT
+            id, user_id, sort_id, label_id, cover, title,
+            introduction, reprinted, reprinted_status, view_count,
+            like_count, view_status, comment_status, recommend_status,
+            review, review_status, create_time, update_time, update_by, is_deleted
+        FROM
+            article
+    </select>
 
 </mapper>
