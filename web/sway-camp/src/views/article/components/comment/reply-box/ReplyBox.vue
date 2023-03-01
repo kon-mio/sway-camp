@@ -3,7 +3,7 @@
   <div class="reply-box">
     <div class="box-normal" :class="{ 'box-avtive': boxActive }">
       <div class="reply-box-avatar">
-        <avatar :height="40" :width="40" />
+        <avatar :height="30" :width="30" />
       </div>
       <!-- 发布评论 -->
       <div class="reply-box-warp">
@@ -28,7 +28,7 @@
 import { ref } from "vue"
 import { isEmpty } from "@/utils/valid"
 import Avatar from "../avatar/Avatar.vue"
-
+// 动画相关
 function replyInputModule() {
   const isFoucs = ref(false)
   const boxActive = ref(false)
@@ -65,16 +65,10 @@ const replyText = ref("")
   display: flex;
   flex-direction: column;
   user-select: none;
-  * {
-    box-sizing: border-box;
-  }
   .box-normal {
     display: flex;
     height: 50px;
     transition: 0.2s;
-  }
-  .box-avtive {
-    height: 65px;
   }
 
   &-avatar {
@@ -88,46 +82,35 @@ const replyText = ref("")
   &-warp {
     position: relative;
     flex: 1;
-  }
 
-  &-textarea {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 5px 10px;
-    border: 1px solid #f1f2f3;
-    border-radius: 6px;
-    background-color: #f1f2f3;
-    font-family: inherit;
-    line-height: 38px;
-    color: #18191c;
-    resize: none;
-    outline: none;
-    overflow: auto;
-    &:hover {
-      background-color: #ffffff;
-      border-color: #c9ccd0;
-    }
+    textarea {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 5px 10px;
+      box-sizing: border-box;
+      font-family: inherit;
+      line-height: 38px;
+      color: #18191c;
+      border-radius: 6px;
+      border: 1px solid #f1f2f3;
+      background-color: #f1f2f3;
+      resize: none;
+      outline: none;
+      overflow: auto;
+      &:hover {
+        background-color: #ffffff;
+        border-color: #c9ccd0;
+      }
 
-    &::placeholder {
-      font-size: 12px;
-      color: #9499a0;
+      &::placeholder {
+        font-size: 12px;
+        color: #9499a0;
+      }
     }
-  }
-  .focus {
-    background-color: #ffffff;
-    border-color: #c9ccd0;
-  }
-  .send-active {
-    line-height: normal;
-  }
-  .send-btn-active {
-    pointer-events: painted;
-    background-color: #56d2ff;
   }
 
   &-send {
-    //   position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -139,11 +122,24 @@ const replyText = ref("")
     pointer-events: none;
     background-color: #80d7f6;
     .send-text {
-      position: absolute;
-      z-index: 1;
       font-size: 14px;
       color: white;
     }
+  }
+
+  .focus {
+    background-color: #ffffff;
+    border-color: #c9ccd0;
+  }
+  .box-avtive {
+    height: 65px;
+  }
+  .send-active {
+    line-height: normal;
+  }
+  .send-btn-active {
+    pointer-events: painted;
+    background-color: #56d2ff;
   }
 }
 </style>
