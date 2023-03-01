@@ -23,7 +23,24 @@
             :active-box-id="replyBoxId"
             @open-reply-box="openReplyBox"
             @upload-reply="uploadReply"
+            @update-reply="updateReply"
           />
+          <div v-if="Math.ceil(commentList.total / commentPage.size) > 1" class="comment-page">
+            <span>共 {{ Math.ceil(commentList.total / commentPage.size) }} 页</span>
+            <el-pagination
+              v-model:current-page="commentPage.index"
+              small
+              hide-on-single-page
+              prev-text="上一页"
+              next-text="下一页"
+              layout="prev, pager, next"
+              :pager-count="5"
+              :page-count="Math.ceil(commentList.total / commentPage.size)"
+              @next-click="nextPage"
+              @prev-click="prevPage"
+              @current-change="currentChange"
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -75,6 +92,15 @@ const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
 const openReplyBox = (commentId: number) => {
   replyBoxId.value = commentId
 }
+const prevPage = () => {
+  listComment()
+}
+const nextPage = () => {
+  listComment()
+}
+const currentChange = () => {
+  listComment()
+}
 
 // 提交评论
 const submitComment = async (text: string) => {
@@ -94,6 +120,14 @@ const uploadReply = (id: number, reply: Reply) => {
   commentList.list.forEach((item) => {
     if (item.id === id) {
       item.replies.push(reply)
+    }
+  })
+}
+// 查询回复回调
+const updateReply = (id: number, replies: Reply[]) => {
+  commentList.list.forEach((item) => {
+    if (item.id === id) {
+      item.replies = replies
     }
   })
 }
@@ -141,22 +175,22 @@ onMounted(() => {
   .comment-list {
     margin-top: 24px;
     padding-bottom: 100px;
-    // .comment-page {
-    //   display: flex;
-    //   flex-direction: row;
-    //   align-items: center;
-    //   box-sizing: border-box;
-    //   padding-left: 20px;
-    //   padding-top: 20px;
-    //   span {
-    //     display: flex;
-    //     flex-direction: row;
-    //     // align-items: ;
-    //     height: 20px;
-    //     font-size: 13px;
-    //     color: #808080;
-    //   }
-    // }
+    .comment-page {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      box-sizing: border-box;
+      padding-left: 20px;
+      padding-top: 20px;
+      span {
+        display: flex;
+        flex-direction: row;
+        // align-items: ;
+        height: 20px;
+        font-size: 13px;
+        color: #808080;
+      }
+    }
   }
 }
 </style>

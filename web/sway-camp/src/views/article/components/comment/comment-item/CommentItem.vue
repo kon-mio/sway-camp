@@ -29,6 +29,25 @@
           <span>共 {{ comment.replyCount }} 条回复, </span>
           <span class="view-more-btn" @click="viewMoreReply">点击查看</span>
         </div>
+        <div
+          v-if="viewMore && Math.ceil(comment.replyCount / replyPage.size) > 1"
+          class="view-more-pagination"
+        >
+          <span>共 {{ Math.ceil(comment.replyCount / replyPage.size) }} 页</span>
+          <el-pagination
+            v-model:current-page="replyPage.index"
+            small
+            hide-on-single-page
+            prev-text="上一页"
+            next-text="下一页"
+            layout="prev, pager, next"
+            :pager-count="5"
+            :page-count="Math.ceil(comment.replyCount / replyPage.size)"
+            @next-click="nextPage"
+            @prev-click="prevPage"
+            @current-change="currentChange"
+          />
+        </div>
       </div>
     </div>
     <!-- 回复框 -->
@@ -46,7 +65,7 @@ import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
 import ReplyBox from "../reply-box/ReplyBox.vue"
 import { ReplyDTO } from "@/api/comment/type"
-import { uploadReplyApi } from "@/api/comment/api"
+import { listReplyApi, uploadReplyApi } from "@/api/comment/api"
 import ReplyItem from "../reply-item/ReplyItem.vue"
 import { useGlobalStore } from "@/stores/global.sotre"
 import { HttpStatusCode } from "@/common/enum"
@@ -58,24 +77,51 @@ const props = defineProps<{
 const emits = defineEmits<{
   (el: "openReplyBox", commentId: number): void
   (el: "uploadReply", commentId: number, reply: Reply): void
+  (el: "updateReply", commentId: number, replies: Reply[]): void
 }>()
 
 const globalStore = useGlobalStore()
 const replyBox = ref<InstanceType<typeof ReplyBox> | null>(null)
-const comment = computed(() => {
-  return props.comment
-})
+const viewMore = ref(false)
+const replyComment = ref<Comment | Reply | null>(null)
+const placeholder = ref("发一条友善的评论")
 const replyDTO = reactive<ReplyDTO>({
   commentId: null,
   content: "",
   replyId: null,
   replyUserId: null
 })
+const replyPage = reactive<{
+  index: number
+  size: number
+}>({
+  index: 1,
+  size: 5
+})
+const comment = computed(() => {
+  return props.comment
+})
 
-const viewMore = ref(false)
-// 回复评论
-const replyComment = ref<Comment | Reply | null>(null)
-const placeholder = ref("发一条友善的评论")
+const listReply = async () => {
+  const res = await listReplyApi(replyPage.index, replyPage.size, comment.value.id)
+  if (res.code === HttpStatusCode.Success) {
+    emits("updateReply", comment.value.id, res.data.list)
+  }
+}
+// 查看更多回复
+const viewMoreReply = () => {
+  listReply()
+  viewMore.value = true
+}
+const prevPage = () => {
+  listReply()
+}
+const nextPage = () => {
+  listReply()
+}
+const currentChange = () => {
+  listReply()
+}
 
 // 打开回复框
 const openReplyBox = (thisComment: Comment | Reply) => {
@@ -102,8 +148,6 @@ const submitReply = async (text: string) => {
     globalStore.openMessageMini("回复失败")
   }
 }
-// 查看更多回复
-const viewMoreReply = () => {}
 </script>
 
 <style lang="less" scoped>
