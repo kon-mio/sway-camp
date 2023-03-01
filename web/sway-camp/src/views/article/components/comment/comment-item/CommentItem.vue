@@ -17,7 +17,7 @@
     <!-- 回复列表 -->
     <!-- 回复框 -->
     <div class="reply-box-container">
-      <reply-box v-if="comment.id === activeBoxId" />
+      <reply-box v-if="comment.id === activeBoxId" :placeholder="placeholder" />
     </div>
     <div class="bottom-line"></div>
   </div>
@@ -25,10 +25,11 @@
 
 <script lang="ts" setup>
 import { Comment } from "@/api/comment/type"
-import { computed } from "vue"
+import { computed, ref, reactive } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
 import ReplyBox from "../reply-box/ReplyBox.vue"
+import { ReplyDTO } from "@/api/comment/type"
 
 const props = defineProps<{
   comment: Comment
@@ -40,9 +41,20 @@ const emits = defineEmits<{
 const comment = computed(() => {
   return props.comment
 })
+const replyDTO = reactive<ReplyDTO>({
+  commentId: null,
+  content: "",
+  replyId: null,
+  replyUserId: null
+})
+const placeholder = ref("发一条友善的评论")
 // 打开回复框
-const openReplyBox = () => {
+const openReplyBox = (isReplyComment: boolean) => {
   emits("openReplyBox", comment.value.id)
+  console.log(isReplyComment)
+  if (isReplyComment) {
+    placeholder.value = "回复  @" + comment.value.username
+  }
 }
 </script>
 

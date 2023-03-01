@@ -5,6 +5,13 @@ export interface CommentDTO {
   articleId: number
   content: string
 }
+
+export interface ReplyDTO {
+  commentId: number | null
+  content: string
+  replyId: number | null
+  replyUserId: number | null
+}
 /**响应/接收参数 */
 
 // 共同信息
@@ -16,6 +23,7 @@ export interface CommonInfo {
   userId: number
   username: string
   avatar: string
+  commentId?: number
 }
 // 评论信息
 export interface Comment extends CommonInfo {

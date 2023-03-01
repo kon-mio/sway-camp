@@ -13,19 +13,22 @@
 
 <script lang="ts" setup>
 import { CommonInfo } from "@/api/comment/type"
+import { isEmpty } from "@/utils/valid"
 import { computed } from "vue"
 
 const props = defineProps<{
   baseInfo: CommonInfo
 }>()
 const emits = defineEmits<{
-  (el: "openReply"): void
+  (el: "openReply", isReplyComment: boolean): void
 }>()
 const info = computed(() => {
   return props.baseInfo
 })
 const open = () => {
-  emits("openReply")
+  // 区分回复评论还是回复用户
+  console.log(info)
+  emits("openReply", isEmpty(info.value.commentId) ? true : false)
 }
 </script>
 
