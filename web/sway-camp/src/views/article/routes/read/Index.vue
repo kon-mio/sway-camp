@@ -34,7 +34,7 @@
             <v-md-preview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
           <div id="center-comment" class="center-comment">
-            <Comment />
+            <Comment :article-id="articleId" />
           </div>
         </div>
         <!-- 导航 -->
@@ -78,7 +78,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, onBeforeMount, ref, reactive } from "vue"
+import { onMounted, onBeforeMount, ref, reactive, computed } from "vue"
 import { storeToRefs } from "pinia"
 import { getArticleApi, listRecommendApi } from "@/api/article/api"
 import { useArticleStore } from "@/stores/article.store"
@@ -185,6 +185,9 @@ function backRouteModule() {
 const props = defineProps<{
   id: string
 }>()
+const articleId = computed(() => {
+  return Number(props.id)
+})
 const articleStore = useArticleStore()
 const { coverInfo } = storeToRefs(articleStore)
 const { transBgRef, coverMark, coverInit, removeAnime } = coverFuncModule()
@@ -214,7 +217,7 @@ const articleInfo = reactive<ArticleInfo>({
   reprinted: null
 })
 const getArticle = async () => {
-  const res = await getArticleApi(Number(props.id))
+  const res = await getArticleApi(articleId.value)
   if (res.code === HttpStatusCode.Success) {
     Object.assign(articleInfo, res.data)
   } else {

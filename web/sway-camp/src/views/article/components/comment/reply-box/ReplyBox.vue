@@ -17,8 +17,8 @@
           @blur="inputBlur"
         ></textarea>
       </div>
-      <div class="reply-box-send" :class="{ 'send-btn-active': sendActive }">
-        <div class="send-text" @click="submit">发布</div>
+      <div class="reply-box-send" :class="{ 'send-btn-active': sendActive }" @click="submitReply">
+        <div class="send-text">发布</div>
       </div>
     </div>
   </div>
@@ -30,6 +30,7 @@ import { isEmpty } from "@/utils/valid"
 import Avatar from "../avatar/Avatar.vue"
 // 动画相关
 function replyInputModule() {
+  const replyText = ref("")
   const isFoucs = ref(false)
   const boxActive = ref(false)
   const sendActive = ref(false)
@@ -46,13 +47,21 @@ function replyInputModule() {
     if (sendActive.value) return
     boxActive.value = false
   }
+  const boxInit = () => {
+    replyText.value = ""
+    isFoucs.value = false
+    boxActive.value = false
+    sendActive.value = false
+  }
   return {
     isFoucs,
-    sendActive,
+    replyText,
     boxActive,
-    inputChange,
+    sendActive,
+    boxInit,
+    inputBlur,
     inputFocus,
-    inputBlur
+    inputChange
   }
 }
 const props = withDefaults(
@@ -65,15 +74,20 @@ const emits = defineEmits<{
   (e: "submit", replyText: string): void
 }>()
 
-const replyText = ref("")
-const { isFoucs, sendActive, boxActive, inputChange, inputFocus, inputBlur } = replyInputModule()
+const { replyText, isFoucs, sendActive, boxActive, boxInit, inputBlur, inputFocus, inputChange } =
+  replyInputModule()
 const placeholder = computed(() => {
   return props.placeholder
 })
 
-const submit = () => {
+// 点击事件应该放在外层，而不是内层文字
+const submitReply = () => {
   emits("submit", replyText.value)
 }
+
+defineExpose({
+  boxInit
+})
 </script>
 
 <style lang="less" scoped>

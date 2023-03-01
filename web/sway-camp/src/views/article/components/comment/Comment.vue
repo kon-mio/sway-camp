@@ -7,21 +7,50 @@
           <ul class="nav-bar">
             <li class="nav-title">
               <span class="nav-title-text">评论</span>
-              <!-- <span class="total-reply">{{ commentData.commentCount }}</span> -->
             </li>
           </ul>
         </div>
       </div>
       <!--  -->
       <div class="reply-warp">
-        <ReplyBox />
+        <!-- 评论 -->
+        <ReplyBox ref="commentBox" @submit="submitComment" />
       </div>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup name="">
+<script lang="ts" setup>
+import { computed, reactive, ref } from "vue"
 import ReplyBox from "./reply-box/ReplyBox.vue"
+import { CommentDTO } from "@/api/comment/type"
+import { uploadCommentApi } from "@/api/comment/api"
+import { HttpStatusCode } from "@/common/enum"
+import { useGlobalStore } from "@/stores/global.sotre"
+
+// 文章ID
+const props = defineProps<{ articleId: number }>()
+const articleId = computed(() => {
+  return props.articleId
+})
+// 迷你通知
+const globalStore = useGlobalStore()
+const commentDTO = reactive<CommentDTO>({
+  articleId: articleId.value,
+  content: ""
+})
+const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
+// 提交评论
+const submitComment = async (text: string) => {
+  commentDTO.content = text
+  const res = await uploadCommentApi(commentDTO)
+  if (res.code === HttpStatusCode.Success) {
+    globalStore.openMessageMini("发送成功")
+    commentBox.value?.boxInit()
+  } else {
+    globalStore.openMessageMini("发送失败")
+  }
+}
 </script>
 
 <style lang="less" scoped>
