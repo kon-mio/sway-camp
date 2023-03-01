@@ -1,15 +1,15 @@
 <template>
-  <div class="sub-reply-item">
-    <div class="sub-user-info">
-      <div class="sub-reply-avatar">
+  <div class="reply-item">
+    <div class="user-info">
+      <div class="reply-avatar">
         <Avatar :height="24" :width="24" :avatar="reply.avatar" />
       </div>
-      <div class="sub-user-name">{{ reply.username }}</div>
+      <div class="user-name">{{ reply.username }}</div>
     </div>
-    <span v-if="reply.replyUserId === null" class="reply-content sub-reply-content">
+    <span v-if="reply.replyUserId === null" class="reply-content reply-content">
       {{ reply.content }}
     </span>
-    <span v-else class="reply-content sub-reply-content">
+    <span v-else class="reply-content reply-content">
       回复
       <a class="jump-link user">@{{ reply.replyUsername }}</a>
       {{ reply.content }}
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CommonInfo, Reply } from "@/api/comment/type"
+import { Reply } from "@/api/comment/type"
 import { computed } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
@@ -43,7 +43,7 @@ const openBox = () => {
 ::v-deep(.operation-list) {
   top: 14px !important;
 }
-.sub-reply-item {
+.reply-item {
   position: relative;
   padding: 8px 0 8px 42px;
   border-radius: 4px;
@@ -53,7 +53,7 @@ const openBox = () => {
       display: block !important;
     }
   }
-  .sub-user-info {
+  .user-info {
     display: inline-flex;
     align-items: center;
     margin-right: 9px;
@@ -61,12 +61,12 @@ const openBox = () => {
     vertical-align: baseline;
     white-space: nowrap;
     font-size: 13px;
-    .sub-reply-avatar {
+    .reply-avatar {
       position: absolute;
       left: 8px;
       cursor: pointer;
     }
-    .sub-user-name {
+    .user-name {
       font-weight: 500;
       margin-right: 5px;
       color: #fb7299;

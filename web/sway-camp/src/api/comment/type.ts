@@ -14,19 +14,8 @@ export interface ReplyDTO {
 }
 /**响应/接收参数 */
 
-// 共同信息
-export interface CommonInfo {
-  id: number
-  content: string
-  date: string
-  likeCount: number
-  userId: number
-  username: string
-  avatar: string
-  commentId?: number
-}
 // 评论信息
-export interface Comment extends CommonInfo {
+export interface Comment {
   id: number
   userId: number
   username: string
@@ -39,7 +28,7 @@ export interface Comment extends CommonInfo {
 }
 
 // 回复信息
-export interface Reply extends CommonInfo {
+export interface Reply {
   id: number
   commentId: number
   replyId: number

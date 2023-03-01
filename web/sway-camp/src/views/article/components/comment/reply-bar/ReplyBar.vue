@@ -1,6 +1,6 @@
 <template>
-  <div class="root-reply">
-    <span v-if="!isReply" class="reply-content root-reply">{{ info.content }}</span>
+  <div class="reply-bar">
+    <span v-if="!isReply" class="reply-content reply-bar">{{ info.content }}</span>
     <div class="reply-info">
       <span class="reply-time">{{ info.date }}</span>
       <span class="reply-like">
@@ -12,18 +12,18 @@
 </template>
 
 <script lang="ts" setup>
-import { CommonInfo } from "@/api/comment/type"
+import { Comment, Reply } from "@/api/comment/type"
 import { computed } from "vue"
 
 const props = withDefaults(
   defineProps<{
-    baseInfo: CommonInfo
+    baseInfo: Comment | Reply
     isReply?: boolean
   }>(),
   { isReply: false }
 )
 const emits = defineEmits<{
-  (el: "openReply", reply: CommonInfo): void
+  (el: "openReply", reply: Comment | Reply): void
 }>()
 const info = computed(() => {
   return props.baseInfo
@@ -35,7 +35,7 @@ const open = () => {
 </script>
 
 <style lang="less" scoped>
-.root-reply {
+.reply-bar {
   position: relative;
   padding: 2px 0;
   font-size: 14px;
@@ -75,48 +75,6 @@ const open = () => {
     i {
       &:hover {
         color: #40c2f1;
-      }
-    }
-  }
-
-  .reply-operation-warp {
-    position: absolute;
-    right: 20px;
-    display: none;
-    cursor: pointer;
-    .reply-operation {
-      display: inline-flex;
-      position: relative;
-      ul {
-        padding: 0;
-        margin: 0;
-        list-style: none;
-      }
-      .operation-list {
-        display: flex;
-        flex-direction: column;
-        position: absolute;
-        top: 20px;
-        right: 0;
-        z-index: 10;
-        width: 120px;
-        border-radius: 4px;
-        font-size: 14px;
-        color: #18191c;
-        background-color: #ffffff;
-        box-shadow: 0 0 5px rgb(0 0 0 / 20%);
-        .operation-option {
-          display: flex;
-          align-items: center;
-          height: 36px;
-          padding: 0 15px;
-          cursor: pointer;
-
-          &:hover {
-            background-color: #f1f2f3;
-            color: #00aeec;
-          }
-        }
       }
     }
   }

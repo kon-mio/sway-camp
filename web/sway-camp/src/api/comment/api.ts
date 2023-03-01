@@ -40,11 +40,12 @@ export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult
  */
 export async function listCommentApi(
   index: number,
-  size: number
+  size: number,
+  articleId: number
 ): Promise<CommonResult<Type.CommentPage>> {
   try {
     const { data } = await request.get<Type.CommentPage>(
-      `/comment/list?index=${index}&size=${size}`
+      `/comment/list?index=${index}&size=${size}&articleId=${articleId}`
     )
     return data
   } catch {
@@ -64,7 +65,9 @@ export async function listReplyApi(
   commentId: number
 ): Promise<CommonResult<Type.ReplyPage>> {
   try {
-    const { data } = await request.get<Type.ReplyPage>(`/comment/list?index=${index}&size=${size}`)
+    const { data } = await request.get<Type.ReplyPage>(
+      `/comment/reply/list?index=${index}&size=${size}&commentId=${commentId}`
+    )
     return data
   } catch {
     throw newError()

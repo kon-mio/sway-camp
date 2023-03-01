@@ -26,27 +26,24 @@
       </div>
     </div>
     <!-- 回复框 -->
-    <div class="reply-box-container">
-      <reply-box
-        v-if="comment.id === activeBoxId"
-        :placeholder="placeholder"
-        @submit="submitReply"
-      />
+    <div v-if="comment.id === activeBoxId" class="reply-box-container">
+      <ReplyBox ref="replyBox" :placeholder="placeholder" @submit="submitReply" />
     </div>
     <div class="bottom-line"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Comment, CommonInfo, Reply } from "@/api/comment/type"
+import { Comment, Reply } from "@/api/comment/type"
 import { computed, ref, reactive } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
 import ReplyBox from "../reply-box/ReplyBox.vue"
 import { ReplyDTO } from "@/api/comment/type"
 import { uploadReplyApi } from "@/api/comment/api"
-import { isEmpty } from "@/utils/valid"
 import ReplyItem from "../reply-item/ReplyItem.vue"
+import { useGlobalStore } from "@/stores/global.sotre"
+import { HttpStatusCode } from "@/common/enum"
 
 const props = defineProps<{
   comment: Comment
@@ -55,6 +52,9 @@ const props = defineProps<{
 const emits = defineEmits<{
   (el: "openReplyBox", commentId: number): void
 }>()
+
+const globalStore = useGlobalStore()
+const replyBox = ref()
 const comment = computed(() => {
   return props.comment
 })
@@ -66,20 +66,19 @@ const replyDTO = reactive<ReplyDTO>({
 })
 
 // 回复评论
-const replyComment = ref<CommonInfo | Reply | null>(null)
+const replyComment = ref<Comment | Reply | null>(null)
 const placeholder = ref("发一条友善的评论")
 
 // 打开回复框
-const openReplyBox = (thisComment: CommonInfo) => {
+const openReplyBox = (thisComment: Comment | Reply) => {
   emits("openReplyBox", comment.value.id)
   replyComment.value = thisComment
-  console.log(replyComment.value)
   placeholder.value = "回复  @" + replyComment.value.username
 }
 const submitReply = async (text: string) => {
   replyDTO.content = text
   replyDTO.commentId = comment.value.id
-  if (!replyComment.value?.commentId) {
+  if (!(replyComment.value as Reply).commentId) {
     replyDTO.replyId = null
     replyDTO.replyUserId = null
   } else {
@@ -87,6 +86,11 @@ const submitReply = async (text: string) => {
     replyDTO.replyUserId = (replyComment.value as Reply).userId
   }
   const res = await uploadReplyApi(replyDTO)
+  if (res.code === HttpStatusCode.Success) {
+    globalStore.openMessageMini("回复成功")
+  } else {
+    globalStore.openMessageMini("回复失败")
+  }
 }
 </script>
 

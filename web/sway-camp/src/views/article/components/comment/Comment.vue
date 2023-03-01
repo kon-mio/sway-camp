@@ -88,7 +88,7 @@ const submitComment = async (text: string) => {
 }
 // 查询评论里列表
 const listComment = async () => {
-  const res = await listCommentApi(commentPage.index, commentPage.size)
+  const res = await listCommentApi(commentPage.index, commentPage.size, articleId.value)
   if (res.code === HttpStatusCode.Success) {
     Object.assign(commentList, res.data)
   }
