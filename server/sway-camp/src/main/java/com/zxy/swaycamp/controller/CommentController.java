@@ -61,5 +61,10 @@ public class CommentController {
     public SwayResult listComment(){
         return SwayResult.success(commentService.listComment(1,10));
     }
+
+    @GetMapping("/reply/list")
+    public SwayResult listReply(){
+        return SwayResult.success(commentReplyService.listReplyPage(1, 10, 1));
+    }
 }
 

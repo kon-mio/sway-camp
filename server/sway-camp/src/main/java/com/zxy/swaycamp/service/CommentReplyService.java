@@ -4,6 +4,9 @@ import com.zxy.swaycamp.domain.dto.comment.CommentDTO;
 import com.zxy.swaycamp.domain.dto.comment.ReplyDTO;
 import com.zxy.swaycamp.domain.entity.CommentReply;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zxy.swaycamp.domain.vo.PageVO;
+import com.zxy.swaycamp.domain.vo.comment.CommentVO;
+import com.zxy.swaycamp.domain.vo.comment.ReplyVO;
 
 /**
  * <p>
@@ -19,4 +22,13 @@ public interface CommentReplyService extends IService<CommentReply> {
      * @param replyDTO 评论信息
      */
     void uploadReply(ReplyDTO replyDTO);
+
+    /**
+     * 分页查询评论回复
+     * @param index 页码
+     * @param size 分页大小
+     * @param commentId 评论ID
+     * @return  ReplyVO
+     */
+    PageVO<ReplyVO> listReplyPage(Integer index, Integer size, Integer commentId);
 }

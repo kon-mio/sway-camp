@@ -9,11 +9,12 @@ import lombok.Data;
 @Data
 public class ReplyVO {
     private Integer id;
+    private Integer commentId;
     private String content;
     private String date;
     private Integer likeCount;
     private Integer userId;
-    private String userName;
+    private String username;
     private String avatar;
     private Integer replyUserId;
     private String replyUsername;

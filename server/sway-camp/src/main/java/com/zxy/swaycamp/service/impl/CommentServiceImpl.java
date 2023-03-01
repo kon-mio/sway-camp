@@ -88,7 +88,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         CommentVO commentVO = new CommentVO();
         BeanUtil.copyProperties(comment, commentVO);
         List<CommentReply> replies = new LambdaQueryChainWrapper<>(commentReplyMapper)
-                .eq(CommentReply::getCommentId, comment.getId()).list();
+                .eq(CommentReply::getCommentId, comment.getId())
+                .eq(CommentReply::getDeleted, false)
+                .orderByDesc(CommentReply::getLikeCount)
+                .last("limit 0, 2").list();
         User user =  commonQuery.getUser(commentVO.getUserId());
         commentVO.setUsername(user.getUsername());
         commentVO.setAvatar(user.getAvatar());
@@ -98,7 +101,7 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             ReplyVO replyVO = new ReplyVO();
             BeanUtil.copyProperties(item, replyVO);
             User ryuser =  commonQuery.getUser(item.getUserId());
-            replyVO.setUserName(ryuser.getUsername());
+            replyVO.setUsername(ryuser.getUsername());
             replyVO.setAvatar(ryuser.getAvatar());
             if(item.getReplyId() != null){
                 User replyUser =  commonQuery.getUser(item.getUserId());
@@ -109,6 +112,10 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
             return replyVO;
         }).collect(Collectors.toList());
         commentVO.setReplies(replyVOS);
+        Integer replyCount = new LambdaQueryChainWrapper<>(commentReplyMapper)
+                .eq(CommentReply::getCommentId, comment.getId())
+                .eq(CommentReply::getDeleted, false).count();
+        commentVO.setReplyCount(replyCount);
         return commentVO;
     }
 }
