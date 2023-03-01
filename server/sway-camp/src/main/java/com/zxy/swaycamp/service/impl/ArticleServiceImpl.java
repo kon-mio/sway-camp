@@ -89,7 +89,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Override
     public PageVO<ArticleVO> listArticle(Integer index, Integer size){
-        Page<Article> articles = lambdaQuery().page(new Page<>(index, size));
+        Page<Article> articles = lambdaQuery()
+                .select(Article.class, info -> !info.getColumn().equals("content"))
+                .page(new Page<>(index, size));
         if(articles == null || CollectionUtils.isEmpty(articles.getRecords())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "查询页数超出总页数");
         }
@@ -108,18 +110,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public List<ArticleVO>  listSearchArticle(SearchDTO searchDTO){
         Page<Article> articles = new Page<>();
         if(searchDTO.getSort() == null && searchDTO.getKeyword() == null){
-            articles = lambdaQuery().page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
+            articles = lambdaQuery()
+                    .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() == null){
             articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+                    .select(Article.class, info -> !info.getColumn().equals("content"))
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() == null && searchDTO.getKeyword() != null){
             articles = lambdaQuery().like(Article::getTitle, searchDTO.getKeyword())
+                    .select(Article.class, info -> !info.getColumn().equals("content"))
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() != null){
             articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+                    .select(Article.class, info -> !info.getColumn().equals("content"))
                     .like(Article::getTitle, searchDTO.getKeyword())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
