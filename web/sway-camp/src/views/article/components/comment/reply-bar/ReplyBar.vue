@@ -1,6 +1,6 @@
 <template>
   <div class="root-reply">
-    <span class="reply-content root-reply">{{ info.content }}</span>
+    <span v-if="!isReply" class="reply-content root-reply">{{ info.content }}</span>
     <div class="reply-info">
       <span class="reply-time">{{ info.date }}</span>
       <span class="reply-like">
@@ -13,22 +13,24 @@
 
 <script lang="ts" setup>
 import { CommonInfo } from "@/api/comment/type"
-import { isEmpty } from "@/utils/valid"
 import { computed } from "vue"
 
-const props = defineProps<{
-  baseInfo: CommonInfo
-}>()
+const props = withDefaults(
+  defineProps<{
+    baseInfo: CommonInfo
+    isReply?: boolean
+  }>(),
+  { isReply: false }
+)
 const emits = defineEmits<{
-  (el: "openReply", isReplyComment: boolean): void
+  (el: "openReply", reply: CommonInfo): void
 }>()
 const info = computed(() => {
   return props.baseInfo
 })
 const open = () => {
   // 区分回复评论还是回复用户
-  console.log(info)
-  emits("openReply", isEmpty(info.value.commentId) ? true : false)
+  emits("openReply", info.value)
 }
 </script>
 

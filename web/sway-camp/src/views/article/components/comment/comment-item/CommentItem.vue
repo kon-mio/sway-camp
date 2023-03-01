@@ -15,21 +15,38 @@
       </div>
     </div>
     <!-- 回复列表 -->
+    <div class="reply-container">
+      <div class="reply-list">
+        <ReplyItem
+          v-for="(item, index) in comment.replies"
+          :key="index"
+          :reply="item"
+          @open-reply-box="openReplyBox"
+        />
+      </div>
+    </div>
     <!-- 回复框 -->
     <div class="reply-box-container">
-      <reply-box v-if="comment.id === activeBoxId" :placeholder="placeholder" />
+      <reply-box
+        v-if="comment.id === activeBoxId"
+        :placeholder="placeholder"
+        @submit="submitReply"
+      />
     </div>
     <div class="bottom-line"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { Comment } from "@/api/comment/type"
+import { Comment, CommonInfo, Reply } from "@/api/comment/type"
 import { computed, ref, reactive } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
 import ReplyBox from "../reply-box/ReplyBox.vue"
 import { ReplyDTO } from "@/api/comment/type"
+import { uploadReplyApi } from "@/api/comment/api"
+import { isEmpty } from "@/utils/valid"
+import ReplyItem from "../reply-item/ReplyItem.vue"
 
 const props = defineProps<{
   comment: Comment
@@ -47,14 +64,29 @@ const replyDTO = reactive<ReplyDTO>({
   replyId: null,
   replyUserId: null
 })
+
+// 回复评论
+const replyComment = ref<CommonInfo | Reply | null>(null)
 const placeholder = ref("发一条友善的评论")
+
 // 打开回复框
-const openReplyBox = (isReplyComment: boolean) => {
+const openReplyBox = (thisComment: CommonInfo) => {
   emits("openReplyBox", comment.value.id)
-  console.log(isReplyComment)
-  if (isReplyComment) {
-    placeholder.value = "回复  @" + comment.value.username
+  replyComment.value = thisComment
+  console.log(replyComment.value)
+  placeholder.value = "回复  @" + replyComment.value.username
+}
+const submitReply = async (text: string) => {
+  replyDTO.content = text
+  replyDTO.commentId = comment.value.id
+  if (!replyComment.value?.commentId) {
+    replyDTO.replyId = null
+    replyDTO.replyUserId = null
+  } else {
+    replyDTO.replyId = (replyComment.value as Reply).id
+    replyDTO.replyUserId = (replyComment.value as Reply).userId
   }
+  const res = await uploadReplyApi(replyDTO)
 }
 </script>
 
@@ -99,7 +131,6 @@ const openReplyBox = (isReplyComment: boolean) => {
     }
   }
 }
-
 .comment-container {
   padding: 22px 0 0 80px;
   &:hover {
@@ -174,6 +205,12 @@ const openReplyBox = (isReplyComment: boolean) => {
         vertical-align: baseline;
       }
     }
+  }
+}
+.reply-container {
+  padding-left: calc(80px - 8px);
+  .reply-list {
+    position: relative;
   }
 }
 </style>

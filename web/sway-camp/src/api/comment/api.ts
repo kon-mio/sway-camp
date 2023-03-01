@@ -19,6 +19,20 @@ export async function uploadCommentApi(comment: Type.CommentDTO): Promise<Common
 }
 
 /**
+ * 发布评论回复
+ * @param {Type.ReplyDTO} comment 评论信息
+ * @returns null
+ */
+export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/comment/reply/upload`, reply)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
  * 分页查询评论
  * @param index 页码
  * @param size 分页大小
@@ -32,6 +46,25 @@ export async function listCommentApi(
     const { data } = await request.get<Type.CommentPage>(
       `/comment/list?index=${index}&size=${size}`
     )
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 分页查询评论回复
+ * @param index 页码
+ * @param size 分页大小
+ * @returns 评论列表
+ */
+export async function listReplyApi(
+  index: number,
+  size: number,
+  commentId: number
+): Promise<CommonResult<Type.ReplyPage>> {
+  try {
+    const { data } = await request.get<Type.ReplyPage>(`/comment/list?index=${index}&size=${size}`)
     return data
   } catch {
     throw newError()

@@ -42,6 +42,7 @@ export interface Comment extends CommonInfo {
 export interface Reply extends CommonInfo {
   id: number
   commentId: number
+  replyId: number
   content: string
   date: string
   likeCount: number
@@ -56,5 +57,11 @@ export interface Reply extends CommonInfo {
 // 评论列表
 export interface CommentPage {
   list: Comment[]
+  total: number
+}
+
+// 评论列表
+export interface ReplyPage {
+  list: Reply[]
   total: number
 }
