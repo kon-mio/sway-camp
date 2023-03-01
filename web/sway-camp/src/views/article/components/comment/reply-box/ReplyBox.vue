@@ -11,21 +11,21 @@
           v-model="replyText"
           class="reply-box-textarea"
           :class="{ focus: isFoucs, 'send-active': sendActive }"
-          placeholder="发一条友善的评论"
+          :placeholder="placeholder"
           @input="inputChange(replyText)"
           @focus="inputFocus"
           @blur="inputBlur"
         ></textarea>
       </div>
       <div class="reply-box-send" :class="{ 'send-btn-active': sendActive }">
-        <div class="send-text">发布</div>
+        <div class="send-text" @click="submit">发布</div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue"
+import { computed, ref } from "vue"
 import { isEmpty } from "@/utils/valid"
 import Avatar from "../avatar/Avatar.vue"
 // 动画相关
@@ -55,9 +55,25 @@ function replyInputModule() {
     inputBlur
   }
 }
-const { isFoucs, sendActive, boxActive, inputChange, inputFocus, inputBlur } = replyInputModule()
+const props = withDefaults(
+  defineProps<{
+    placeholder?: string
+  }>(),
+  { placeholder: "发一条友善的评论" }
+)
+const emits = defineEmits<{
+  (e: "submit", replyText: string): void
+}>()
 
 const replyText = ref("")
+const { isFoucs, sendActive, boxActive, inputChange, inputFocus, inputBlur } = replyInputModule()
+const placeholder = computed(() => {
+  return props.placeholder
+})
+
+const submit = () => {
+  emits("submit", replyText.value)
+}
 </script>
 
 <style lang="less" scoped>
