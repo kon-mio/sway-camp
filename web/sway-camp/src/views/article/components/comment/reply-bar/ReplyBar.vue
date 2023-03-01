@@ -6,7 +6,7 @@
       <span class="reply-like">
         <sway-icon name="like" :size="16" />
       </span>
-      <span class="reply-btn" @click="submit">回复</span>
+      <span class="reply-btn" @click="open">回复</span>
     </div>
   </div>
 </template>
@@ -18,10 +18,15 @@ import { computed } from "vue"
 const props = defineProps<{
   baseInfo: CommonInfo
 }>()
+const emits = defineEmits<{
+  (el: "openReply"): void
+}>()
 const info = computed(() => {
   return props.baseInfo
 })
-const submit = () => {}
+const open = () => {
+  emits("openReply")
+}
 </script>
 
 <style lang="less" scoped>

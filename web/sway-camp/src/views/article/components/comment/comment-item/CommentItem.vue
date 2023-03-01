@@ -11,22 +11,39 @@
         <div class="user-info">
           <div class="user-name">{{ comment.username }}</div>
         </div>
-        <ReplyBar :base-info="comment" />
+        <reply-bar :base-info="comment" @open-reply="openReplyBox" />
       </div>
     </div>
-
+    <!-- 回复列表 -->
+    <!-- 回复框 -->
+    <div class="reply-box-container">
+      <reply-box v-if="comment.id === activeBoxId" />
+    </div>
     <div class="bottom-line"></div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Comment } from "@/api/comment/type"
+import { computed } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
+import ReplyBox from "../reply-box/ReplyBox.vue"
 
 const props = defineProps<{
   comment: Comment
+  activeBoxId: number | null
 }>()
+const emits = defineEmits<{
+  (el: "openReplyBox", commentId: number): void
+}>()
+const comment = computed(() => {
+  return props.comment
+})
+// 打开回复框
+const openReplyBox = () => {
+  emits("openReplyBox", comment.value.id)
+}
 </script>
 
 <style lang="less" scoped>

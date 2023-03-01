@@ -16,7 +16,13 @@
         <!-- 评论 -->
         <reply-box ref="commentBox" @submit="submitComment" />
         <div class="comment-list">
-          <comment-item v-for="(item, index) in commentList.list" :key="index" :comment="item" />
+          <comment-item
+            v-for="(item, index) in commentList.list"
+            :key="index"
+            :comment="item"
+            :active-box-id="replyBoxId"
+            @open-reply-box="openReplyBox"
+          />
         </div>
       </div>
     </div>
@@ -37,8 +43,12 @@ const props = defineProps<{ articleId: number }>()
 const articleId = computed(() => {
   return props.articleId
 })
+// 回复框活动Id
+const replyBoxId = ref<number | null>(null)
+
 // 迷你通知
 const globalStore = useGlobalStore()
+
 // 评论分页信息
 const commentPage = reactive<{
   index: number
@@ -47,6 +57,7 @@ const commentPage = reactive<{
   index: 1,
   size: 5
 })
+
 const commentList = reactive<CommentPage>({
   list: [],
   total: 0
@@ -58,6 +69,12 @@ const commentDTO = reactive<CommentDTO>({
 })
 // 回复框实例
 const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
+
+// 打开回复框
+const openReplyBox = (commentId: number) => {
+  replyBoxId.value = commentId
+}
+
 // 提交评论
 const submitComment = async (text: string) => {
   commentDTO.content = text
