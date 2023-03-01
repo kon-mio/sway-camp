@@ -115,18 +115,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() == null){
-            articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+            articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getSortId, searchDTO.getSort())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() == null && searchDTO.getKeyword() != null){
-            articles = lambdaQuery().like(Article::getTitle, searchDTO.getKeyword())
+            articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .like(Article::getTitle, searchDTO.getKeyword())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() != null){
-            articles = lambdaQuery().eq(Article::getSortId, searchDTO.getSort())
+            articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getSortId, searchDTO.getSort())
                     .like(Article::getTitle, searchDTO.getKeyword())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
