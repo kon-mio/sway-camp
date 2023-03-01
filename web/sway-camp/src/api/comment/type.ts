@@ -7,8 +7,18 @@ export interface CommentDTO {
 }
 /**响应/接收参数 */
 
+// 共同信息
+export interface CommonInfo {
+  id: number
+  content: string
+  date: string
+  likeCount: number
+  userId: number
+  username: string
+  avatar: string
+}
 // 评论信息
-export interface Comment {
+export interface Comment extends CommonInfo {
   id: number
   userId: number
   username: string
@@ -21,7 +31,7 @@ export interface Comment {
 }
 
 // 回复信息
-export interface Reply {
+export interface Reply extends CommonInfo {
   id: number
   commentId: number
   content: string
@@ -33,4 +43,10 @@ export interface Reply {
   replyUserId: number
   replyUsername: string
   replyAvatar: string
+}
+
+// 评论列表
+export interface CommentPage {
+  list: Comment[]
+  total: number
 }
