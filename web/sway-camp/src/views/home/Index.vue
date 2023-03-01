@@ -117,7 +117,6 @@ const getArticleList = async () => {
     articleList.list.push(...res.data.list)
     articleList.total = res.data.total
     page.index++
-    console.log(page.index)
     open()
   } else {
     page.all = true

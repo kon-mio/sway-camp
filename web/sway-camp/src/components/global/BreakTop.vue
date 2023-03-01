@@ -10,7 +10,6 @@ import {
   defineComponent,
   onActivated,
   onBeforeUnmount,
-  onDeactivated,
   onMounted,
   ref
 } from "vue"
@@ -57,16 +56,11 @@ export default defineComponent({
       })
     }
 
-    const init = () => {
-      visible.value = false
-      console.log(visible.value)
-    }
     onActivated(() => {
       // 调用时机为首次挂载
       // 以及每次从缓存中被重新插入时
-      init()
+      visible.value = false
     })
-
     onMounted(() => {
       if (!hasTarget.value) return
       dom.value = document.querySelector("#" + props.target) as HTMLElement

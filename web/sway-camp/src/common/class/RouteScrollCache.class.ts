@@ -27,7 +27,6 @@ class RouteScrollCacheManage {
     const elName = String(routeMeta.elName || "")
     if (!routeName || !elName) return
     const el = document.querySelector(elName)
-    console.log(el)
     this.cache_.set(routeName, {
       elName,
       scrollTop: el?.scrollTop || 0
