@@ -33,7 +33,9 @@
           <div class="center-main">
             <v-md-preview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
-          <div id="center-comment" class="center-comment"></div>
+          <div id="center-comment" class="center-comment">
+            <Comment />
+          </div>
         </div>
         <!-- 导航 -->
         <div class="right">
@@ -91,6 +93,7 @@ import TitleBox from "@/components/title-box/TitleBox.vue"
 import ArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
 import { useScroll } from "@/hooks/useScroll.hooks"
 import ArticleHeader from "../../components/read-main/article-header/ArticleHeader.vue"
+import Comment from "../../components/comment/Comment.vue"
 // 背景处理
 function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
@@ -302,7 +305,7 @@ onMounted(async () => {
     flex-direction: row;
     justify-content: center;
     box-sizing: border-box;
-    padding: 50px 40px 40px 40px;
+    padding: 50px 40px 10px 40px;
     overflow-x: hidden;
     overflow-y: auto;
     scroll-behavior: smooth;
