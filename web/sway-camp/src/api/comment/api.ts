@@ -7,11 +7,13 @@ const newError = () => new Error("错误请求")
 /**
  * 发布评论
  * @param {Type.CommentDTO} comment 评论信息
- * @returns null
+ * @returns Comment
  */
-export async function uploadCommentApi(comment: Type.CommentDTO): Promise<CommonResult<null>> {
+export async function uploadCommentApi(
+  comment: Type.CommentDTO
+): Promise<CommonResult<Type.Comment>> {
   try {
-    const { data } = await request.post<null>(`/comment/upload`, comment)
+    const { data } = await request.post<Type.Comment>(`/comment/upload`, comment)
     return data
   } catch {
     throw newError()
@@ -23,9 +25,9 @@ export async function uploadCommentApi(comment: Type.CommentDTO): Promise<Common
  * @param {Type.ReplyDTO} comment 评论信息
  * @returns null
  */
-export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult<null>> {
+export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult<Type.Reply>> {
   try {
-    const { data } = await request.post<null>(`/comment/reply/upload`, reply)
+    const { data } = await request.post<Type.Reply>(`/comment/reply/upload`, reply)
     return data
   } catch {
     throw newError()

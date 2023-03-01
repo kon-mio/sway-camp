@@ -22,6 +22,7 @@
             :comment="item"
             :active-box-id="replyBoxId"
             @open-reply-box="openReplyBox"
+            @upload-reply="uploadReply"
           />
         </div>
       </div>
@@ -32,7 +33,7 @@
 <script lang="ts" setup>
 import { computed, reactive, ref, onMounted } from "vue"
 import ReplyBox from "./reply-box/ReplyBox.vue"
-import { CommentDTO, CommentPage } from "@/api/comment/type"
+import { CommentDTO, CommentPage, Reply } from "@/api/comment/type"
 import { listCommentApi, uploadCommentApi } from "@/api/comment/api"
 import { HttpStatusCode } from "@/common/enum"
 import { useGlobalStore } from "@/stores/global.sotre"
@@ -82,9 +83,19 @@ const submitComment = async (text: string) => {
   if (res.code === HttpStatusCode.Success) {
     globalStore.openMessageMini("发送成功")
     commentBox.value?.boxInit()
+    listComment()
   } else {
     globalStore.openMessageMini("发送失败")
   }
+}
+
+// 上传回复回调
+const uploadReply = (id: number, reply: Reply) => {
+  commentList.list.forEach((item) => {
+    if (item.id === id) {
+      item.replies.push(reply)
+    }
+  })
 }
 // 查询评论里列表
 const listComment = async () => {

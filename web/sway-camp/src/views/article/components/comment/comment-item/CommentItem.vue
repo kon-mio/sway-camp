@@ -24,10 +24,16 @@
           @open-reply-box="openReplyBox"
         />
       </div>
+      <div v-if="comment.replyCount > 2" class="view-more">
+        <div v-if="!viewMore" class="view-more-default">
+          <span>共 {{ comment.replyCount }} 条回复, </span>
+          <span class="view-more-btn" @click="viewMoreReply">点击查看</span>
+        </div>
+      </div>
     </div>
     <!-- 回复框 -->
     <div v-if="comment.id === activeBoxId" class="reply-box-container">
-      <ReplyBox ref="replyBox" :placeholder="placeholder" @submit="submitReply" />
+      <reply-box ref="replyBox" :placeholder="placeholder" @submit="submitReply" />
     </div>
     <div class="bottom-line"></div>
   </div>
@@ -51,10 +57,11 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (el: "openReplyBox", commentId: number): void
+  (el: "uploadReply", commentId: number, reply: Reply): void
 }>()
 
 const globalStore = useGlobalStore()
-const replyBox = ref()
+const replyBox = ref<InstanceType<typeof ReplyBox> | null>(null)
 const comment = computed(() => {
   return props.comment
 })
@@ -65,6 +72,7 @@ const replyDTO = reactive<ReplyDTO>({
   replyUserId: null
 })
 
+const viewMore = ref(false)
 // 回复评论
 const replyComment = ref<Comment | Reply | null>(null)
 const placeholder = ref("发一条友善的评论")
@@ -88,10 +96,14 @@ const submitReply = async (text: string) => {
   const res = await uploadReplyApi(replyDTO)
   if (res.code === HttpStatusCode.Success) {
     globalStore.openMessageMini("回复成功")
+    replyBox.value?.boxInit()
+    emits("uploadReply", comment.value.id, res.data)
   } else {
     globalStore.openMessageMini("回复失败")
   }
 }
+// 查看更多回复
+const viewMoreReply = () => {}
 </script>
 
 <style lang="less" scoped>
