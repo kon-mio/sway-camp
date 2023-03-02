@@ -1,7 +1,7 @@
 <template>
   <div class="reply-item">
     <!-- 根评论 -->
-    <div class="comment-container">
+    <div class="comment-container" @mouseenter="showOption" @mouseleave="closeOption">
       <div class="comment-avatar">
         <div class="avatar">
           <Avatar :height="34" :width="34" :avatar="comment.avatar" />
@@ -11,7 +11,7 @@
         <div class="user-info">
           <div class="user-name">{{ comment.username }}</div>
         </div>
-        <reply-bar :base-info="comment" @open-reply="openReplyBox" />
+        <reply-bar ref="replyBar" :base-info="comment" @open-reply="openReplyBox" />
       </div>
     </div>
     <!-- 回复列表 -->
@@ -80,11 +80,13 @@ const emits = defineEmits<{
   (el: "updateReply", commentId: number, replies: Reply[]): void
 }>()
 
-const globalStore = useGlobalStore()
 const replyBox = ref<InstanceType<typeof ReplyBox> | null>(null)
+const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
 const viewMore = ref(false)
 const replyComment = ref<Comment | Reply | null>(null)
 const placeholder = ref("发一条友善的评论")
+const globalStore = useGlobalStore()
+
 const replyDTO = reactive<ReplyDTO>({
   commentId: null,
   content: "",
@@ -147,6 +149,14 @@ const submitReply = async (text: string) => {
   } else {
     globalStore.openMessageMini("回复失败")
   }
+}
+
+// 显示操作
+const showOption = () => {
+  replyBar.value?.openOperation()
+}
+const closeOption = () => {
+  replyBar.value?.closeOperation()
 }
 </script>
 
