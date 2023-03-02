@@ -68,7 +68,6 @@ const optionListStyle = computed(() => {
         display: `none`
       } as CSSProperties)
 })
-
 // 显示操作按钮
 const openOperation = () => {
   showOption.value = true
@@ -155,6 +154,7 @@ defineExpose({
       position: absolute;
       top: 20px;
       right: 0;
+      margin-top: 10px;
       z-index: 10;
       width: 120px;
       border-radius: 4px;

@@ -1,5 +1,5 @@
 <template>
-  <div class="reply-item">
+  <div class="reply-item" @mouseenter="showOption" @mouseleave="closeOption">
     <div class="user-info">
       <div class="reply-avatar">
         <Avatar :height="24" :width="24" :avatar="reply.avatar" />
@@ -14,13 +14,13 @@
       <a class="jump-link user">@{{ reply.replyUsername }}</a>
       {{ reply.content }}
     </span>
-    <reply-bar :base-info="reply" :is-reply="true" @open-reply="openBox" />
+    <reply-bar ref="replyBar" :base-info="reply" :is-reply="true" @open-reply="openBox" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { Reply } from "@/api/comment/type"
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import Avatar from "../avatar/Avatar.vue"
 import ReplyBar from "../reply-bar/ReplyBar.vue"
 
@@ -34,8 +34,18 @@ const emits = defineEmits<{
   (el: "openReplyBox", reply: Reply): void
 }>()
 
+const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
+
 const openBox = () => {
   emits("openReplyBox", reply.value)
+}
+
+// 显示操作
+const showOption = () => {
+  replyBar.value?.openOperation()
+}
+const closeOption = () => {
+  replyBar.value?.closeOperation()
 }
 </script>
 
