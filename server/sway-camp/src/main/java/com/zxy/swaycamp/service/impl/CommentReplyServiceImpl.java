@@ -15,6 +15,7 @@ import com.zxy.swaycamp.domain.vo.comment.ReplyVO;
 import com.zxy.swaycamp.mapper.CommentReplyMapper;
 import com.zxy.swaycamp.service.CommentReplyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zxy.swaycamp.service.CommentService;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.query.CommonQuery;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,9 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
 
     @Resource
     private CommonQuery commonQuery;
+    @Resource
+    private CommentService commentService;
+
 
     /**
      * 回复评论
@@ -72,7 +76,6 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
         }
     }
 
-
     /**
      * 分页查询评论回复
      * @param index 页码
@@ -82,6 +85,10 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
      */
     @Override
     public PageVO<ReplyVO> listReplyPage(Integer index, Integer size, Integer commentId){
+        Comment comment = commentService.getById(commentId);
+        if(comment == null){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "评论已删除");
+        }
         Page<CommentReply> replyPage = lambdaQuery().eq(CommentReply::getCommentId, commentId)
                 .page(new Page<>(index, size));
         if(replyPage == null || CollectionUtils.isEmpty(replyPage.getRecords())){
@@ -92,6 +99,38 @@ public class CommentReplyServiceImpl extends ServiceImpl<CommentReplyMapper, Com
         pageVO.setList(replyVOS);
         pageVO.setTotal((int) replyPage.getTotal());
         return pageVO;
+    }
+
+    /**
+     * 删除评论
+     * @param replyId 回复ID
+     */
+    @Override
+    public void removeReply(Integer replyId){
+        Integer userId = SwayUtil.getCurrentUserId();
+        CommentReply reply = lambdaQuery().eq(CommentReply::getId, replyId)
+                .eq(CommentReply::getDeleted, false).one();
+        if(reply == null){
+            throw new ServiceException("回复不存在");
+        }
+        Comment comment = commentService.getById(reply.getCommentId());
+        if(comment == null){
+            throw new ServiceException("评论不存在");
+        }
+        Integer articleUserId = commonQuery.getArticleUserId(comment.getArticleId());
+        if( articleUserId == null ){
+            throw new ServiceException("文章不存在");
+        }
+        if(!reply.getUserId().equals(userId) && !articleUserId.equals(userId) && !comment.getUserId().equals(userId)){
+            throw new ServiceException("权限不足");
+        }
+        try{
+            lambdaUpdate().eq(CommentReply::getId, replyId)
+                    .set(CommentReply::getDeleted, true)
+                    .update();
+        }catch (Exception e){
+            throw new ServiceException();
+        }
     }
 
 

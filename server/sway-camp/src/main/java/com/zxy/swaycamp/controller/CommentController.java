@@ -88,5 +88,29 @@ public class CommentController {
                                                   @RequestParam @NotNull Integer commentId){
         return SwayResult.success(commentReplyService.listReplyPage(index, size, commentId));
     }
+
+    /**
+     * 删除评论
+     * @param commentId 评论ID
+     * @return 空
+     */
+    @LoginCheck
+    @PostMapping("/remove")
+    public SwayResult removeComment(@RequestParam Integer commentId){
+        commentService.removeComment(commentId);
+        return SwayResult.success();
+    }
+
+    /**
+     * 删除回复
+     * @param replyId 回复ID
+     * @return 空
+     */
+    @LoginCheck
+    @PostMapping("/reply/remove")
+    public SwayResult removeReply(@RequestParam Integer replyId){
+        commentReplyService.removeReply(replyId);
+        return SwayResult.success();
+    }
 }
 

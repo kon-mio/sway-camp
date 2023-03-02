@@ -65,7 +65,6 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         }
     }
 
-
     /**
      * 分页查询评论
      * @param index 页码
@@ -85,6 +84,34 @@ public class CommentServiceImpl extends ServiceImpl<CommentMapper, Comment> impl
         pageVO.setList(commentVOS);
         pageVO.setTotal((int) comments.getTotal());
         return pageVO;
+    }
+
+    /**
+     * 删除评论
+     * @param commentId 评论ID
+     */
+    @Override
+    public void removeComment(Integer commentId){
+        Integer userId = SwayUtil.getCurrentUserId();
+        Comment comment = lambdaQuery().eq(Comment::getId, commentId)
+                .eq(Comment::getDeleted, false).one();
+        if(comment == null){
+            throw new ServiceException("评论不存在");
+        }
+        Integer articleUserId = commonQuery.getArticleUserId(comment.getArticleId());
+        if( articleUserId == null ){
+            throw new ServiceException("文章不存在");
+        }
+        if(!comment.getUserId().equals(userId) && !articleUserId.equals(userId)){
+            throw new ServiceException("权限不足");
+        }
+        try{
+            lambdaUpdate().eq(Comment::getId, commentId)
+                    .set(Comment::getDeleted, true)
+                    .update();
+        }catch (Exception e){
+            throw new ServiceException();
+        }
     }
 
     private CommentVO buildCommentVO(Comment comment){

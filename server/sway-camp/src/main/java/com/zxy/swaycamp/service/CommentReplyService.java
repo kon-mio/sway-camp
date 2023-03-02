@@ -32,4 +32,10 @@ public interface CommentReplyService extends IService<CommentReply> {
      * @return  ReplyVO
      */
     PageVO<ReplyVO> listReplyPage(Integer index, Integer size, Integer commentId);
+
+    /**
+     * 删除评论
+     * @param replyId 回复ID
+     */
+    void removeReply(Integer replyId);
 }

@@ -33,15 +33,18 @@ public class CommonQuery {
     private RedisCache redisCache;
     @Resource
     private UserService userService;
-
     @Resource
     private ArticleMapper articleMapper;
     @Resource
     private ArticleSortMapper articleSortMapper;
-
     @Resource
     private ArticleLabelMapper labelMapper;
 
+    /**
+     * 查询用户信息
+     * @param userId 用户ID
+     * @return 用户
+     */
     public User getUser(Integer userId) {
         User user = (User) redisCache.getCacheObject(CacheConstants.USER_KEY + userId.toString());
         if (user != null) {
@@ -55,6 +58,21 @@ public class CommonQuery {
         return null;
     }
 
+    /**
+     * 获取文章作者ID
+     * @param articleId 文章id
+     * @return 文章作者id
+     */
+    public Integer getArticleUserId(Integer articleId){
+        Article article = new LambdaQueryChainWrapper<>(articleMapper).eq(Article::getId, articleId)
+                .eq(Article::getDeleted, false).one();
+        return article == null ? null : article.getUserId();
+    }
+
+    /**
+     * 查询文章分类列表
+     * @return 分类信息
+     */
     public List<ArticleSort> getSortInfo() {
         List<ArticleSort> sorts = new LambdaQueryChainWrapper<>(articleSortMapper).list();
         if (!CollectionUtils.isEmpty(sorts)) {
@@ -81,4 +99,5 @@ public class CommonQuery {
             return null;
         }
     }
+
 }

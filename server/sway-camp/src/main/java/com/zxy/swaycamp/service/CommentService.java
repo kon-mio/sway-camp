@@ -26,7 +26,6 @@ public interface CommentService extends IService<Comment> {
      */
     CommentVO uploadComment(CommentDTO commentDTO);
 
-
     /**
      * 分页查询评论
      * @param index 页码
@@ -35,4 +34,10 @@ public interface CommentService extends IService<Comment> {
      * @return 评论列表
      */
     PageVO<CommentVO> listComment(Integer index, Integer size, Integer articleId);
+
+    /**
+     * 删除评论
+     * @param commentId 评论ID
+     */
+    void removeComment(Integer commentId);
 }
