@@ -43,9 +43,9 @@
             layout="prev, pager, next"
             :pager-count="5"
             :page-count="Math.ceil(comment.replyCount / replyPage.size)"
-            @next-click="nextPage"
-            @prev-click="prevPage"
-            @current-change="currentChange"
+            @next-click="listReply"
+            @prev-click="listReply"
+            @current-change="listReply"
           />
         </div>
       </div>
@@ -80,12 +80,13 @@ const emits = defineEmits<{
   (el: "updateReply", commentId: number, replies: Reply[]): void
 }>()
 
+const globalStore = useGlobalStore()
+
 const replyBox = ref<InstanceType<typeof ReplyBox> | null>(null)
 const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
 const viewMore = ref(false)
 const replyComment = ref<Comment | Reply | null>(null)
 const placeholder = ref("发一条友善的评论")
-const globalStore = useGlobalStore()
 
 const replyDTO = reactive<ReplyDTO>({
   commentId: null,
@@ -104,6 +105,7 @@ const comment = computed(() => {
   return props.comment
 })
 
+// 查询回复列表
 const listReply = async () => {
   const res = await listReplyApi(replyPage.index, replyPage.size, comment.value.id)
   if (res.code === HttpStatusCode.Success) {
@@ -114,15 +116,6 @@ const listReply = async () => {
 const viewMoreReply = () => {
   listReply()
   viewMore.value = true
-}
-const prevPage = () => {
-  listReply()
-}
-const nextPage = () => {
-  listReply()
-}
-const currentChange = () => {
-  listReply()
 }
 
 // 打开回复框

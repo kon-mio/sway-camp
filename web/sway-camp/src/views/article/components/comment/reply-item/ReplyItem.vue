@@ -27,19 +27,20 @@ import ReplyBar from "../reply-bar/ReplyBar.vue"
 const props = defineProps<{
   reply: Reply
 }>()
-const reply = computed(() => {
-  return props.reply
-})
 const emits = defineEmits<{
   (el: "openReplyBox", reply: Reply): void
 }>()
 
 const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
 
+const reply = computed(() => {
+  return props.reply
+})
+
+// 打开回复框
 const openBox = () => {
   emits("openReplyBox", reply.value)
 }
-
 // 显示操作
 const showOption = () => {
   replyBar.value?.openOperation()

@@ -36,9 +36,9 @@
               layout="prev, pager, next"
               :pager-count="5"
               :page-count="Math.ceil(commentList.total / commentPage.size)"
-              @next-click="nextPage"
-              @prev-click="prevPage"
-              @current-change="currentChange"
+              @next-click="listComment"
+              @prev-click="listComment"
+              @current-change="listComment"
             />
           </div>
         </div>
@@ -49,11 +49,11 @@
 
 <script lang="ts" setup>
 import { computed, reactive, ref, onMounted } from "vue"
-import ReplyBox from "./reply-box/ReplyBox.vue"
-import { CommentDTO, CommentPage, Reply } from "@/api/comment/type"
 import { listCommentApi, uploadCommentApi } from "@/api/comment/api"
+import type { CommentDTO, CommentPage, Reply } from "@/api/comment/type"
 import { HttpStatusCode } from "@/common/enum"
 import { useGlobalStore } from "@/stores/global.sotre"
+import ReplyBox from "./reply-box/ReplyBox.vue"
 import CommentItem from "./comment-item/CommentItem.vue"
 
 // 文章ID
@@ -61,11 +61,13 @@ const props = defineProps<{ articleId: number }>()
 const articleId = computed(() => {
   return props.articleId
 })
-// 回复框活动Id
-const replyBoxId = ref<number | null>(null)
-
 // 迷你通知
 const globalStore = useGlobalStore()
+
+// 回复框活动Id
+const replyBoxId = ref<number | null>(null)
+// 回复框实例
+const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
 
 // 评论分页信息
 const commentPage = reactive<{
@@ -75,33 +77,27 @@ const commentPage = reactive<{
   index: 1,
   size: 5
 })
-
-const commentList = reactive<CommentPage>({
-  list: [],
-  total: 0
-})
 // 上传评论信息
 const commentDTO = reactive<CommentDTO>({
   articleId: articleId.value,
   content: ""
 })
-// 回复框实例
-const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
+const commentList = reactive<CommentPage>({
+  list: [],
+  total: 0
+})
 
 // 打开回复框
 const openReplyBox = (commentId: number) => {
   replyBoxId.value = commentId
 }
-const prevPage = () => {
-  listComment()
+// 查询评论里列表
+const listComment = async () => {
+  const res = await listCommentApi(commentPage.index, commentPage.size, articleId.value)
+  if (res.code === HttpStatusCode.Success) {
+    Object.assign(commentList, res.data)
+  }
 }
-const nextPage = () => {
-  listComment()
-}
-const currentChange = () => {
-  listComment()
-}
-
 // 提交评论
 const submitComment = async (text: string) => {
   commentDTO.content = text
@@ -114,7 +110,6 @@ const submitComment = async (text: string) => {
     globalStore.openMessageMini("发送失败")
   }
 }
-
 // 上传回复回调
 const uploadReply = (id: number, reply: Reply) => {
   commentList.list.forEach((item) => {
@@ -123,20 +118,13 @@ const uploadReply = (id: number, reply: Reply) => {
     }
   })
 }
-// 查询回复回调
+// 更新回复回调
 const updateReply = (id: number, replies: Reply[]) => {
   commentList.list.forEach((item) => {
     if (item.id === id) {
       item.replies = replies
     }
   })
-}
-// 查询评论里列表
-const listComment = async () => {
-  const res = await listCommentApi(commentPage.index, commentPage.size, articleId.value)
-  if (res.code === HttpStatusCode.Success) {
-    Object.assign(commentList, res.data)
-  }
 }
 onMounted(() => {
   listComment()
