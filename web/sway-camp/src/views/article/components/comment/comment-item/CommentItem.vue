@@ -91,7 +91,7 @@ const emits = defineEmits<{
   (el: "uploadReply", commentId: number, reply: Reply): void
   (el: "updateReply", commentId: number, replies: Reply[]): void
   (el: "removeComment", commentId: number): void
-  (el: "removeReply", replyId: number): void
+  (el: "removeReply", commentId: number, replyId: number): void
 }>()
 
 const globalStore = useGlobalStore()
@@ -174,11 +174,11 @@ const removeComment = async (commentId: number) => {
     globalStore.openMessageMini("删除失败")
   }
 }
-const removeReply = async (replyId: number) => {
+const removeReply = async (commentId: number, replyId: number) => {
   if (!replyId) return
   const res = await removeReplyApi(replyId)
   if (res.code === HttpStatusCode.Success) {
-    emits("removeReply", replyId)
+    emits("removeReply", commentId, replyId)
     globalStore.openMessageMini("删除成功")
   } else {
     globalStore.openMessageMini("删除失败")

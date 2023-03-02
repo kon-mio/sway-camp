@@ -37,7 +37,7 @@ const props = defineProps<{
 }>()
 const emits = defineEmits<{
   (el: "openReplyBox", reply: Reply): void
-  (el: "removeReply", replyId: number): void
+  (el: "removeReply", commentId: number, replyId: number): void
 }>()
 
 const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
@@ -62,8 +62,8 @@ const closeOption = () => {
 }
 
 // 删除回复
-const removeReply = (replyId: number) => {
-  emits("removeReply", replyId)
+const removeReply = (commentId: number, replyId: number) => {
+  emits("removeReply", commentId, replyId)
 }
 </script>
 

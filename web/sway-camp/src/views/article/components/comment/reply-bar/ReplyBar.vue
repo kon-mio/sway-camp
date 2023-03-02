@@ -86,8 +86,8 @@ const emits = defineEmits<{
   (el: "openReply", reply: Comment | Reply): void
   (el: "openOperatio"): void
   (el: "operationLeave"): void
-  (el: "removeComment", id: number): void
-  (el: "removeReply", id: number): void
+  (el: "removeComment", commentId: number): void
+  (el: "removeReply", commentId: number, replyId: number): void
 }>()
 
 // 获取文章作者ID，判定删除权限
@@ -130,7 +130,7 @@ const removeReply = () => {
   if (!isReply(info.value)) {
     emits("removeComment", info.value.id)
   } else {
-    emits("removeReply", info.value.id)
+    emits("removeReply", (info.value as Reply).commentId, info.value.id)
   }
 }
 // 判断是是否是回复类型

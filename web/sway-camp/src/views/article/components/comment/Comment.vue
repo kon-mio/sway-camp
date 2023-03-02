@@ -138,12 +138,16 @@ const removeComment = (commentId: number) => {
   const index = commentList.list.findIndex((item) => item.id === commentId)
   commentList.list.splice(index, 1)
 }
-const removeReply = (replyId: number) => {
+const removeReply = (commentId: number, replyId: number) => {
+  console.log(commentId, replyId)
   commentList.list.forEach((item) => {
-    const index = item.replies.findIndex((reply) => reply.id === replyId)
-    if (index) {
-      item.replies.splice(index, 1)
-      return
+    if (item.id === commentId) {
+      const index = item.replies.findIndex((reply) => reply.id === replyId)
+      // 没有返回 -1
+      if (index !== -1) {
+        item.replies.splice(index, 1)
+        return
+      }
     }
   })
 }
