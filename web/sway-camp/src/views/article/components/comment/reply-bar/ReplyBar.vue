@@ -6,14 +6,14 @@
       <span class="reply-like">
         <sway-icon name="like" :size="16" />
       </span>
-      <span class="reply-btn" @click="open">回复</span>
+      <span class="reply-btn" @click="openReplyBox">回复</span>
     </div>
     <!-- 操作 -->
     <div class="reply-operation-warp" :style="operationStyle">
       <div class="reply-operation">
         <sway-icon name="qita" @click="openOptionList" />
         <ul class="operation-list" :style="optionListStyle">
-          <li class="operation-option">
+          <li v-if="removeRole" class="operation-option" @click="removeReply">
             <span class="option-title">删除</span>
           </li>
         </ul>
@@ -24,61 +24,120 @@
 
 <script lang="ts" setup>
 import { Comment, Reply } from "@/api/comment/type"
-import { computed, CSSProperties, ref } from "vue"
+import { useUserStore } from "@/stores/user.store"
+import { storeToRefs } from "pinia"
+import { computed, CSSProperties, inject, ref } from "vue"
+
+function optionModule() {
+  // 显示操作
+  const showOption = ref(false)
+  const operationStyle = computed(() => {
+    return showOption.value
+      ? ({
+          display: `block`
+        } as CSSProperties)
+      : ({
+          display: `none`
+        } as CSSProperties)
+  })
+  const showOptionList = ref(false)
+
+  const optionListStyle = computed(() => {
+    return showOptionList.value
+      ? ({
+          display: `block`
+        } as CSSProperties)
+      : ({
+          display: `none`
+        } as CSSProperties)
+  })
+  // 显示操作按钮
+  const openOperation = () => {
+    showOption.value = true
+  }
+  const closeOperation = async () => {
+    showOption.value = false
+    showOptionList.value = false
+  }
+  const openOptionList = () => {
+    showOptionList.value = true
+  }
+
+  return {
+    showOption,
+    showOptionList,
+    operationStyle,
+    optionListStyle,
+    openOperation,
+    closeOperation,
+    openOptionList
+  }
+}
 
 const props = withDefaults(
   defineProps<{
     baseInfo: Comment | Reply
     isReply?: boolean
+    commentUserId?: number
   }>(),
-  { isReply: false }
+  { isReply: false, commentUserId: 0 }
 )
 const emits = defineEmits<{
   (el: "openReply", reply: Comment | Reply): void
   (el: "openOperatio"): void
   (el: "operationLeave"): void
+  (el: "removeComment", id: number): void
+  (el: "removeReply", id: number): void
 }>()
+
+// 获取文章作者ID，判定删除权限
+const articleUserId = inject("articleUserId")
+const { userInfo } = storeToRefs(useUserStore())
+const commentUserId = computed(() => {
+  return props.commentUserId
+})
+
+// 评论/回复信息
 const info = computed(() => {
   return props.baseInfo
 })
-const open = () => {
+// 删除权限判断
+const removeRole = computed(() => {
+  if (!isReply(info.value)) {
+    // 若为文章作者 或 评论所有者则可删除
+    return info.value.userId === userInfo.value?.id || userInfo.value?.id === articleUserId
+  } else {
+    return (
+      info.value.userId === userInfo.value?.id ||
+      userInfo.value?.id === articleUserId ||
+      userInfo.value?.id === commentUserId.value
+    )
+  }
+})
+
+// 操作菜单
+const { operationStyle, optionListStyle, openOperation, closeOperation, openOptionList } =
+  optionModule()
+
+//打开回复框
+const openReplyBox = () => {
   // 区分回复评论还是回复用户
   emits("openReply", info.value)
 }
 
-// 显示操作
-const showOption = ref(false)
-const operationStyle = computed(() => {
-  return showOption.value
-    ? ({
-        display: `block`
-      } as CSSProperties)
-    : ({
-        display: `none`
-      } as CSSProperties)
-})
-const showOptionList = ref(false)
+// 删除
+const removeReply = () => {
+  if (!isReply(info.value)) {
+    emits("removeComment", info.value.id)
+  } else {
+    emits("removeReply", info.value.id)
+  }
+}
+// 判断是是否是回复类型
+const isReply = (reply: Reply | Comment) => {
+  return (reply as Reply).commentId !== undefined
+}
 
-const optionListStyle = computed(() => {
-  return showOptionList.value
-    ? ({
-        display: `block`
-      } as CSSProperties)
-    : ({
-        display: `none`
-      } as CSSProperties)
-})
-// 显示操作按钮
-const openOperation = () => {
-  showOption.value = true
-}
-const closeOperation = async () => {
-  showOption.value = false
-  showOptionList.value = false
-}
-const openOptionList = () => {
-  showOptionList.value = true
-}
 defineExpose({
   openOperation,
   closeOperation
@@ -135,24 +194,17 @@ defineExpose({
   position: absolute;
   bottom: 10px;
   right: 20px;
-  display: none;
   cursor: pointer;
   .reply-operation {
-    display: inline-flex;
     position: relative;
     i:hover {
       color: #00aeec;
-    }
-    ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
     }
     .operation-list {
       display: flex;
       flex-direction: column;
       position: absolute;
-      top: 20px;
+      top: 14px;
       right: 0;
       margin-top: 10px;
       z-index: 10;

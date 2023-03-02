@@ -14,7 +14,14 @@
       <a class="jump-link user">@{{ reply.replyUsername }}</a>
       {{ reply.content }}
     </span>
-    <reply-bar ref="replyBar" :base-info="reply" :is-reply="true" @open-reply="openBox" />
+    <reply-bar
+      ref="replyBar"
+      :base-info="reply"
+      :is-reply="true"
+      :comment-user-id="commentUserId"
+      @open-reply="openBox"
+      @remove-reply="removeReply"
+    />
   </div>
 </template>
 
@@ -26,15 +33,20 @@ import ReplyBar from "../reply-bar/ReplyBar.vue"
 
 const props = defineProps<{
   reply: Reply
+  commentUser: number
 }>()
 const emits = defineEmits<{
   (el: "openReplyBox", reply: Reply): void
+  (el: "removeReply", replyId: number): void
 }>()
 
 const replyBar = ref<InstanceType<typeof ReplyBar> | null>(null)
 
 const reply = computed(() => {
   return props.reply
+})
+const commentUserId = computed(() => {
+  return props.commentUser
 })
 
 // 打开回复框
@@ -47,6 +59,11 @@ const showOption = () => {
 }
 const closeOption = () => {
   replyBar.value?.closeOperation()
+}
+
+// 删除回复
+const removeReply = (replyId: number) => {
+  emits("removeReply", replyId)
 }
 </script>
 

@@ -75,3 +75,31 @@ export async function listReplyApi(
     throw newError()
   }
 }
+
+/**
+ * 删除评论
+ * @param commentId 评论id
+ * @returns {void}
+ */
+export async function removeCommentApi(commentId: number): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/comment/remove?commentId=${commentId}`)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 删除评论回复
+ * @param replyId 评论id
+ * @returns {void}
+ */
+export async function removeReplyApi(replyId: number): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/comment/reply/remove?replyId=${replyId}`)
+    return data
+  } catch {
+    throw newError()
+  }
+}

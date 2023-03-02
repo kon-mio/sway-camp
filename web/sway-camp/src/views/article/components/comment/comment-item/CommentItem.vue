@@ -11,7 +11,12 @@
         <div class="user-info">
           <div class="user-name">{{ comment.username }}</div>
         </div>
-        <reply-bar ref="replyBar" :base-info="comment" @open-reply="openReplyBox" />
+        <reply-bar
+          ref="replyBar"
+          :base-info="comment"
+          @open-reply="openReplyBox"
+          @remove-comment="removeComment"
+        />
       </div>
     </div>
     <!-- 回复列表 -->
@@ -21,7 +26,9 @@
           v-for="(item, index) in comment.replies"
           :key="index"
           :reply="item"
+          :comment-user="comment.userId"
           @open-reply-box="openReplyBox"
+          @remove-reply="removeReply"
         />
       </div>
       <div v-if="comment.replyCount > 2" class="view-more">
@@ -69,15 +76,22 @@ import { listReplyApi, uploadReplyApi } from "@/api/comment/api"
 import ReplyItem from "../reply-item/ReplyItem.vue"
 import { useGlobalStore } from "@/stores/global.sotre"
 import { HttpStatusCode } from "@/common/enum"
+import { removeCommentApi, removeReplyApi } from "@/api/comment/api"
 
 const props = defineProps<{
   comment: Comment
   activeBoxId: number | null
 }>()
+const comment = computed(() => {
+  return props.comment
+})
+
 const emits = defineEmits<{
   (el: "openReplyBox", commentId: number): void
   (el: "uploadReply", commentId: number, reply: Reply): void
   (el: "updateReply", commentId: number, replies: Reply[]): void
+  (el: "removeComment", commentId: number): void
+  (el: "removeReply", replyId: number): void
 }>()
 
 const globalStore = useGlobalStore()
@@ -100,9 +114,6 @@ const replyPage = reactive<{
 }>({
   index: 1,
   size: 5
-})
-const comment = computed(() => {
-  return props.comment
 })
 
 // 查询回复列表
@@ -150,6 +161,28 @@ const showOption = () => {
 }
 const closeOption = () => {
   replyBar.value?.closeOperation()
+}
+
+// 删除评论
+const removeComment = async (commentId: number) => {
+  if (!commentId) return
+  const res = await removeCommentApi(commentId)
+  if (res.code === HttpStatusCode.Success) {
+    emits("removeComment", commentId)
+    globalStore.openMessageMini("删除成功")
+  } else {
+    globalStore.openMessageMini("删除失败")
+  }
+}
+const removeReply = async (replyId: number) => {
+  if (!replyId) return
+  const res = await removeReplyApi(replyId)
+  if (res.code === HttpStatusCode.Success) {
+    emits("removeReply", replyId)
+    globalStore.openMessageMini("删除成功")
+  } else {
+    globalStore.openMessageMini("删除失败")
+  }
 }
 </script>
 

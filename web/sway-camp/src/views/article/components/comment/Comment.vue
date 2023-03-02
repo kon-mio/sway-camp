@@ -24,6 +24,8 @@
             @open-reply-box="openReplyBox"
             @upload-reply="uploadReply"
             @update-reply="updateReply"
+            @remove-comment="removeComment"
+            @remove-reply="removeReply"
           />
           <div v-if="Math.ceil(commentList.total / commentPage.size) > 1" class="comment-page">
             <span>共 {{ Math.ceil(commentList.total / commentPage.size) }} 页</span>
@@ -48,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, reactive, ref, onMounted } from "vue"
+import { computed, reactive, ref, onMounted, provide } from "vue"
 import { listCommentApi, uploadCommentApi } from "@/api/comment/api"
 import type { CommentDTO, CommentPage, Reply } from "@/api/comment/type"
 import { HttpStatusCode } from "@/common/enum"
@@ -57,10 +59,14 @@ import ReplyBox from "./reply-box/ReplyBox.vue"
 import CommentItem from "./comment-item/CommentItem.vue"
 
 // 文章ID
-const props = defineProps<{ articleId: number }>()
+const props = defineProps<{ articleId: number; articleUserId: number }>()
 const articleId = computed(() => {
   return props.articleId
 })
+const articleUserId = computed(() => {
+  return props.articleUserId
+})
+provide("articleUserId", articleUserId.value)
 // 迷你通知
 const globalStore = useGlobalStore()
 
@@ -126,6 +132,22 @@ const updateReply = (id: number, replies: Reply[]) => {
     }
   })
 }
+
+// 删除评论回调
+const removeComment = (commentId: number) => {
+  const index = commentList.list.findIndex((item) => item.id === commentId)
+  commentList.list.splice(index, 1)
+}
+const removeReply = (replyId: number) => {
+  commentList.list.forEach((item) => {
+    const index = item.replies.findIndex((reply) => reply.id === replyId)
+    if (index) {
+      item.replies.splice(index, 1)
+      return
+    }
+  })
+}
+
 onMounted(() => {
   listComment()
 })

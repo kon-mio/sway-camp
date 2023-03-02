@@ -34,7 +34,7 @@
             <v-md-preview :content="articleInfo.content" @get-catalogues="getCataLogue" />
           </div>
           <div id="center-comment" class="center-comment">
-            <Comment :article-id="articleId" />
+            <Comment :article-id="articleId" :article-user-id="articleInfo.userId" />
           </div>
         </div>
         <!-- 导航 -->
