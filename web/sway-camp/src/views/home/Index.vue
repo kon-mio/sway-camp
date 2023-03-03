@@ -45,7 +45,42 @@
           >
         </div>
       </main-center>
-      <main-right></main-right>
+      <main-right>
+        <template #about>
+          <AboutMe />
+        </template>
+        <template #find>
+          <TitleBox title="关于我">
+            <find-me v-for="(item, index) in aboutList" :key="index" :item="item" />
+          </TitleBox>
+        </template>
+        <template #testack>
+          <TitleBox title="我的技术栈">
+            <TestackCard
+              v-for="(item, index) in teStackList"
+              :key="index"
+              :color="item.color"
+              :name="item.name"
+            />
+          </TitleBox>
+        </template>
+        <template #friendship>
+          <TitleBox title="友情链接">
+            <div class="friendship">
+              <ul>
+                <li>
+                  <sway-icon name="pinglun" :size="12" />
+                  高木
+                </li>
+                <li>
+                  <sway-icon name="pinglun" :size="12" />
+                  西片
+                </li>
+              </ul>
+            </div>
+          </TitleBox>
+        </template>
+      </main-right>
     </div>
     <break-top target="sway-home" />
   </div>
@@ -70,8 +105,83 @@ import TitleBox from "@/components/title-box/TitleBox.vue"
 import RecommendArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
 import { useScroll } from "@/hooks/useScroll.hooks"
 import NotionLoading from "@/components/loading/NotionLoading.vue"
+import TestackCard from "./components/TestackCard.vue"
+import AboutMe from "./components/AboutMe.vue"
+import FindMe from "./components/FindMe.vue"
 
-const { scrollData, scrollTarget, scroll, open, close } = useScroll()
+function articleModule() {
+  const { scrollData, scrollTarget, scroll, open, close } = useScroll()
+  // 文章分页信息
+  const loading = ref(false)
+  const loadText = computed(() => {
+    return loading.value ? "加载中" : "加载完成"
+  })
+  const page = reactive<{ index: number; size: number; max: number; all: boolean }>({
+    index: 1,
+    size: 2,
+    max: 40,
+    all: false
+  })
+  // 文章列表
+  const articleList = reactive<ArticleList>({
+    list: [],
+    total: 0
+  })
+  // 推荐文章列表
+  const recomArticleList = reactive<ArticleInfo[]>([])
+  const listArticle = async () => {
+    close()
+    loading.value = true
+    const res = await listArticleApi(page.index, page.size)
+    if (res.code === HttpStatusCode.Success) {
+      articleList.list.push(...res.data.list)
+      articleList.total = res.data.total
+      page.index++
+      open()
+    } else {
+      page.all = true
+    }
+    loading.value = false
+  }
+  const listRecomArticle = async () => {
+    const res = await listRecommendApi(3)
+    if (res.code === HttpStatusCode.Success) {
+      recomArticleList.push(...res.data)
+    }
+  }
+  // 滚动事件
+  const homeScroll = () => {
+    if (scrollData.scrollTop + scrollData.clientHeight + 200 > scrollData.scrollHeight) {
+      listArticle()
+    }
+  }
+  return {
+    page,
+    loading,
+    loadText,
+    articleList,
+    scrollTarget,
+    recomArticleList,
+    scroll,
+    homeScroll,
+    listArticle,
+    listRecomArticle
+  }
+}
+// 文章加载相关
+const {
+  page,
+  loading,
+  loadText,
+  articleList,
+  scrollTarget,
+  recomArticleList,
+  scroll,
+  homeScroll,
+  listArticle,
+  listRecomArticle
+} = articleModule()
+
 // 轮播图列表
 const carouselItems = reactive<carouselType[]>([
   {
@@ -91,52 +201,42 @@ const carouselItems = reactive<carouselType[]>([
       "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/940935cb641541889b946472021b815f.webp"
   }
 ])
-// 文章分页信息
-const loading = ref(false)
-const loadText = computed(() => {
-  return loading.value ? "加载中" : "加载完成"
-})
-const page = reactive<{ index: number; size: number; max: number; all: boolean }>({
-  index: 1,
-  size: 2,
-  max: 40,
-  all: false
-})
-// 文章列表
-const articleList = reactive<ArticleList>({
-  list: [],
-  total: 0
-})
-// 推荐文章列表
-const recomArticleList = reactive<ArticleInfo[]>([])
-const getArticleList = async () => {
-  close()
-  loading.value = true
-  const res = await listArticleApi(page.index, page.size)
-  if (res.code === HttpStatusCode.Success) {
-    articleList.list.push(...res.data.list)
-    articleList.total = res.data.total
-    page.index++
-    open()
-  } else {
-    page.all = true
-  }
-  loading.value = false
-}
-const listRecomArticle = async () => {
-  const res = await listRecommendApi(3)
-  if (res.code === HttpStatusCode.Success) {
-    recomArticleList.push(...res.data)
-  }
-}
-// 滚动事件
-const homeScroll = () => {
-  if (scrollData.scrollTop + scrollData.clientHeight + 200 > scrollData.scrollHeight) {
-    getArticleList()
-  }
-}
+// 其他
+
+const aboutList = reactive<
+  {
+    id: number
+    name: string
+    link: string
+    icon: string
+    size: number
+  }[]
+>([
+  { id: 1, name: "GitHub", link: "", icon: "github-fill", size: 16 },
+  { id: 2, name: "BiliBili", link: "", icon: "dianshi", size: 16 },
+  { id: 3, name: "掘金", link: "", icon: "shuqian", size: 16 },
+  { id: 4, name: "npm", link: "", icon: "npm", size: 12 }
+])
+
+const teStackList = reactive<
+  {
+    name: string
+    color: string
+  }[]
+>([
+  { name: "Vue2/3", color: "skyblue" },
+  { name: "SpringBoot", color: "pink" },
+  { name: "Java", color: "rgb(212, 243, 189)" },
+  { name: "HTML5", color: "rgb(182, 132, 244)" },
+  { name: "Css", color: "skyblue" },
+  { name: "Less", color: "rgb(255, 133, 154)" },
+  { name: "TypeScript", color: "rgb(212, 243, 189)" },
+  { name: "Vite", color: "pink" },
+  { name: "WebPack", color: "rgb(255, 133, 154)" }
+])
+
 onMounted(() => {
-  getArticleList()
+  listArticle()
   listRecomArticle()
 })
 </script>
@@ -167,6 +267,34 @@ onMounted(() => {
     flex-direction: row;
     justify-content: center;
     width: 100%;
+
+    .friendship {
+      position: relative;
+      ul {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+        li {
+          position: relative;
+          left: -18px;
+          width: calc(100% + 36px);
+          margin: 0;
+          padding: 0;
+          list-style-type: none;
+          box-sizing: border-box;
+          display: block;
+          padding: 6px 18px;
+          font-size: 12px;
+          color: #768791;
+          transition: all 0.4s ease;
+          cursor: pointer;
+          &:hover {
+            background-color: rgb(242, 242, 242);
+          }
+        }
+      }
+    }
     .article-item {
       height: 225px;
       margin-bottom: 20px;

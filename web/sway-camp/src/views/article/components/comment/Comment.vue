@@ -75,6 +75,11 @@ const replyBoxId = ref<number | null>(null)
 // 回复框实例
 const commentBox = ref<InstanceType<typeof ReplyBox> | null>(null)
 
+// 上传评论信息
+const commentDTO = reactive<CommentDTO>({
+  articleId: articleId.value,
+  content: ""
+})
 // 评论分页信息
 const commentPage = reactive<{
   index: number
@@ -83,11 +88,7 @@ const commentPage = reactive<{
   index: 1,
   size: 5
 })
-// 上传评论信息
-const commentDTO = reactive<CommentDTO>({
-  articleId: articleId.value,
-  content: ""
-})
+// 评论列表
 const commentList = reactive<CommentPage>({
   list: [],
   total: 0

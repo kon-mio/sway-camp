@@ -11,6 +11,7 @@
     <Transition name="base">
       <div
         v-if="articleInfo.content"
+        id="article-read"
         ref="scrollTarget"
         class="article-read-frame"
         @scroll="scroll(readScroll)"
@@ -24,6 +25,39 @@
               :article-index="index"
             />
           </title-box>
+          <div class="left-friendship">
+            <TitleBox title="友情链接" :title-type="1">
+              <div class="friendship">
+                <ul>
+                  <li>
+                    <sway-icon name="pinglun" :size="12" />
+                    空你急哇
+                  </li>
+                  <li>
+                    <sway-icon name="pinglun" :size="12" />
+                    大胶布
+                  </li>
+                </ul>
+              </div>
+            </TitleBox>
+          </div>
+          <div class="left-tools">
+            <el-tooltip class="box-item" effect="light" content="评论" placement="right-start">
+              <div @click="directoryJump(`#center-comment`)">
+                <sway-icon name="icon_comment" :size="16" />
+              </div>
+            </el-tooltip>
+            <el-tooltip
+              class="box-item"
+              effect="light"
+              :content="articleInfo.isFav ? '取消收藏' : '收藏'"
+              placement="right-start"
+            >
+              <div>
+                <sway-icon name="shoucang2" :size="20" :color="articleInfo.isFav ? 'red' : ''" />
+              </div>
+            </el-tooltip>
+          </div>
         </div>
         <!-- 文章 -->
         <div class="center">
@@ -42,7 +76,7 @@
           <div class="time">
             <time-card :card-bg="articleInfo.cover" />
           </div>
-          <div class="right-cata">
+          <div v-if="catalogues.length" class="right-cata">
             <header>导航目录</header>
             <div class="right-cata-scrollbar">
               <div
@@ -74,6 +108,7 @@
       <sway-icon :name="backIcon" :size="20" color="#999" title="返回上一页" />
     </div>
     <div v-if="articleInfo.content" class="bottom-deck"></div>
+    <break-top target="article-read" />
   </div>
 </template>
 
@@ -140,8 +175,7 @@ function catalogueModule() {
   }
   // 目录跳转
   const directoryJump = (targetName: string) => {
-    console.log(catalogues)
-    console.log("------", scrollData.scrollTop)
+    console.log(targetName)
     document.querySelector(targetName)?.scrollIntoView(true)
   }
   // 滚动刷新目录

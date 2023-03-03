@@ -90,7 +90,7 @@ onMounted(() => {
     border: none;
     background: none;
     font-size: 14px;
-    line-height: 24px;
+    // line-height: 24px;
     overflow: unset;
     color: #ffffffe6;
   }

@@ -26,6 +26,7 @@ export interface ArticleInfo {
   updateTime: string
   content: string | null
   reprinted: string | null
+  isFav?: boolean
 }
 
 export interface ArticleList {
