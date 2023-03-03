@@ -54,9 +54,6 @@ const listFavArticle = async () => {
   const res = await listFavArticleApi(favPage.index, favPage.size)
   if (res.code === HttpStatusCode.Success) {
     Object.assign(favList, res.data)
-    globalStore.openMessageMini("取消成功")
-  } else {
-    globalStore.openMessageMini("取消失败")
   }
 }
 onMounted(listFavArticle)

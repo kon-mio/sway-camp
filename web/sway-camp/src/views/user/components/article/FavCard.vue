@@ -15,6 +15,7 @@
 <script lang="ts">
 import { ArticleCover } from "@/components/article/article-cover/type"
 import { useEventListener } from "@/hooks/useEventListener.hooks"
+import { useArticleStore } from "@/stores/article.store"
 import { debounce } from "@konmio/utils"
 import { computed, defineComponent, onMounted, reactive, ref } from "vue"
 import { useRouter } from "vue-router"
@@ -34,6 +35,7 @@ export default defineComponent({
     const $router = useRouter()
     const selfEl = ref<HTMLElement>()
     const cardBg = ref<HTMLDivElement>()
+    const { setCoverInfo } = useArticleStore()
 
     const self = reactive({
       width: 0,
@@ -94,11 +96,12 @@ export default defineComponent({
 
     const readArticle = () => {
       const coverInfo = getBgInfo()
+      if (!coverInfo) return
+      setCoverInfo(coverInfo)
       $router.push({
-        name: "ReadArticle",
+        name: "Read",
         params: {
-          aid: aid.value,
-          coverInfo: JSON.stringify(coverInfo)
+          id: aid.value
         }
       })
     }
