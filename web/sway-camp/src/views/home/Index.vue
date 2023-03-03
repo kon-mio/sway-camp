@@ -96,7 +96,7 @@ import HomeAnimeShow from "./components/banner/components/HomeAnimeShow.vue"
 import MainCenter from "./components/main/MainCenter.vue"
 import MainLeft from "./components/main/MainLeft.vue"
 import MainRight from "./components/main/MainRight.vue"
-import WebSiteCard from "./components/WebSiteCard.vue"
+import WebSiteCard from "./components/about-me/WebSiteCard.vue"
 import ArticleCard from "./components/article/ArticleCard.vue"
 import { listArticleApi, listRecommendApi } from "@/api/article/api"
 import { ArticleInfo, ArticleList } from "@/api/article/type"
@@ -105,9 +105,9 @@ import TitleBox from "@/components/title-box/TitleBox.vue"
 import RecommendArticleCard from "@/components/article/article-card-recommend/ArticleCard.vue"
 import { useScroll } from "@/hooks/useScroll.hooks"
 import NotionLoading from "@/components/loading/NotionLoading.vue"
-import TestackCard from "./components/TestackCard.vue"
-import AboutMe from "./components/AboutMe.vue"
-import FindMe from "./components/FindMe.vue"
+import TestackCard from "./components/about-me/TestackCard.vue"
+import AboutMe from "./components/about-me/AboutMe.vue"
+import FindMe from "./components/about-me/FindMe.vue"
 
 function articleModule() {
   const { scrollData, scrollTarget, scroll, open, close } = useScroll()
@@ -201,8 +201,8 @@ const carouselItems = reactive<carouselType[]>([
       "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/940935cb641541889b946472021b815f.webp"
   }
 ])
-// 其他
 
+// 其他
 const aboutList = reactive<
   {
     id: number
@@ -212,10 +212,10 @@ const aboutList = reactive<
     size: number
   }[]
 >([
-  { id: 1, name: "GitHub", link: "", icon: "github-fill", size: 16 },
-  { id: 2, name: "BiliBili", link: "", icon: "dianshi", size: 16 },
-  { id: 3, name: "掘金", link: "", icon: "shuqian", size: 16 },
-  { id: 4, name: "npm", link: "", icon: "npm", size: 12 }
+  { id: 1, name: "npm", link: "", icon: "npm", size: 12 },
+  { id: 2, name: "掘金", link: "", icon: "shuqian", size: 16 },
+  { id: 3, name: "BiliBili", link: "", icon: "dianshi", size: 16 },
+  { id: 4, name: "GitHub", link: "", icon: "github-fill", size: 16 }
 ])
 
 const teStackList = reactive<
