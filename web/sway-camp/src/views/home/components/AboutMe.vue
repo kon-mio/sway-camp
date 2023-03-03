@@ -15,17 +15,6 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
-export default defineComponent({
-  name: "AboutUper",
-  components: {},
-  setup(_props) {
-    return {}
-  }
-})
-</script>
-
 <style lang="less" scoped>
 .main-right-uper {
   position: relative;

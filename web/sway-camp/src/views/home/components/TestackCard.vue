@@ -19,9 +19,6 @@ export default defineComponent({
       type: String,
       default: ""
     }
-  },
-  setup(_props) {
-    return {}
   }
 })
 </script>

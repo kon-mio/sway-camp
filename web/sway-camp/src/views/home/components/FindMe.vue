@@ -8,8 +8,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue"
 export default defineComponent({
-  name: "AboutUp",
-  components: {},
+  name: "FindMe",
   props: {
     item: {
       type: Object as PropType<{
@@ -21,9 +20,6 @@ export default defineComponent({
       }>,
       default: () => {}
     }
-  },
-  setup(props) {
-    return {}
   }
 })
 </script>
