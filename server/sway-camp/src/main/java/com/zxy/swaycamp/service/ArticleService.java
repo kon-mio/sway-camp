@@ -1,15 +1,12 @@
 package com.zxy.swaycamp.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.zxy.swaycamp.common.constant.HttpStatus;
-import com.zxy.swaycamp.common.exception.ServiceException;
+import cn.hutool.db.Page;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.domain.dto.article.SearchDTO;
 import com.zxy.swaycamp.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zxy.swaycamp.domain.vo.ArticleVO;
+import com.zxy.swaycamp.domain.vo.article.ArticleVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
-import com.zxy.swaycamp.utils.SwayUtil;
 
 import java.util.List;
 
@@ -45,8 +42,9 @@ public interface ArticleService extends IService<Article> {
      * @return 文章列表
      */
     List<ArticleVO> listSearchArticle(SearchDTO searchDTO);
+
     /**
-     * 分页查询文章
+     * 查询推荐文章
      * @param size 大小
      * @return 文章列表
      */
@@ -57,6 +55,27 @@ public interface ArticleService extends IService<Article> {
      * 上传文章接口
      * @param articleDTO 文章信息
      */
-    void uploadArticle(ArticleDTO articleDTO);
+    void saveArticle(ArticleDTO articleDTO);
+
+
+    /**
+     * 收藏文章
+     * @param articleId 文章Id
+     */
+    void saveArticleFav(Integer articleId);
+
+    /**
+     * 取消收藏文章
+     * @param articleId 文章Id
+     */
+    void removeArticleFav(Integer articleId);
+
+    /**
+     * 分页查询用户收藏文章
+     * @param index 索引
+     * @param size 大小
+     * @return 文章列表
+     */
+    PageVO<ArticleVO> listFavArticle(Integer index, Integer size);
 
 }

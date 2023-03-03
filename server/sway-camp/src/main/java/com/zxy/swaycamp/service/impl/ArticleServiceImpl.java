@@ -1,20 +1,19 @@
 package com.zxy.swaycamp.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.domain.dto.article.SearchDTO;
-import com.zxy.swaycamp.domain.entity.Article;
-import com.zxy.swaycamp.domain.entity.ArticleLabel;
-import com.zxy.swaycamp.domain.entity.ArticleSort;
-import com.zxy.swaycamp.domain.entity.User;
-import com.zxy.swaycamp.domain.vo.ArticleVO;
+import com.zxy.swaycamp.domain.entity.*;
+import com.zxy.swaycamp.domain.vo.article.ArticleVO;
 import com.zxy.swaycamp.domain.vo.FileVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
+import com.zxy.swaycamp.mapper.ArticleFavMapper;
 import com.zxy.swaycamp.mapper.ArticleMapper;
 import com.zxy.swaycamp.service.ArticleService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,10 +28,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -56,6 +52,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Resource
     private ArticleMapper articleMapper;
+
+    @Resource
+    private ArticleFavMapper articleFavMapper;
 
 
     /**
@@ -99,6 +98,36 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         PageVO<ArticleVO> pageVO = new PageVO<>();
         pageVO.setList(articleVos);
         pageVO.setTotal((int) articles.getTotal());
+        return pageVO;
+    }
+
+    /**
+     * 分页查询用户收藏文章
+     * @param index 索引
+     * @param size 大小
+     * @return 文章列表
+     */
+    @Override
+    public PageVO<ArticleVO> listFavArticle(Integer index, Integer size){
+        Integer userId = SwayUtil.getCurrentUserId();
+        // 用户收藏文章列表
+        Page<ArticleFav> articleFavPage = new LambdaQueryChainWrapper<>(articleFavMapper)
+                .eq(ArticleFav::getUserId, userId)
+                .eq(ArticleFav::getFavStatus, true)
+                .page(new Page<>(index, size));
+        if(articleFavPage == null || CollectionUtils.isEmpty(articleFavPage.getRecords())){
+            throw new ServiceException(HttpStatus.BAD_REQUEST, "查询页数超出总页数");
+        }
+        List<ArticleVO> articleVos = articleFavPage.getRecords().stream().filter(item -> hasArticle(item.getArticleId())).map(item -> {
+            Article article = lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getId, item.getArticleId())
+                    .eq(Article::getDeleted, false)
+                    .one();
+            return buildArticleVO(article);
+        }).collect(Collectors.toList());
+        PageVO<ArticleVO> pageVO = new PageVO<>();
+        pageVO.setList(articleVos);
+        pageVO.setTotal((int) articleFavPage.getTotal());
         return pageVO;
     }
 
@@ -165,9 +194,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * 上传文章接口
      * @param articleDTO 文章信息
      */
-
     @Override
-    public void uploadArticle(ArticleDTO articleDTO){
+    public void saveArticle(ArticleDTO articleDTO){
         Integer userId = SwayUtil.getCurrentUserId();
         FileVO fileVo = ossService.uploadImage(articleDTO.getCover(), userId, "image/cover/");
         if(fileVo == null){
@@ -201,8 +229,113 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         }
     }
 
+    /**
+     * 收藏文章
+     * @param articleId 文章Id
+     */
+    @Override
+    public void saveArticleFav(Integer articleId){
+        Integer userId = SwayUtil.getCurrentUserId();
+        Article article = lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
+                .eq(Article::getId, articleId)
+                .eq(Article::getDeleted, false)
+                .one();
+        if(article == null){
+            throw new ServiceException("收藏文章不存在");
+        }
+        try{
+            ArticleFav articleFav = new LambdaQueryChainWrapper<>(articleFavMapper)
+                    .eq(ArticleFav::getArticleId, articleId)
+                    .eq(ArticleFav::getUserId, userId)
+                    .eq(ArticleFav::getIsDeleted, false)
+                    .one();
+            if(articleFav == null){
+                ArticleFav saveFav = new ArticleFav();
+                saveFav.setArticleId(articleId);
+                saveFav.setUserId(userId);
+                saveFav.setCreateTime(LocalDateTime.now());
+                saveFav.setUpdateTime(LocalDateTime.now());
+                saveFav.setIsDeleted(false);
+                saveFav.setFavStatus(true);
+                articleFavMapper.insert(saveFav);
+            }
+            else{
+                if(articleFav.getFavStatus()){
+                    throw new ServiceException("请勿重复收藏文章");
+                }
+                new LambdaUpdateChainWrapper<>(articleFavMapper)
+                        .eq(ArticleFav::getArticleId, articleId)
+                        .eq(ArticleFav::getUserId, userId)
+                        .eq(ArticleFav::getIsDeleted, false)
+                        .set(ArticleFav::getUpdateTime, LocalDateTime.now())
+                        .set(ArticleFav::getFavStatus, true)
+                        .update();
+            }
+        }
+        catch (Exception e){
+            logger.error(e.getMessage());
+            throw new ServiceException("收藏失败");
+        }
+    }
+
+    /**
+     * 取消收藏文章
+     * @param articleId 文章Id
+     */
+    @Override
+    public void removeArticleFav(Integer articleId){
+        Integer userId = SwayUtil.getCurrentUserId();
+        try{
+            Article article = lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getId, articleId)
+                    .eq(Article::getDeleted, false)
+                    .one();
+            if(article == null){
+                throw new ServiceException("文章不存在");
+            }
+            ArticleFav articleFav = new LambdaQueryChainWrapper<>(articleFavMapper)
+                    .eq(ArticleFav::getArticleId, articleId)
+                    .eq(ArticleFav::getUserId, userId)
+                    .eq(ArticleFav::getFavStatus, true)
+                    .eq(ArticleFav::getIsDeleted, false)
+                    .one();
+            if(articleFav == null){
+                throw new ServiceException("未收藏该文章");
+            }
+            else{
+                new LambdaUpdateChainWrapper<>(articleFavMapper)
+                        .eq(ArticleFav::getArticleId, articleId)
+                        .eq(ArticleFav::getUserId, userId)
+                        .eq(ArticleFav::getIsDeleted, false)
+                        .set(ArticleFav::getFavStatus, false)
+                        .set(ArticleFav::getUpdateTime, LocalDateTime.now())
+                        .update();
+            }
+        }
+        catch (Exception e){
+            logger.error(e.getMessage());
+            throw new ServiceException("取消收藏失败");
+        }
+    }
 
 
+    /**
+     * 判断文章是否存在
+     * @param articleId 文章ID
+     * @return 是否存在
+     */
+    private Boolean hasArticle(Integer articleId){
+        return lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
+                .eq(Article::getId, articleId)
+                .eq(Article::getDeleted, false)
+                .one() != null;
+    }
+
+    /**
+     * 构建文章返回信息
+     * @param article 文章信息
+     * @return 文章返回信息
+     */
     private ArticleVO buildArticleVO(Article article){
         ArticleVO articleVO = new ArticleVO();
         BeanUtils.copyProperties(article, articleVO);

@@ -1,7 +1,6 @@
 package com.zxy.swaycamp.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,7 +8,6 @@ import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.comment.CommentDTO;
 import com.zxy.swaycamp.domain.entity.*;
-import com.zxy.swaycamp.domain.vo.ArticleVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
 import com.zxy.swaycamp.domain.vo.comment.CommentVO;
 import com.zxy.swaycamp.domain.vo.comment.ReplyVO;

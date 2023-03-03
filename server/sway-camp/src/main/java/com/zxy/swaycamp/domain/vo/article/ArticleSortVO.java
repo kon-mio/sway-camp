@@ -1,4 +1,4 @@
-package com.zxy.swaycamp.domain.vo;
+package com.zxy.swaycamp.domain.vo.article;
 
 import lombok.Data;
 

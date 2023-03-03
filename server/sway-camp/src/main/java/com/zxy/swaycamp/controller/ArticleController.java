@@ -5,9 +5,9 @@ import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.domain.dto.article.SearchDTO;
 import com.zxy.swaycamp.domain.entity.ArticleSort;
-import com.zxy.swaycamp.domain.vo.ArticleLabelVO;
-import com.zxy.swaycamp.domain.vo.ArticleSortVO;
-import com.zxy.swaycamp.domain.vo.ArticleVO;
+import com.zxy.swaycamp.domain.vo.article.ArticleLabelVO;
+import com.zxy.swaycamp.domain.vo.article.ArticleSortVO;
+import com.zxy.swaycamp.domain.vo.article.ArticleVO;
 import com.zxy.swaycamp.domain.vo.PageVO;
 import com.zxy.swaycamp.service.ArticleService;
 import com.zxy.swaycamp.utils.query.CommonQuery;
@@ -58,6 +58,18 @@ public class ArticleController {
     }
 
     /**
+     * 分页查询收藏文章列表
+     * @param index 索引
+     * @param size 大小
+     * @return listArticle
+     */
+    @LoginCheck
+    @GetMapping("/fav/list")
+    public SwayResult<PageVO<ArticleVO> > listFavArticle(@RequestParam Integer index, @RequestParam Integer size){
+        return SwayResult.success(articleService.listFavArticle(index, size));
+    }
+
+    /**
      * 分页查询文章列表
      * @param searchDTO 检索信息
      * @return listArticle
@@ -84,9 +96,35 @@ public class ArticleController {
     @LoginCheck
     @PostMapping("/upload")
     public SwayResult uploadArticle(@Validated ArticleDTO articleDTO){
-        articleService.uploadArticle(articleDTO);
+        articleService.saveArticle(articleDTO);
         return SwayResult.success();
     }
+
+    /**
+     * 收藏文章
+     * @param articleId 文章
+     * @return null
+     */
+    @LoginCheck
+    @PostMapping("/fav/save")
+    public SwayResult savFav(@RequestParam Integer articleId){
+        articleService.saveArticleFav(articleId);
+        return SwayResult.success();
+    }
+
+    /**
+     * 移除收藏文章
+     * @param articleId 文章
+     * @return null
+     */
+    @LoginCheck
+    @PostMapping("/fav/remove")
+    public SwayResult removeFav(@RequestParam Integer articleId){
+        articleService.removeArticleFav(articleId);
+        return SwayResult.success();
+    }
+
+
 
 
     /**
