@@ -156,6 +156,27 @@ export default defineComponent({
   width: 100%;
   height: 100%;
 
+  ::v-deep(.el-carousel) {
+    .el-carousel__arrow--left {
+      transform: rotate(90deg) translateY(-50%) !important;
+      left: -60px;
+    }
+    .el-carousel__arrow--right {
+      transform: rotate(-90deg) translateY(-50%) !important;
+      right: -60px;
+    }
+    .el-carousel__arrow {
+      margin-top: -56px;
+    }
+    .el-carousel__arrow {
+      width: 0 !important;
+      height: 0 !important;
+      border: 56px solid transparent !important;
+      border-bottom: 60px solid rgba(255, 255, 255, 0.9) !important;
+      border-radius: 0 !important;
+      background-color: transparent !important;
+    }
+  }
   // ::v-deep(.el-carousel__indicators--horizontal) {
   //   left: 2%;
   //   transform: translateX(0);

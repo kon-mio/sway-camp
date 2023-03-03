@@ -24,7 +24,7 @@ export default defineComponent({
   box-sizing: border-box;
   border: 3px @line-white-0 solid;
   box-shadow: 0 1px 3px @shadow-gray-3;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
 }
 .sway-home__banner {
