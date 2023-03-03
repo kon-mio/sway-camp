@@ -75,3 +75,47 @@ export async function listSortApi(): Promise<CommonResult<Type.ArticleSort[]>> {
     throw newError()
   }
 }
+
+/**
+ * 收藏文章
+ * @returns
+ */
+export async function saveFavApi(id: number): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/article/fav/save?articleId=${id}`)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 取消收藏文章
+ * @returns
+ */
+export async function removeFavApi(id: number): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/article/fav/remove?articleId=${id}`)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
+/**
+ * 收藏文章列表
+ * @returns
+ */
+export async function listFavArticleApi(
+  index: number,
+  size: number
+): Promise<CommonResult<Type.ArticleList>> {
+  try {
+    const { data } = await request.get<Type.ArticleList>(
+      `/article/fav/list?index=${index}&size=${size}`
+    )
+    return data
+  } catch {
+    throw newError()
+  }
+}

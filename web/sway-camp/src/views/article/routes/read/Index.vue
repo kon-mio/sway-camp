@@ -53,7 +53,7 @@
               :content="articleInfo.isFav ? '取消收藏' : '收藏'"
               placement="right-start"
             >
-              <div>
+              <div @click="saveFav">
                 <sway-icon name="shoucang2" :size="20" :color="articleInfo.isFav ? 'red' : ''" />
               </div>
             </el-tooltip>
@@ -115,7 +115,7 @@
 <script lang="ts" setup>
 import { onMounted, onBeforeMount, ref, reactive, computed } from "vue"
 import { storeToRefs } from "pinia"
-import { getArticleApi, listRecommendApi } from "@/api/article/api"
+import { getArticleApi, listRecommendApi, removeFavApi, saveFavApi } from "@/api/article/api"
 import { useArticleStore } from "@/stores/article.store"
 import { HttpStatusCode } from "@/common/enum"
 import type { ArticleInfo } from "@/api/article/type"
@@ -129,6 +129,8 @@ import ArticleCard from "@/components/article/article-card-recommend/ArticleCard
 import { useScroll } from "@/hooks/useScroll.hooks"
 import ArticleHeader from "../../components/read-main/article-header/ArticleHeader.vue"
 import Comment from "../../components/comment/Comment.vue"
+import { useGlobalStore } from "@/stores/global.sotre"
+import { throttle } from "@konmio/utils"
 // 背景处理
 function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
@@ -223,6 +225,7 @@ const articleId = computed(() => {
   return Number(props.id)
 })
 const articleStore = useArticleStore()
+const globalStore = useGlobalStore()
 const { coverInfo } = storeToRefs(articleStore)
 const { transBgRef, coverMark, coverInit, removeAnime } = coverFuncModule()
 const { catalogues, getCataLogue, directoryJump, refreshCatalogue } = catalogueModule()
@@ -266,6 +269,27 @@ const listRecomArticle = async () => {
   if (res.code === HttpStatusCode.Success) {
     recomArticleList.push(...res.data)
   }
+}
+const saveFav = () => {
+  throttle(async () => {
+    if (!articleInfo.isFav) {
+      const res = await saveFavApi(articleId.value)
+      if (res.code === HttpStatusCode.Success) {
+        articleInfo.isFav = true
+        globalStore.openMessageMini("收藏成功")
+      } else {
+        globalStore.openMessageMini("收藏失败")
+      }
+    } else {
+      const res = await removeFavApi(articleId.value)
+      if (res.code === HttpStatusCode.Success) {
+        articleInfo.isFav = false
+        globalStore.openMessageMini("取消成功")
+      } else {
+        globalStore.openMessageMini("收藏失败")
+      }
+    }
+  })()
 }
 
 onBeforeMount(() => {
