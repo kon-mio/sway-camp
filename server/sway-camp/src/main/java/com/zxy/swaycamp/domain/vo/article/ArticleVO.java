@@ -40,4 +40,6 @@ public class ArticleVO {
 
     private LocalDateTime updateTime;
 
+    private Boolean isFav;
+
 }

@@ -64,6 +64,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      */
     @Override
     public ArticleVO getArticle(Integer articleId){
+        // TODO 暂时没有判定文章作者自己查看的情况
         Article article = lambdaQuery().eq(Article::getId, articleId)
                 .eq(Article::getDeleted, false)
                 .eq(Article::getReview, true)
@@ -77,7 +78,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
                 throw new ServiceException(HttpStatus.NOT_FOUND, "权限不足");
             }
         }
-        return buildArticleVO(article);
+        ArticleVO articleVO = buildArticleVO(article);
+        if(userId != null){
+            ArticleFav articleFav = new LambdaQueryChainWrapper<>(articleFavMapper)
+                    .eq(ArticleFav::getArticleId, articleId)
+                    .eq(ArticleFav::getUserId, userId)
+                    .eq(ArticleFav::getFavStatus, true)
+                    .eq(ArticleFav::getIsDeleted, false)
+                    .one();
+            articleVO.setIsFav(articleFav == null ? false : true);
+        }
+        return articleVO;
     }
 
     /**
@@ -90,6 +101,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public PageVO<ArticleVO> listArticle(Integer index, Integer size){
         Page<Article> articles = lambdaQuery()
                 .select(Article.class, info -> !info.getColumn().equals("content"))
+                .eq(Article::getDeleted, false)
+                .eq(Article::getReview, true)
+                .eq(Article::getReviewStatus, true)
                 .page(new Page<>(index, size));
         if(articles == null || CollectionUtils.isEmpty(articles.getRecords())){
             throw new ServiceException(HttpStatus.BAD_REQUEST, "查询页数超出总页数");
@@ -121,6 +135,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         List<ArticleVO> articleVos = articleFavPage.getRecords().stream().filter(item -> hasArticle(item.getArticleId())).map(item -> {
             Article article = lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
                     .eq(Article::getId, item.getArticleId())
+                    .eq(Article::getReview, true)
+                    .eq(Article::getReviewStatus, true)
                     .eq(Article::getDeleted, false)
                     .one();
             return buildArticleVO(article);
@@ -141,23 +157,35 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         if(searchDTO.getSort() == null && searchDTO.getKeyword() == null){
             articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getDeleted, false)
+                    .eq(Article::getReview, true)
+                    .eq(Article::getReviewStatus, true)
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() == null){
             articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getDeleted, false)
+                    .eq(Article::getReview, true)
+                    .eq(Article::getReviewStatus, true)
                     .eq(Article::getSortId, searchDTO.getSort())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() == null && searchDTO.getKeyword() != null){
             articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getDeleted, false)
+                    .eq(Article::getReview, true)
+                    .eq(Article::getReviewStatus, true)
                     .like(Article::getTitle, searchDTO.getKeyword())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
         }
         if(searchDTO.getSort() != null && searchDTO.getKeyword() != null){
             articles = lambdaQuery()
                     .select(Article.class, info -> !info.getColumn().equals("content"))
+                    .eq(Article::getDeleted, false)
+                    .eq(Article::getReview, true)
+                    .eq(Article::getReviewStatus, true)
                     .eq(Article::getSortId, searchDTO.getSort())
                     .like(Article::getTitle, searchDTO.getKeyword())
                     .page(new Page<>(searchDTO.getIndex(),  searchDTO.getSize()));
@@ -179,6 +207,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public  List<ArticleVO>  listRecommend(Integer size){
         List<Article> articles = lambdaQuery().eq(Article::getDeleted, false)
                 .eq(Article::getReview, true)
+                .eq(Article::getReviewStatus, true)
+                .eq(Article::getDeleted, false)
                 .orderByDesc(Article::getViewCount)
                 .last("limit 0, " + size )
                 .list();
@@ -238,6 +268,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         Integer userId = SwayUtil.getCurrentUserId();
         Article article = lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
                 .eq(Article::getId, articleId)
+                .eq(Article::getReview, true)
+                .eq(Article::getReviewStatus, true)
                 .eq(Article::getDeleted, false)
                 .one();
         if(article == null){
