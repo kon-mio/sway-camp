@@ -6,6 +6,7 @@ export interface CommentDTO {
   content: string
 }
 
+// 回复参数
 export interface ReplyDTO {
   commentId: number | null
   content: string

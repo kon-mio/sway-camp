@@ -43,11 +43,13 @@ export interface ArticleInfo {
   isFav?: boolean
 }
 
+// 文章信息分页
 export interface ArticleList {
   list: ArticleInfo[]
   total: number
 }
 
+// 文章分类信息
 export interface ArticleSort {
   id: number
   sortName: string
@@ -56,6 +58,7 @@ export interface ArticleSort {
   labels: ArticleLabel[]
 }
 
+// 文章标签
 export interface ArticleLabel {
   id: number
   sortId: number | null

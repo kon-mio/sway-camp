@@ -210,7 +210,7 @@ const saveArticle = async () => {
   Object.keys(article).forEach((item) => {
     console.log(item, article[item as keyof ArticleDTO])
     if (typeof article[item as keyof ArticleDTO] !== "object") {
-      ArticleForm.append(item, article[item as keyof ArticleDTO]?.toString() || "12312312")
+      ArticleForm.append(item, article[item as keyof ArticleDTO]?.toString() || "")
     } else {
       ArticleForm.append(item, article[item as keyof ArticleDTO] as File)
     }
@@ -231,6 +231,7 @@ const saveArticle = async () => {
       reprintedStatus: false,
       cover: null
     })
+    cropper.value = false
   } else {
     globalStore.openMessageMini("上传失败")
   }

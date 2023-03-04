@@ -35,7 +35,7 @@ export async function codeLoginApi(LoginForm: Type.LoginDto): Promise<CommonResu
 /**
  * 获取验证码
  * @param {string | number} account 邮箱/手机号
- * @returns {null} null
+ * @returns {void} void
  */
 export async function getCodeApi(account: string | number): Promise<CommonResult<null>> {
   try {

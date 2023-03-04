@@ -7,7 +7,7 @@ const newError = () => new Error("错误请求")
 /**
  * 发布评论
  * @param {Type.CommentDTO} comment 评论信息
- * @returns Comment
+ * @return {Type.Comment} 新增评论
  */
 export async function uploadCommentApi(
   comment: Type.CommentDTO
@@ -22,8 +22,8 @@ export async function uploadCommentApi(
 
 /**
  * 发布评论回复
- * @param {Type.ReplyDTO} comment 评论信息
- * @returns null
+ * @param {Type.ReplyDTO} replyDTO 回复信息
+ * @returns {Type.Reply} 新增回复
  */
 export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult<Type.Reply>> {
   try {
@@ -36,9 +36,10 @@ export async function uploadReplyApi(reply: Type.ReplyDTO): Promise<CommonResult
 
 /**
  * 分页查询评论
- * @param index 页码
- * @param size 分页大小
- * @returns 评论列表
+ * @param {number} index 页码
+ * @param {number} size 分页大小
+ * @param {number} articleId 文章ID
+ * @returns {Type.CommentPage} 评论列表
  */
 export async function listCommentApi(
   index: number,
@@ -57,9 +58,10 @@ export async function listCommentApi(
 
 /**
  * 分页查询评论回复
- * @param index 页码
- * @param size 分页大小
- * @returns 评论列表
+ * @param {number} index 页码
+ * @param {number} size 分页大小
+ * @param {number} commentId 评论ID
+ * @returns {Type.ReplyPage} 评论列表
  */
 export async function listReplyApi(
   index: number,
@@ -78,8 +80,8 @@ export async function listReplyApi(
 
 /**
  * 删除评论
- * @param commentId 评论id
- * @returns {void}
+ * @param {number} commentId 评论id
+ * @returns {void} void
  */
 export async function removeCommentApi(commentId: number): Promise<CommonResult<null>> {
   try {
@@ -92,8 +94,8 @@ export async function removeCommentApi(commentId: number): Promise<CommonResult<
 
 /**
  * 删除评论回复
- * @param replyId 评论id
- * @returns {void}
+ * @param {number} replyId 评论id
+ * @returns {void} void
  */
 export async function removeReplyApi(replyId: number): Promise<CommonResult<null>> {
   try {

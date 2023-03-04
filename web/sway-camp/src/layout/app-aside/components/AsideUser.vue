@@ -92,16 +92,16 @@ function userTabMoudel() {
   }
   const userFav = () => {
     router.push({
-      name: "SpaceFav"
+      name: "UserFav",
+      params: {
+        id: userInfo.value?.id
+      }
     })
   }
   // 发表
   const writeArticle = () => {
     router.push({
-      name: "Write",
-      params: {
-        // userId: userInfo.value.id
-      }
+      name: "Write"
     })
   }
   return {
@@ -196,9 +196,10 @@ export default defineComponent({
         }
 
         i {
+          transition: 0.2s5;
           &:hover {
             cursor: pointer;
-            // color: @icon-acitve;
+            color: skyblue;
           }
         }
       }
