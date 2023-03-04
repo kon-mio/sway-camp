@@ -7,7 +7,7 @@
         <button @click="addInfo">完善信息</button>
       </div>
       <div class="content">
-        <v-md-editor @get-content="getContent" />
+        <v-md-editor ref="mdEditor" @get-content="getContent" />
       </div>
     </div>
   </div>
@@ -146,6 +146,7 @@ const globalStore = useGlobalStore()
 const dialog = ref(false)
 const cropper = ref(false)
 const cropperTarget = ref<InstanceType<typeof CropperPreview> | null>(null)
+const mdEditor = ref<InstanceType<typeof VMdEditor> | null>(null)
 const cropperOptions = {
   // 固定裁剪框宽高比
   aspectRatio: 4 / 3,
@@ -219,6 +220,8 @@ const saveArticle = async () => {
   const res = await saveArticleApi(ArticleForm)
   if (res.code === HttpStatusCode.Success) {
     globalStore.openMessageMini("上传成功")
+    dialog.value = false
+    mdEditor.value?.init()
     Object.assign(article, {
       sortId: "",
       labelId: "",
@@ -231,7 +234,6 @@ const saveArticle = async () => {
       reprintedStatus: false,
       cover: null
     })
-    cropper.value = false
   } else {
     globalStore.openMessageMini("上传失败")
   }

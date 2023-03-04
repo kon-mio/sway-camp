@@ -1,6 +1,6 @@
 <template>
   <div class="reply-bar">
-    <span v-if="!isReply" class="reply-content reply-bar">{{ info.content }}</span>
+    <span v-if="!isReply(info)" class="reply-content reply-bar">{{ info.content }}</span>
     <div class="reply-info">
       <span class="reply-time">{{ info.date }}</span>
       <span class="reply-like">

@@ -15,6 +15,12 @@ const emits = defineEmits<{
 const contentChange = (text: string) => {
   emits("getContent", text)
 }
+const init = () => {
+  content.value = ""
+}
+defineExpose({
+  init
+})
 </script>
 
 <style lang="less" scoped>

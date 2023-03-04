@@ -202,9 +202,6 @@ const removeReply = async (commentId: number, replyId: number) => {
     padding-left: 8px;
     font-size: 13px;
     color: #9499a0;
-    // &-default {
-    // }
-
     &-btn {
       cursor: pointer;
       &:hover {
