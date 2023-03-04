@@ -44,9 +44,13 @@ router.beforeEach(async (to, from) => {
   if (to.meta.title) {
     document.title = to.meta.title as string
   }
-  const { isLogin } = storeToRefs(useUserStore())
+  const { isLogin, userInfo } = storeToRefs(useUserStore())
   if (to.meta.login) {
     return isLogin.value ? true : { name: "Home" }
+  }
+  // 暂定只有用户ID为1的用户可以发表文章
+  if (to.name === "Write" && userInfo.value?.id !== 1) {
+    return { name: "Home" }
   }
   return true
 })
