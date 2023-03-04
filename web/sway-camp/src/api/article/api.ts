@@ -4,6 +4,15 @@ import { CommonResult } from "@/common/request/result.type"
 
 const newError = () => new Error("错误请求")
 
+export async function saveArticleApi(ArticleForm: FormData): Promise<CommonResult<null>> {
+  try {
+    const { data } = await request.post<null>(`/article/upload`, ArticleForm)
+    return data
+  } catch {
+    throw newError()
+  }
+}
+
 /**
  * 获取文章信息
  * @param {number} id 文章ID

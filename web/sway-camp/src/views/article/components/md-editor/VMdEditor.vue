@@ -1,19 +1,20 @@
 <template>
   <div class="editor">
-    <v-md-editor v-model="text" />
+    <v-md-editor v-model="content" @change="contentChange" />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue"
-export default defineComponent({
-  name: "MdEditor",
-  setup() {
-    return {
-      text: ""
-    }
-  }
-})
+<script lang="ts" setup>
+import { ref } from "vue"
+
+const content = ref("")
+const emits = defineEmits<{
+  (el: "getContent", content: string): void
+}>()
+
+const contentChange = (text: string) => {
+  emits("getContent", text)
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,5 +1,19 @@
 /**请求参数 */
 
+// 上传文章
+export interface ArticleDTO {
+  sortId: number | string
+  labelId: number | string
+  title: string
+  content: string
+  introduction: string
+  reprinted: string
+  commentStatus: boolean
+  viewStatus: boolean
+  reprintedStatus: boolean
+  cover: File | null
+}
+
 // 分类搜索文章
 export interface SearchArticleDTO {
   index: number
