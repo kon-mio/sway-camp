@@ -7,12 +7,12 @@
         <img class="base-img" :src="reAnime.list.cover" alt="" />
         <!-- 标题 -->
         <div class="item-card__cover-info">
-          <b>{{ reAnime.list.otherName }}</b>
+          <b>{{ reAnime.list.name }}</b>
           <!-- <p>{{ rcAnime.episodes }}</p> -->
           <ul class="item-card__labels">
-            <li>校园</li>
-            <li>爱情</li>
-            <!-- <li v-for="index in (RecomAnime.animeInfo.animeType as string).split('/')">{{ index }}</li> -->
+            <li v-for="(item, index) in reAnime.list.labels" :key="index">
+              {{ item }}
+            </li>
           </ul>
         </div>
       </div>
@@ -24,8 +24,8 @@
 </template>
 
 <script lang="ts" setup>
-import { RecommendAnime } from "@/api/anime/type"
-import { computed, onMounted } from "vue"
+import type { RecommendAnime } from "@/api/anime/type"
+import { computed } from "vue"
 
 const props = withDefaults(
   defineProps<{
@@ -45,10 +45,6 @@ const tabItemStyle = computed(() => {
     transitionDuration: `${props.time + 100}ms, 100ms`,
     transitionProperty: `transform, opacity`
   }
-})
-
-onMounted(() => {
-  console.log(reAnime)
 })
 </script>
 

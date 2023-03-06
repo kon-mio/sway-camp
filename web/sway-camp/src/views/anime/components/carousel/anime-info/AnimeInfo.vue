@@ -3,7 +3,7 @@
     <transition name="carousel-info">
       <div v-if="visible" class="inner">
         <span>特拉法尔加·罗</span>
-        <h1>{{ ctAnime.otherName }}</h1>
+        <h1>{{ ctAnime.name }}</h1>
         <p>
           {{ ctAnime.introduction }}
         </p>
