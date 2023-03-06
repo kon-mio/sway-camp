@@ -49,5 +49,41 @@ public class AnimeController {
         return SwayResult.success();
     }
 
+    /**
+     * 上传推荐动漫信息
+     * @param animeId 动漫ID
+     * @param labelName 标签昵称
+     */
+    @PostMapping("/recommend/save")
+    public SwayResult saveRecommendAnime(@RequestParam Integer animeId,
+                                         @RequestParam String labelName){
+        animeService.saveRecommendAnime(animeId, labelName);
+        return SwayResult.success();
+    }
+
+    /**
+     * 上传推荐动漫信息
+     * @param recommendId 推荐ID
+     */
+    @PostMapping("/recommend/remove")
+    public SwayResult removeRecommendAnime(@RequestParam Integer recommendId){
+        animeService.removeRecommendAnime(recommendId);
+        return SwayResult.success();
+    }
+
+
+    /**
+     * 查询推荐动漫列表
+     * @param label 推荐动漫
+     * @return 推荐动漫列表
+     */
+    @GetMapping("/recommend/list")
+    public SwayResult listRecommendAnime(@RequestParam(required = false) String label){
+        return SwayResult.success(animeService.listRecommendAnime(label));
+    }
+
+
+
+
 }
 

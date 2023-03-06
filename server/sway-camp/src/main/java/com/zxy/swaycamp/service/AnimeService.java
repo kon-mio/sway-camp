@@ -5,6 +5,8 @@ import com.zxy.swaycamp.domain.entity.Anime;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zxy.swaycamp.domain.vo.anime.AnimeVO;
 
+import java.util.List;
+
 /**
  * <p>
  * 动漫信息表 服务类
@@ -29,5 +31,26 @@ public interface AnimeService extends IService<Anime> {
      * @param animeDTO 动漫信息
      */
     void saveAnime(AnimeDTO animeDTO);
+
+
+    /**
+     * 新增推荐动漫
+     * @param animeId 动漫ID
+     * @param labelName 推荐标签
+     */
+    void saveRecommendAnime(Integer animeId, String labelName);
+
+    /**
+     * 取消推荐动漫
+     * @param recommendId 推荐ID
+     */
+    void removeRecommendAnime(Integer recommendId);
+
+    /**
+     * 查询推荐动漫列表
+     * @param label 推荐标签
+     * @return 查询推荐动漫列表
+     */
+    List<AnimeVO> listRecommendAnime(String label);
 
 }
