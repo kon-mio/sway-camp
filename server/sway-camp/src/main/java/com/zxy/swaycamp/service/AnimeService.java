@@ -3,6 +3,7 @@ package com.zxy.swaycamp.service;
 import com.zxy.swaycamp.domain.dto.anime.AnimeDTO;
 import com.zxy.swaycamp.domain.entity.Anime;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zxy.swaycamp.domain.vo.anime.AnimeVO;
 
 /**
  * <p>
@@ -13,6 +14,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-03-06
  */
 public interface AnimeService extends IService<Anime> {
+
+
+    /**
+     * 获取动漫信息
+     * @param animeId 动漫ID
+     * @return 动漫信息
+     */
+    AnimeVO getAnime(Integer animeId);
 
 
     /**

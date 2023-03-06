@@ -9,6 +9,7 @@ import com.zxy.swaycamp.domain.entity.AnimeLabel;
 import com.zxy.swaycamp.domain.entity.AnimeLabelMerge;
 import com.zxy.swaycamp.domain.entity.Article;
 import com.zxy.swaycamp.domain.vo.FileVO;
+import com.zxy.swaycamp.domain.vo.anime.AnimeVO;
 import com.zxy.swaycamp.mapper.AnimeLabelMapper;
 import com.zxy.swaycamp.mapper.AnimeLabelMergeMapper;
 import com.zxy.swaycamp.mapper.AnimeMapper;
@@ -29,6 +30,7 @@ import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -49,6 +51,29 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
     private AnimeLabelMapper animeLabelMapper;
     @Resource
     private AnimeLabelMergeMapper animeLabelMergeMapper;
+
+
+    /**
+     * 获取动漫信息
+     * @param animeId 动漫ID
+     * @return 动漫信息
+     */
+    @Override
+    public AnimeVO getAnime(Integer animeId){
+        Anime anime = lambdaQuery().eq(Anime::getId, animeId).one();
+        if(anime == null){
+            throw new ServiceException("动漫不存在");
+        }
+        AnimeVO animeVO = new AnimeVO();
+        BeanUtils.copyProperties(anime, animeVO);
+
+        List<AnimeLabelMerge> animeLabelMerges = new LambdaQueryChainWrapper<>(animeLabelMergeMapper)
+                .eq(AnimeLabelMerge::getAnimeId, anime.getId())
+                .list();
+        animeVO.setLabels(animeLabelMerges.stream().map(item -> item.getLabelName()).collect(Collectors.toList()));
+        return animeVO;
+    }
+
 
 
     /**
@@ -80,7 +105,7 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
             anime.setIsDeleted(false);
             save(anime);
             Integer animeId = anime.getId();
-            animeDTO.getLabels().stream().forEach(item ->{
+            animeDTO.getLabels().forEach(item ->{
                 AnimeLabel animeLabel = new LambdaQueryChainWrapper<>(animeLabelMapper)
                         .eq(AnimeLabel::getLabelName, item)
                         .one();
@@ -88,7 +113,7 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
                     throw new ServiceException("动漫标签不存在");
                 }
             });
-            animeDTO.getLabels().stream().forEach(item ->{
+            animeDTO.getLabels().forEach(item ->{
                 AnimeLabelMerge animeLabelMerge = new AnimeLabelMerge();
                 animeLabelMerge.setAnimeId(animeId);
                 animeLabelMerge.setLabelName(item);
@@ -97,11 +122,12 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
                 animeLabelMerge.setIsDeleted(false);
                 animeLabelMergeMapper.insert(animeLabelMerge);
             });
-
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("上传动漫信息报错：{}", e.getMessage());
             throw new ServiceException();
         }
     }
+
+
 }

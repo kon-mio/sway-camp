@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author XinYuan Zhao
@@ -30,6 +31,9 @@ public class AnimeVO {
     private String officialWebsite;
 
     private LocalDateTime broadcastTime;
+
+
+    private List<String> labels;
 
 
 }

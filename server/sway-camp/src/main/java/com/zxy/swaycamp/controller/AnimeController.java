@@ -8,10 +8,7 @@ import com.zxy.swaycamp.service.AnimeService;
 import com.zxy.swaycamp.utils.request.SwayResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -28,6 +25,18 @@ public class AnimeController {
     @Autowired
     private AnimeService animeService;
 
+
+    /**
+     * 查询动漫信息
+      * @param animeId 动漫ID
+     * @return 动漫信息
+     */
+    @GetMapping("/{id}")
+    public SwayResult getAnime(@PathVariable("id") Integer animeId){
+        return SwayResult.success(animeService.getAnime(animeId));
+    }
+
+
     /**
      * 上传动漫信息
      * @param animeDTO 文章信息
@@ -35,7 +44,7 @@ public class AnimeController {
      */
     @LoginCheck
     @PostMapping("/save")
-    public SwayResult uploadArticle(@Validated AnimeDTO animeDTO){
+    public SwayResult saveAnime(@Validated AnimeDTO animeDTO){
         animeService.saveAnime(animeDTO);
         return SwayResult.success();
     }

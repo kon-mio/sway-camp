@@ -28,9 +28,6 @@ public class AnimeLabelMerge implements Serializable {
     /**
      * id
      */
-    /**
-     * id
-     */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
