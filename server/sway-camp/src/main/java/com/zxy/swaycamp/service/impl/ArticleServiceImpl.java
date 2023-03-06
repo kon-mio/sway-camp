@@ -359,6 +359,8 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     private Boolean hasArticle(Integer articleId){
         return lambdaQuery().select(Article.class, info -> !info.getColumn().equals("content"))
                 .eq(Article::getId, articleId)
+                .eq(Article::getReview, true)
+                .eq(Article::getReviewStatus, true)
                 .eq(Article::getDeleted, false)
                 .one() != null;
     }

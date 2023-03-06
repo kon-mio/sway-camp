@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxy.swaycamp.mapper.AnimeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zxy.swaycamp.domain.entity.Anime">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="original_name" property="originalName" />
+        <result column="region" property="region" />
+        <result column="cover" property="cover" />
+        <result column="introduction" property="introduction" />
+        <result column="official_website" property="officialWebsite" />
+        <result column="broadcast_time" property="broadcastTime" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="is_deleted" property="isDeleted" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, original_name, region, cover, introduction, official_website, broadcast_time, create_time, update_time, is_deleted
+    </sql>
+
+</mapper>
