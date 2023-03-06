@@ -71,7 +71,6 @@ public class AnimeImage implements Serializable {
      * 删除标志
      */
     @TableField("is_deleted")
-    @TableLogic
     private Boolean isDeleted;
 
 

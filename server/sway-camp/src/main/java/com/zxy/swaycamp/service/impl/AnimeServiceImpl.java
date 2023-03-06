@@ -1,32 +1,49 @@
 package com.zxy.swaycamp.service.impl;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
+import com.aliyun.oss.model.PutObjectRequest;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
+import com.zxy.swaycamp.common.constant.FileConstant;
+import com.zxy.swaycamp.common.constant.HttpStatus;
 import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
 import com.zxy.swaycamp.domain.dto.anime.AnimeDTO;
 import com.zxy.swaycamp.domain.entity.*;
 import com.zxy.swaycamp.domain.vo.FileVO;
 import com.zxy.swaycamp.domain.vo.anime.AnimeVO;
-import com.zxy.swaycamp.mapper.AnimeLabelMapper;
-import com.zxy.swaycamp.mapper.AnimeLabelMergeMapper;
-import com.zxy.swaycamp.mapper.AnimeMapper;
-import com.zxy.swaycamp.mapper.AnimeRecommendMapper;
+import com.zxy.swaycamp.domain.vo.anime.ImageVO;
+import com.zxy.swaycamp.mapper.*;
 import com.zxy.swaycamp.service.AnimeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zxy.swaycamp.service.OssService;
 import com.zxy.swaycamp.utils.SwayUtil;
+import com.zxy.swaycamp.utils.file.SwayFileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +68,9 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
     @Resource
     private AnimeRecommendMapper animeRecommendMapper;
 
+    @Resource
+    private AnimeImageMapper animeImageMapper;
+
 
     /**
      * 获取动漫信息
@@ -70,6 +90,15 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
                 .eq(AnimeLabelMerge::getAnimeId, anime.getId())
                 .list();
         animeVO.setLabels(animeLabelMerges.stream().map(item -> item.getLabelName()).collect(Collectors.toList()));
+        List<AnimeImage> animeImages = new LambdaQueryChainWrapper<>(animeImageMapper)
+                .eq(AnimeImage::getAnimeId, anime.getId())
+                .eq(AnimeImage::getIsDeleted, false)
+                .list();
+        animeVO.setImages(animeImages.stream().map(item -> {
+            ImageVO imageVO = new ImageVO();
+            BeanUtils.copyProperties(item, imageVO);
+            return imageVO;
+        }).collect(Collectors.toList()));
         return animeVO;
     }
 
@@ -122,7 +151,7 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("上传动漫信息报错：{}", e.getMessage());
-            throw new ServiceException();
+            throw new ServiceException("上传失败");
         }
     }
 
@@ -200,14 +229,14 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
             throw new ServiceException();
         }
         try{
-              //new LambdaUpdateChainWrapper<>(animeRecommendMapper)
-              //        .eq(AnimeRecommend::getId, recommendId)
-              //        .set(AnimeRecommend::getDeleted, true)
-              //        .update();
+              new LambdaUpdateChainWrapper<>(animeRecommendMapper)
+                      .eq(AnimeRecommend::getId, recommendId)
+                      .set(AnimeRecommend::getDeleted, true)
+                      .update();
         }catch (Exception e){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             logger.error("上传动漫信息报错：{}", e.getMessage());
-            throw new ServiceException();
+            throw new ServiceException("上传失败");
         }
     }
 
@@ -231,6 +260,45 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
         return animeVOS;
     }
 
+    /**
+     * 上传动漫图片
+     * @param files 图片文件
+     */
+    @Override
+    public void uploadAnimeImage(MultipartFile[] files, Integer animeId){
+        if(!hasAnime(animeId)){
+            throw new ServiceException("动漫不存在");
+        }
+        Integer userId = SwayUtil.getCurrentUserId();
+        try{
+            Arrays.stream(files).forEach(item->{
+                FileVO fileVO =  ossService.uploadImage(item, userId, "image/anime/picture");
+                AnimeImage animeImage = new AnimeImage();
+                animeImage.setAnimeId(animeId);
+                animeImage.setUrl(fileVO.getUrl());
+                animeImage.setCreateTime(LocalDateTime.now());
+                animeImage.setUpdateTime(LocalDateTime.now());
+                animeImage.setIsDeleted(false);
+                //获取宽高
+                try {
+                    InputStream ins = item.getInputStream();
+                    BufferedImage bufferedImage = ImageIO.read(ins);
+                    animeImage.setWidth(String.valueOf(bufferedImage.getWidth()));
+                    animeImage.setHeight(String.valueOf(bufferedImage.getHeight()));
+                    ins.close();
+                } catch (IOException e) {
+                    logger.error("获取图片信息失败：{}", e.getMessage());
+                    throw new ServiceException("上传失败");
+                }
+                animeImageMapper.insert(animeImage);
+            });
+        }catch (Exception e){
+            logger.error("上传动漫图片错误：{}", e.getMessage());
+            throw new ServiceException("上传失败");
+        }
+
+    }
+
 
     /**
      * 判断是否含有动漫
@@ -241,4 +309,34 @@ public class AnimeServiceImpl extends ServiceImpl<AnimeMapper, Anime> implements
         return anime == null ? false : true;
     }
 
+
+    /**
+     * 校验图片是否合规
+     */
+    private void validImage(MultipartFile[] files){
+        String[] imageTypes = {"jpg", "png", "webp", "jpeg"};
+        if(files.length == 0){
+            throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+        }
+        Arrays.stream(files).forEach(item->{
+            //文件类型
+            String fileType = SwayFileUtil.getType(item);
+            if(!StringUtils.hasText(fileType)){
+                throw new ServiceException(CodeMsg.PARAMETER_ERROR);
+            }
+            // 判断是否是图片
+            if(!Arrays.asList(imageTypes).contains(fileType)){
+                throw new ServiceException(HttpStatus.BAD_REQUEST, "图片类型错误");
+            }
+            //文件原始昵称
+            String originalFilename = item.getOriginalFilename();
+            //后缀名
+            String extName = FileUtil.extName(originalFilename);
+            //文件大小
+            long size = item.getSize();
+            if(size > FileConstant.FILE_SIZE_MAX_KB){
+                throw new ServiceException(HttpStatus.BAD_REQUEST, "文件大小不符合规范");
+            }
+        });
+    }
 }

@@ -4,6 +4,7 @@ import com.zxy.swaycamp.domain.dto.anime.AnimeDTO;
 import com.zxy.swaycamp.domain.entity.Anime;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zxy.swaycamp.domain.vo.anime.AnimeVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,13 +26,11 @@ public interface AnimeService extends IService<Anime> {
      */
     AnimeVO getAnime(Integer animeId);
 
-
     /**
      * 新增动漫
      * @param animeDTO 动漫信息
      */
     void saveAnime(AnimeDTO animeDTO);
-
 
     /**
      * 新增推荐动漫
@@ -52,5 +51,13 @@ public interface AnimeService extends IService<Anime> {
      * @return 查询推荐动漫列表
      */
     List<AnimeVO> listRecommendAnime(String label);
+
+    /**
+     * 上传动漫图片
+     * @param files 图片文件
+     * @param animeId 动漫ID
+     */
+    void uploadAnimeImage(MultipartFile[] files, Integer animeId);
+
 
 }

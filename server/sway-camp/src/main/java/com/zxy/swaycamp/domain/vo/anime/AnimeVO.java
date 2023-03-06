@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 
+import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +35,8 @@ public class AnimeVO {
 
 
     private List<String> labels;
+
+    private List<ImageVO> images;
 
 
 }
