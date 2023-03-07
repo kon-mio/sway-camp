@@ -1,8 +1,10 @@
 package com.zxy.swaycamp.controller;
 
 
+import com.zxy.swaycamp.annotation.Log;
 import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.common.constant.RoleConst;
+import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.domain.dto.anime.AnimeDTO;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.service.AnimeService;
@@ -33,6 +35,7 @@ public class AnimeController {
       * @param animeId 动漫ID
      * @return 动漫信息
      */
+    @Log(title = "查询动漫信息", action = Action.SELECT)
     @GetMapping("/{id}")
     public SwayResult getAnime(@PathVariable("id") Integer animeId){
         return SwayResult.success(animeService.getAnime(animeId));
@@ -43,6 +46,7 @@ public class AnimeController {
      * @param animeDTO 文章信息
      * @return null
      */
+    @Log(title = "上传动漫信息", action = Action.UPDATE)
     @LoginCheck(RoleConst.ROLE_SUPER_ADMIN)
     @PostMapping("/save")
     public SwayResult saveAnime(@Validated AnimeDTO animeDTO){
@@ -55,6 +59,7 @@ public class AnimeController {
      * @param animeId 动漫ID
      * @param labelName 标签昵称
      */
+    @Log(title = "上传推荐动漫信息", action = Action.UPDATE)
     @LoginCheck(RoleConst.ROLE_SUPER_ADMIN)
     @PostMapping("/recommend/save")
     public SwayResult saveRecommendAnime(@RequestParam Integer animeId,
@@ -64,9 +69,10 @@ public class AnimeController {
     }
 
     /**
-     * 上传推荐动漫信息
+     * 移除推荐动漫信息
      * @param recommendId 推荐ID
      */
+    @Log(title = "上传推荐动漫信息", action = Action.DELETE)
     @LoginCheck(RoleConst.ROLE_SUPER_ADMIN)
     @PostMapping("/recommend/remove")
     public SwayResult removeRecommendAnime(@RequestParam Integer recommendId){
@@ -80,6 +86,7 @@ public class AnimeController {
      * @param label 推荐动漫
      * @return 推荐动漫列表
      */
+    @Log(title = "查询推荐动漫列表", action = Action.SELECT)
     @GetMapping("/recommend/list")
     public SwayResult listRecommendAnime(@RequestParam(required = false) String label){
         return SwayResult.success(animeService.listRecommendAnime(label));
@@ -92,6 +99,7 @@ public class AnimeController {
      * @param animeId 动漫ID
      * @return void
      */
+    @Log(title = "上传推荐动漫信息", action = Action.UPDATE)
     @LoginCheck(RoleConst.ROLE_SUPER_ADMIN)
     @PostMapping("/image/upload")
     public SwayResult uploadAnimeImage(MultipartFile[] files, Integer animeId){

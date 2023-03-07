@@ -1,7 +1,9 @@
 package com.zxy.swaycamp.controller;
 
 
+import com.zxy.swaycamp.annotation.Log;
 import com.zxy.swaycamp.annotation.LoginCheck;
+import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.domain.dto.article.ArticleDTO;
 import com.zxy.swaycamp.domain.dto.article.SearchDTO;
 import com.zxy.swaycamp.domain.entity.ArticleSort;
@@ -41,6 +43,7 @@ public class ArticleController {
      * @param id 文章id
      * @return 文章信息
      */
+    @Log(title = "查询文章", action = Action.SELECT)
     @GetMapping("/{id}")
     public SwayResult uploadArticle(@PathVariable Integer id){
         return SwayResult.success(articleService.getArticle(id));
@@ -52,6 +55,7 @@ public class ArticleController {
      * @param size 大小
      * @return listArticle
      */
+    @Log(title = "分页查询文章", action = Action.SELECT)
     @GetMapping("/list")
     public SwayResult<PageVO<ArticleVO> > listArticle(@RequestParam Integer index, @RequestParam Integer size){
         return SwayResult.success(articleService.listArticle(index, size));
@@ -63,6 +67,7 @@ public class ArticleController {
      * @param size 大小
      * @return listArticle
      */
+    @Log(title = "查询收藏文章", action = Action.SELECT)
     @LoginCheck
     @GetMapping("/fav/list")
     public SwayResult<PageVO<ArticleVO> > listFavArticle(@RequestParam Integer index, @RequestParam Integer size){
@@ -74,6 +79,7 @@ public class ArticleController {
      * @param searchDTO 检索信息
      * @return listArticle
      */
+    @Log(title = "查询文章列表", action = Action.SELECT)
     @PostMapping("/list/search")
     public SwayResult<List<ArticleVO> > listSearchArticle(@RequestBody @Validated SearchDTO searchDTO){
         return SwayResult.success(articleService.listSearchArticle(searchDTO));
@@ -83,6 +89,7 @@ public class ArticleController {
      * @param size 大小
      * @return listArticle
      */
+    @Log(title = "查询推荐文章", action = Action.SELECT)
     @GetMapping("/list/recommend")
     public SwayResult<List<ArticleVO> > listRecommend(@RequestParam Integer size){
         return SwayResult.success(articleService.listRecommend(size));
@@ -94,6 +101,7 @@ public class ArticleController {
      * @return null
      */
     @LoginCheck
+    @Log(title = "上传文章", action = Action.INSERT)
     @PostMapping("/upload")
     public SwayResult uploadArticle(@Validated ArticleDTO articleDTO){
         articleService.saveArticle(articleDTO);
@@ -106,6 +114,7 @@ public class ArticleController {
      * @return null
      */
     @LoginCheck
+    @Log(title = "收藏文章", action = Action.INSERT)
     @PostMapping("/fav/save")
     public SwayResult savFav(@RequestParam Integer articleId){
         articleService.saveArticleFav(articleId);
@@ -118,6 +127,7 @@ public class ArticleController {
      * @return null
      */
     @LoginCheck
+    @Log(title = "移除收藏", action = Action.DELETE)
     @PostMapping("/fav/remove")
     public SwayResult removeFav(@RequestParam Integer articleId){
         articleService.removeArticleFav(articleId);
@@ -131,6 +141,7 @@ public class ArticleController {
      * 获取文章标签列表
      * @return 章标签列表
      */
+    @Log(title = "获取文章标签", action = Action.SELECT)
     @GetMapping("/sort")
     public SwayResult getSorts(){
         List<ArticleSort> articleSorts = commonQuery.getSortInfo();

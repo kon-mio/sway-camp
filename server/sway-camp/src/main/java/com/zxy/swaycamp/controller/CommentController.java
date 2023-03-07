@@ -1,7 +1,9 @@
 package com.zxy.swaycamp.controller;
 
 
+import com.zxy.swaycamp.annotation.Log;
 import com.zxy.swaycamp.annotation.LoginCheck;
+import com.zxy.swaycamp.common.enums.Action;
 import com.zxy.swaycamp.domain.dto.comment.CommentDTO;
 import com.zxy.swaycamp.domain.dto.comment.ReplyDTO;
 import com.zxy.swaycamp.domain.vo.PageVO;
@@ -43,6 +45,7 @@ public class CommentController {
      * @return 空
      */
     @LoginCheck
+    @Log(title = "发表评论", action = Action.INSERT)
     @PostMapping("/upload")
     public SwayResult<CommentVO> uploadComment(@RequestBody @Validated CommentDTO commentDTO){
         return SwayResult.success(commentService.uploadComment(commentDTO));
@@ -55,6 +58,7 @@ public class CommentController {
      * @return 空
      */
     @LoginCheck
+    @Log(title = "发表评论回复", action = Action.INSERT)
     @PostMapping("/reply/upload")
     public SwayResult<ReplyVO> uploadReply(@RequestBody @Validated ReplyDTO replyDTO){
         return SwayResult.success(commentReplyService.uploadReply(replyDTO));
@@ -67,13 +71,13 @@ public class CommentController {
      * @param articleId 文章ID
      * @return 评论列表
      */
+    @Log(title = "查询评论", action = Action.SELECT)
     @GetMapping("/list")
     public SwayResult<PageVO<CommentVO>> listComment(@RequestParam @NotNull Integer index,
                                                      @RequestParam @NotNull Integer size,
                                                      @RequestParam @NotNull Integer articleId){
         return SwayResult.success(commentService.listComment(index, size, articleId));
     }
-
 
     /**
      * 分页查询评论回复
@@ -82,6 +86,7 @@ public class CommentController {
      * @param commentId 评论ID
      * @return 评论列表
      */
+    @Log(title = "查询评论回复", action = Action.SELECT)
     @GetMapping("/reply/list")
     public SwayResult<PageVO<ReplyVO>>  listReply(@RequestParam @NotNull Integer index,
                                                   @RequestParam @NotNull Integer size,
@@ -95,6 +100,7 @@ public class CommentController {
      * @return 空
      */
     @LoginCheck
+    @Log(title = "删除评论", action = Action.DELETE)
     @PostMapping("/remove")
     public SwayResult removeComment(@RequestParam Integer commentId){
         commentService.removeComment(commentId);
@@ -107,6 +113,7 @@ public class CommentController {
      * @return 空
      */
     @LoginCheck
+    @Log(title = "删除评论回复", action = Action.DELETE)
     @PostMapping("/reply/remove")
     public SwayResult removeReply(@RequestParam Integer replyId){
         commentReplyService.removeReply(replyId);

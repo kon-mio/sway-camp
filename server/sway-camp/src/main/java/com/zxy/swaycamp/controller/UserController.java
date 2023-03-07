@@ -56,6 +56,7 @@ public class UserController {
      * @param registerDto 注册参数
      * @return 用户信息
      */
+    @Log(title="用户注册",action = Action.INSERT)
     @PostMapping("/register")
     public SwayResult<UserVO> register(@RequestBody @Validated RegisterDTO registerDto) {
         return SwayResult.success(userService.register(registerDto));
@@ -66,6 +67,7 @@ public class UserController {
      * @return 用户信息
      */
     @LoginCheck
+    @Log(title="获取用户信息",action = Action.SELECT)
     @GetMapping("/info")
     public SwayResult<UserVO> getUserInfo(){
         return SwayResult.success(userService.getUserInfo());
@@ -78,6 +80,7 @@ public class UserController {
      * @return 新的用户信息
      */
     @LoginCheck
+    @Log(title="更新用户信息",action = Action.UPDATE)
     @PostMapping("/info/update")
     public SwayResult<UserVO> updateUserInfo(@RequestBody @Validated UpdateUserInfoDTO updateUserInfoDTO){
         return SwayResult.success(userService.updateUserInfo(updateUserInfoDTO));
@@ -87,16 +90,14 @@ public class UserController {
      * 更新用户头像
      *
      * @param file 头像文件
-     * @return
      */
     @LoginCheck
+    @Log(title="更新用户头像",action = Action.UPDATE)
     @PostMapping("/avatar/update")
     public SwayResult updateAvatar(MultipartFile file){
         if(file == null){
             return SwayResult.fail();
         }
-        System.out.println(file.getSize());
-        System.out.println(file);
         userService.updateAvatar(file);
         return SwayResult.success();
     }
@@ -106,8 +107,10 @@ public class UserController {
      *
      * @param account 邮箱/手机号
      */
+    @Log(title="获取验证码",action = Action.SELECT)
     @PostMapping("/code")
     public SwayResult<UserVO> getCode(@RequestBody Map<String,String> account) {
+        //TODO 根据IP存入Redis进行限制 同一IP一天最多获取10次, 10分钟内最多获取3次
         if( account == null || account.get(CommonConst.LITERAL_ACCOUNT) == null){
             SwayResult.fail(CodeMsg.PARAMETER_ERROR);
         }else{
@@ -122,6 +125,7 @@ public class UserController {
      * @param updatePassword 密码和验证码
      */
     @LoginCheck
+    @Log(title="更新密码",action = Action.UPDATE)
     @PostMapping("/password")
     public SwayResult<UserVO> updatePassword(@RequestBody Map<String,String> updatePassword) {
         if( updatePassword == null
@@ -139,6 +143,7 @@ public class UserController {
      * 刷新token
      * @return 双token
      */
+    @Log(title="刷新Token",action = Action.UPDATE)
     @GetMapping("/refresh")
     public SwayResult<TokenVO> refreshToken(){
         return SwayResult.success(userService.refreshToken());
