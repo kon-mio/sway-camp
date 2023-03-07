@@ -25,6 +25,7 @@ import com.zxy.swaycamp.service.UserService;
 import com.zxy.swaycamp.utils.SecurityUtil;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.mail.MailUtil;
+import com.zxy.swaycamp.utils.query.CommonQuery;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.TokenUtil;
 import org.slf4j.Logger;
@@ -57,9 +58,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private MailUtil mailUtil;
     @Resource
     private RedisCache redisCache;
-
     @Resource
     private OssService ossService;
+
     @Resource
     private SwayFileService swayFileService;
 
@@ -185,23 +186,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userVo;
     }
 
-    /**
-     * 根据token获取用户信息
-     * @return 用户信息
-     */
-    @Override
-    public UserVO getUserInfo(){
-        Integer userId = SwayUtil.getCurrentUserId();
-        User user = getById(userId);
-        if(user == null){
-            throw new ServiceException("用户不存在");
-        }
-        UserVO userVo = new UserVO();
-        BeanUtils.copyProperties(user,userVo);
-        userVo.setEmail(DesensitizedUtil.email(userVo.getEmail()));
-        userVo.setPhoneNumber(DesensitizedUtil.mobilePhone(userVo.getPhoneNumber()));
-        return userVo;
-    }
 
     /**
      * 更新用户密码

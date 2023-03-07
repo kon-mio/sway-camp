@@ -32,12 +32,6 @@ public interface UserService extends IService<User> {
      */
    UserVO register(RegisterDTO registerDto);
 
-   /**
-     * 根据token获取用户信息
-     * @return 用户信息
-     */
-   UserVO getUserInfo();
-
     /**
      * 更新用户信息
      *
