@@ -13,11 +13,12 @@ export interface Anime {
   broadcastTime: string
   officialWebsite: string
   labels: string[]
-  image: AnimeImage[]
+  images: AnimeImage[]
 }
 // 动漫图片
 export interface AnimeImage {
   animeId: number
+  url: string
   width: string
   height: string
 }

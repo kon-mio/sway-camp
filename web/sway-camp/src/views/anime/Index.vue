@@ -1,12 +1,10 @@
 <template>
   <div class="sway-anime">
-    <!-- <app-router /> -->
     <sway-router />
   </div>
 </template>
 
 <script lang="ts" setup>
-import AppRouter from "@/layout/app-router/AppRouter.vue"
 import SwayRouter from "@/layout/app-router/SwayRouter.vue"
 </script>
 

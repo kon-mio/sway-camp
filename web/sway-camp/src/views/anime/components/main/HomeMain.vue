@@ -21,23 +21,32 @@
               <p>{{ (anime.broadcastTime as string).split("T")[0] }}</p>
             </li>
           </ul>
-          <ul class="context-anime-tips"></ul>
+          <ul class="context-anime-tips">
+            <li v-for="(item, index) in anime.labels" :key="index">{{ item }}</li>
+          </ul>
           <div class="context-anime-impress paragraph-truncate">简介：{{ anime.introduction }}</div>
           <div class="context-anime-intordu paragraph-truncate"></div>
           <span class="context-anime-href el-icon-data-line">看番</span>
         </div>
       </div>
     </div>
+    <div class="image">
+      <anime-image :anime-image="anime.images" />
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue"
 import { Anime } from "@/api/anime/type"
+import AnimeImage from "./AnimeImage.vue"
 
 const props = defineProps<{
   anime: Anime
   modelValue: boolean
 }>()
+
+const anime = computed(() => props.anime)
 
 const emits = defineEmits<{
   (el: "update:modelValue", close: boolean): void
@@ -62,21 +71,16 @@ const back = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: calc((100vh - 600px) / 4);
+  margin-top: calc((100vh - 500px) / 4);
   width: 100%;
   height: 400px;
   overflow: hidden;
   z-index: 12;
 
-  &:hover {
-    .close-btn {
-      left: 0;
-    }
-  }
   .close-btn {
-    position: absolute;
-    top: 0px;
-    left: -100px;
+    position: fixed;
+    top: 100px;
+    right: 60px;
     justify-content: center;
     align-items: center;
     display: flex;
@@ -87,7 +91,7 @@ const back = () => {
     z-index: 16;
     cursor: pointer;
     &:hover {
-      transform: scale(1.2);
+      transform: scale(1.4) rotate(180deg);
     }
   }
 
@@ -254,5 +258,10 @@ const back = () => {
       }
     }
   }
+}
+.image {
+  position: relative;
+  width: calc(100vw - 200px);
+  height: 100%;
 }
 </style>

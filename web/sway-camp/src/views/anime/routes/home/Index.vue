@@ -1,10 +1,10 @@
 <template>
   <div id="anime-home" class="anime-home">
-    <div class="anime-banner">
+    <div class="anime-banner animate__animated animate__zoomIn">
       <AnimeCarousel v-if="animeList.length" :anime-list="animeList" />
     </div>
     <div class="anime-list">
-      <div class="anime-list__content slide-ltin-up">
+      <div class="anime-list__content">
         <AnimeCard
           v-for="(item, index) in animeList"
           :key="index"
@@ -15,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div v-show="mainShow" class="anime-main">
+  <div v-if="mainShow" class="anime-main">
     <home-main v-model="mainShow" :anime="anime" />
   </div>
   <break-top target="anime-home" />
@@ -32,10 +32,10 @@ import { getAnimeApi, listRecommendAnimeApi } from "@/api/anime/api"
 import { HttpStatusCode } from "@/common/enum"
 import AnimeCard from "../../components/card/AnimeCard.vue"
 import HomeMain from "../../components/main/HomeMain.vue"
-import { useRoute, useRouter } from "vue-router"
 
-const $route = useRoute()
-const $router = useRouter()
+// import { useRouter } from "vue-router"
+// const $router = useRouter()
+// $router.replace({ query: { id: id } })
 
 const mainShow = ref(false)
 
@@ -49,24 +49,25 @@ const anime = reactive<Anime>({
   broadcastTime: "",
   officialWebsite: "",
   labels: [],
-  image: []
+  images: []
 })
 const animeList = reactive<Anime[]>([])
 
 const getAnime = async (id: number) => {
-  $router.replace({ query: { id: id } })
   const res = await getAnimeApi(id)
   if (res.code === HttpStatusCode.Success) {
     Object.assign(anime, res.data)
     mainShow.value = true
   }
 }
+
 onBeforeMount(async () => {
   const res = await listRecommendAnimeApi()
   if (res.code === HttpStatusCode.Success) {
     Object.assign(animeList, res.data)
   }
 })
+onMounted(() => {})
 </script>
 
 <style lang="less" scoped>
@@ -94,14 +95,14 @@ onBeforeMount(async () => {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 1000px;
   &__content {
     width: 80%;
     min-width: 1200px;
-    margin-top: 30px;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    margin: 100px 20px;
     padding: 10px 0;
+    box-sizing: border-box;
     grid-gap: 18px;
     overflow: hidden;
   }
