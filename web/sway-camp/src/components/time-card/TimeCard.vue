@@ -22,7 +22,7 @@ export default defineComponent({
   props: {
     cardBg: {
       type: String,
-      default: "http://file.takagi-san.cn/image/kon_all_57.webp"
+      default: "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/540083f441c14c8e839dd6b70a831eaa.webp"
     }
   },
   setup(props) {

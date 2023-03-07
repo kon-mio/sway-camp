@@ -2,7 +2,7 @@
   <div id="user" class="user">
     <div class="header">
       <div class="header-bg">
-        <img src="http://file.takagi-san.cn/image/f12f2c8d115245cea4878ff320f53e57.jpg" />
+        <img :src="userInfo?.avatar" />
       </div>
     </div>
     <div class="base-info">

@@ -52,8 +52,8 @@ const globalStore = useGlobalStore()
 const passInputType = ref("password")
 
 const loginForm = reactive<LoginDto>({
-  account: "2292289473@qq.com",
-  password: "kon"
+  account: "",
+  password: ""
 })
 // 登录
 const loginSumbit = async () => {

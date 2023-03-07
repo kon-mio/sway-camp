@@ -42,18 +42,17 @@ import { computed, reactive, ref } from "vue"
 import SwayNotion from "@/utils/notice"
 import { useGlobalStore } from "@/stores/global.sotre"
 import { HttpStatusCode } from "@/common/enum"
-import { isEmpty,isEmail, isPhone } from "@/utils/valid"
+import { isEmpty, isEmail, isPhone } from "@/utils/valid"
 import { useInterval } from "@/hooks/useInterval.hooks"
 import { codeLoginApi, getCodeApi } from "@/api/user/api"
 import type { LoginDto, UserInfo } from "@/api/user/type"
-
 
 const emits = defineEmits<{
   (e: "regist", type: boolean): void
   (e: "loginSuccess", userInfo: UserInfo): void
 }>()
 const loginForm = reactive<LoginDto>({
-  account: "2292289473@qq.com",
+  account: "",
   code: ""
 })
 // 记录获取验证码IP 10分钟最多获取三次
@@ -101,7 +100,7 @@ const { pause, resume } = useInterval(
 )
 // 获取验证码
 const getCode = async () => {
-  if (codeTimer.value != 0) {
+  if (codeTimer.value !== 0) {
     openMessageMini(`请${codeTimer.value}s后重新获取`)
     return
   }

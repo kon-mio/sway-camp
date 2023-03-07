@@ -30,7 +30,7 @@ export const loadImage = (url: string, callback: (image: HTMLImageElement) => vo
   }
   // 加载失败图片
   const errorImage = new Image()
-  errorImage.src = "http://file.takagi-san.cn/image/kon_all_3.webp"
+  errorImage.src = "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/anime/cover/7055dd7c19e74c5dad6991c3d7faa922.png"
   errorImage.crossOrigin = "*"
   newImage.onerror = () => {
     callback(errorImage)

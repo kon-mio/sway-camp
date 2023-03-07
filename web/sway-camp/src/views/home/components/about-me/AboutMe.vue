@@ -2,14 +2,12 @@
   <div class="main-right-uper">
     <div class="main-right-uper__cover">
       <img
-        src="http://file.konmio.com/image/0b3ba832bbe74a6cbd359b6976fa49a7.webp"
-        class="base-img"
+        src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/540083f441c14c8e839dd6b70a831eaa.webp"
       />
     </div>
     <div class="main-right-uper__avatar">
       <img
-        src="http://file.konmio.com/image/7b0963d1e6c94a29a76a6eeec4702b1d.webp"
-        class="base-img"
+        src="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/39179cb2593f4186a40a03f29df7c1b0.webp"
       />
     </div>
   </div>

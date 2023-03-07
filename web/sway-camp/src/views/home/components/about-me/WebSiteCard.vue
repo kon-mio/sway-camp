@@ -1,6 +1,8 @@
 <template>
   <div class="web-card">
-    <time-card card-bg="http://file.takagi-san.cn/image/kon_all_3.webp" />
+    <time-card
+      card-bg="https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/540083f441c14c8e839dd6b70a831eaa.webp"
+    />
     <!-- 标题 -->
     <p class="web-card-title">sway-camp</p>
     <!-- 内容 -->

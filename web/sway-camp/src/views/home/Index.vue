@@ -187,18 +187,20 @@ const carouselItems = reactive<carouselType[]>([
   {
     id: 0,
     title: "1",
-    imgUrl: "http://file.takagi-san.cn/image/kon_all_3.webp"
+    imgUrl:
+      "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/cover/39179cb2593f4186a40a03f29df7c1b0.webp"
   },
   {
     id: 1,
     title: "1",
-    imgUrl: "http://file.takagi-san.cn/image/kon_all_18.webp"
+    imgUrl:
+      "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/anime/cover/df2adf19a6d844489bbd4de1ffede221.webp"
   },
   {
     id: 2,
     title: "1",
     imgUrl:
-      "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/avatar/940935cb641541889b946472021b815f.webp"
+      "https://sway-camp.oss-cn-qingdao.aliyuncs.com/image/anime/cover/7055dd7c19e74c5dad6991c3d7faa922.png"
   }
 ])
 
