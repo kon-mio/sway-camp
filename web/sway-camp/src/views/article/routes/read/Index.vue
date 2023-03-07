@@ -1,5 +1,5 @@
 <template>
-  <div class="article-read">
+  <div id="article-read" class="article-read">
     <!-- 背景图 -->
     <div class="article-read-bg">
       <div ref="transBgRef" class="trans-bg" @animationend="removeAnime(getArticle)">
@@ -101,7 +101,7 @@
       v-if="articleInfo.content"
       class="break-page"
       title="点击回到上一页"
-      @click="$router.back()"
+      @click="routerBack"
       @mouseenter="backRouteEnter"
       @mouseleave="backRouteLeave"
     >
@@ -131,6 +131,7 @@ import ArticleHeader from "../../components/read-main/article-header/ArticleHead
 import Comment from "../../components/comment/Comment.vue"
 import { useGlobalStore } from "@/stores/global.sotre"
 import { throttle } from "@konmio/utils"
+import { useRouter } from "vue-router"
 // 背景处理
 function coverFuncModule() {
   const transBgRef = ref<HTMLDivElement | null>()
@@ -224,6 +225,9 @@ const props = defineProps<{
 const articleId = computed(() => {
   return Number(props.id)
 })
+
+const $router = useRouter()
+
 const articleStore = useArticleStore()
 const globalStore = useGlobalStore()
 const { coverInfo } = storeToRefs(articleStore)
@@ -290,6 +294,11 @@ const saveFav = () => {
       }
     }
   })()
+}
+
+const routerBack = () => {
+  articleStore.clearCoverInfo()
+  $router.back()
 }
 
 onBeforeMount(() => {

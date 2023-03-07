@@ -21,6 +21,7 @@ export default {
       component: AnimeHome,
       meta: {
         title: "三千佳丽",
+        // elName: "#anime-home",
         ...commonMeta
       }
     }

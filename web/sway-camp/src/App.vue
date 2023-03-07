@@ -4,7 +4,7 @@
       <AppAside />
     </div>
     <div class="app-main">
-      <AppRouter />
+      <SwayRouter />
     </div>
     <MessageMini v-model="messageMini.isOpen" :content="messageMini.content" />
   </div>
@@ -14,7 +14,7 @@
 import "@/assets/font/iconfont.js"
 import "@/assets/font/iconfont.css"
 import AppAside from "./layout/app-aside/AppAside.vue"
-import AppRouter from "./layout/app-router/AppRouter.vue"
+import SwayRouter from "./layout/app-router/SwayRouter.vue"
 import { useGlobalStore } from "./stores/global.sotre"
 import MessageMini from "./components/konmio/message/message-mini.vue"
 import { storeToRefs } from "pinia"

@@ -8,6 +8,9 @@ export const useArticleStore = defineStore("article", {
   actions: {
     setCoverInfo(info: ArticleCover) {
       this.coverInfo = info
+    },
+    clearCoverInfo() {
+      this.coverInfo = null
     }
   }
 })
