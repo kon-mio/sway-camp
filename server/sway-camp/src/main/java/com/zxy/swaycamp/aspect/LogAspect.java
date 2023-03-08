@@ -10,6 +10,7 @@ import com.zxy.swaycamp.domain.entity.SystemLog;
 import com.zxy.swaycamp.service.SystemLogService;
 import com.zxy.swaycamp.utils.ServletUtil;
 import com.zxy.swaycamp.utils.SwayUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -18,6 +19,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -26,6 +28,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * 操作日志记录处理
@@ -100,7 +104,9 @@ public class LogAspect {
             systemLog.setResult(JSON.toJSONString(jsonResult));
             systemLog.setRequestTime(LocalDateTime.now());
             // 保存数据库
-            systemLogService.save(systemLog);
+            // 使用异步 存储日志 约快100-200ms
+            systemLogService.insert(systemLog);
+            // TODO 将日志存储到redis 定时存入到数据库
         } catch (Exception exp) {
             logger.error("异常信息:{}", exp.getMessage());
         }
@@ -135,5 +141,7 @@ public class LogAspect {
         }
         return argList.size() == 1 ? JSON.toJSONString(argList.get(0),excludePropertyPreFilter()) : JSON.toJSONString(argList,excludePropertyPreFilter());
     }
+
+
 
 }

@@ -79,8 +79,8 @@ public class UserController {
      * 根据token获取用户信息
      * @return 用户信息
      */
-    //@LoginCheck
-    //@Log(title="获取用户信息",action = Action.SELECT)
+    @LoginCheck
+    @Log(title="获取用户信息",action = Action.SELECT)
     @GetMapping("/info")
     public SwayResult<UserVO> getUserInfo(){
         // TODO 优化日志切面 日志注解会降低接口速度约100ms

@@ -11,9 +11,11 @@ import com.zxy.swaycamp.domain.model.LoginUser;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -34,8 +36,8 @@ public class LoginCheckAspect {
     @Resource
     private RedisCache redisCache;
 
-    @Around("@annotation(loginCheck)")
-    public Object around(ProceedingJoinPoint joinPoint, LoginCheck loginCheck) throws Throwable {
+    @Before("@annotation(loginCheck)")
+    public void around(LoginCheck loginCheck) throws Throwable {
         LoginUser user = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + SwayUtil.getCurrentUserId());
         if (user == null) {
             throw new ServiceException(CodeMsg.LOGIN_EXPIRED.getMsg());
@@ -48,6 +50,5 @@ public class LoginCheckAspect {
         if (loginCheck.value() == RoleConst.ROLE_SUPER_ADMIN && user.getUserRole() == RoleConst.ROLE_ADMIN) {
             throw new ServiceException(HttpStatus.FORBIDDEN, "权限不足");
         }
-        return joinPoint.proceed();
     }
 }

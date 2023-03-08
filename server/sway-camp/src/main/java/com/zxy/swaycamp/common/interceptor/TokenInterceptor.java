@@ -4,7 +4,10 @@ import com.zxy.swaycamp.annotation.LoginCheck;
 import com.zxy.swaycamp.common.constant.CacheConstants;
 import com.zxy.swaycamp.common.constant.CommonConst;
 import com.zxy.swaycamp.common.constant.HttpStatus;
+import com.zxy.swaycamp.common.constant.RoleConst;
+import com.zxy.swaycamp.common.enums.CodeMsg;
 import com.zxy.swaycamp.common.exception.ServiceException;
+import com.zxy.swaycamp.domain.model.LoginUser;
 import com.zxy.swaycamp.utils.SwayUtil;
 import com.zxy.swaycamp.utils.redis.RedisCache;
 import com.zxy.swaycamp.utils.request.TokenUtil;
@@ -60,6 +63,19 @@ public class TokenInterceptor implements HandlerInterceptor {
         String userToken = redisCache.getCacheObject(CacheConstants.LOGIN_TOKEN_ACCESS_KEY + userId);
         if (userToken == null || !SwayUtil.getToken().equals(userToken)) {
             throw new ServiceException(HttpStatus.FORBIDDEN, "Token过期，请重新登录");
+        }
+
+        LoginUser user = redisCache.getCacheObject(CacheConstants.LOGIN_USER_KEY + SwayUtil.getCurrentUserId());
+        if (user == null) {
+            throw new ServiceException(CodeMsg.LOGIN_EXPIRED.getMsg());
+        }
+        // 用户权限为 1，接口所需权限不为 1则返回
+        if (loginCheck.value() != RoleConst.ROLE_USER && user.getUserRole() == RoleConst.ROLE_USER) {
+            throw new ServiceException(HttpStatus.FORBIDDEN, "权限不足");
+        }
+        // 用户权限为 2，接口所需权限为 0 则返回
+        if (loginCheck.value() == RoleConst.ROLE_SUPER_ADMIN && user.getUserRole() == RoleConst.ROLE_ADMIN) {
+            throw new ServiceException(HttpStatus.FORBIDDEN, "权限不足");
         }
         return true;
     }

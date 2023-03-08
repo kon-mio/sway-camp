@@ -144,6 +144,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         PageVO<ArticleVO> pageVO = new PageVO<>();
         pageVO.setList(articleVos);
         pageVO.setTotal((int) articleFavPage.getTotal());
+        System.out.println(1);
         return pageVO;
     }
 
