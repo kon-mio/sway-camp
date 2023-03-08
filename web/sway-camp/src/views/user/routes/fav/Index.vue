@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, onMounted } from "vue"
+import { reactive, onBeforeMount } from "vue"
 import { listFavArticleApi, removeFavApi } from "@/api/article/api"
 import { ArticleList } from "@/api/article/type"
 import { HttpStatusCode } from "@/common/enum"
@@ -56,7 +56,7 @@ const listFavArticle = async () => {
     Object.assign(favList, res.data)
   }
 }
-onMounted(listFavArticle)
+onBeforeMount(listFavArticle)
 </script>
 
 <style lang="less" scoped>
