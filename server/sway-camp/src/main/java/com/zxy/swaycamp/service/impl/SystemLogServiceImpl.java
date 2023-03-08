@@ -22,21 +22,4 @@ import java.util.Calendar;
 @Service
 public class SystemLogServiceImpl extends ServiceImpl<SystemLogMapper, SystemLog> implements SystemLogService {
 
-
-
-    /**
-     * 异步入库
-     * @param systemLog
-     */
-    @Async("LogAsync")
-    @Override
-    public void insert(SystemLog systemLog){
-        log.info("打印当前B线程名称：{}",Thread.currentThread().getName());
-        try {
-            save(systemLog);
-        }catch (Exception e) {
-            log.error("未知异常：", e);
-        }
-    }
-
 }

@@ -83,7 +83,7 @@ public class UserController {
     @Log(title="获取用户信息",action = Action.SELECT)
     @GetMapping("/info")
     public SwayResult<UserVO> getUserInfo(){
-        // TODO 优化日志切面 日志注解会降低接口速度约100ms
+        // TODO 优化日志切面 日志注解会降低接口速度约500ms
         Integer userId = SwayUtil.getCurrentUserId();
         User user = commonQuery.getUser(userId);
         if(user == null){

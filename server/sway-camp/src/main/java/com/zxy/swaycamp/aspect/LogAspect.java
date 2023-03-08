@@ -96,7 +96,8 @@ public class LogAspect {
             systemLog.setBrowser(ServletUtil.getBrowser());
             systemLog.setRequestSystem(ServletUtil.getSystem());
             systemLog.setRequestIp(ServletUtil.getIp());
-            systemLog.setAddress(ServletUtil.getHttpCityInfo(systemLog.getRequestIp()));
+            // TODO 服务器访问该网站时，速度缓慢
+            //systemLog.setAddress(ServletUtil.getHttpCityInfo(systemLog.getRequestIp()));
             // 处理设置注解上的参数
             systemLog.setAction(log.action().toString());
             // 设置标题
@@ -104,9 +105,8 @@ public class LogAspect {
             systemLog.setResult(JSON.toJSONString(jsonResult));
             systemLog.setRequestTime(LocalDateTime.now());
             // 保存数据库
-            // 使用异步 存储日志 约快100-200ms
-            systemLogService.insert(systemLog);
             // TODO 将日志存储到redis 定时存入到数据库
+            systemLogService.save(systemLog);
         } catch (Exception exp) {
             logger.error("异常信息:{}", exp.getMessage());
         }

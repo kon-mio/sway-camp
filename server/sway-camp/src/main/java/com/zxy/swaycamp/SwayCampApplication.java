@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author Xinyuan Zhao
  * @since 2023/1/23
  */
-@EnableAsync
 @EnableTransactionManagement
 @SpringBootApplication
 public class SwayCampApplication {

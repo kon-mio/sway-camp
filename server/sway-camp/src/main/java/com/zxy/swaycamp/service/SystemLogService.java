@@ -11,10 +11,4 @@ import com.zxy.swaycamp.domain.entity.SystemLog;
  */
 public interface SystemLogService extends IService<SystemLog> {
 
-
-    /**
-     * 异步入库
-     * @param systemLog
-     */
-    void insert(SystemLog systemLog);
 }
